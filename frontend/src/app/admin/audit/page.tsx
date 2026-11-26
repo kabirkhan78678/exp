@@ -18,16 +18,16 @@ export default function AdminAuditPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-aurora-text">Administrative Audit Trails</h1>
-        <p className="text-xs text-aurora-muted">
+        <h1 className="text-xl font-bold text-white font-display">Administrative Audit Trails</h1>
+        <p className="text-xs text-zinc-400">
           Immutable records of privileged actions including account freezes, limit revisions, and withdrawal decisions.
         </p>
       </div>
 
-      <div className="rounded-2xl bg-aurora-surface border border-aurora-border overflow-hidden">
+      <div className="rounded-2xl bg-[#0D1214] border border-[#1E262A] overflow-hidden shadow-card">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-aurora-elevated/70 text-aurora-muted uppercase font-mono text-[10px] border-b border-aurora-border">
+            <thead className="bg-[#141A1E] text-zinc-400 uppercase font-mono text-[10px] border-b border-[#1E262A]">
               <tr>
                 <th className="p-3.5">Actor</th>
                 <th className="p-3.5">Action Executed</th>
@@ -36,27 +36,27 @@ export default function AdminAuditPage() {
                 <th className="p-3.5">Timestamp</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-aurora-border/40">
+            <tbody className="divide-y divide-[#1E262A]">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-aurora-muted">Loading audit entries...</td>
+                  <td colSpan={5} className="p-8 text-center text-zinc-400">Loading audit entries...</td>
                 </tr>
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-aurora-muted">No audit logs found.</td>
+                  <td colSpan={5} className="p-8 text-center text-zinc-400">No audit logs found.</td>
                 </tr>
               ) : (
                 logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-aurora-elevated/20 transition">
-                    <td className="p-3.5 font-bold text-aurora-purple font-mono">{log.actor}</td>
-                    <td className="p-3.5 font-bold uppercase text-aurora-text">{log.action}</td>
-                    <td className="p-3.5 font-mono text-[11px] text-aurora-gold">
+                  <tr key={log.id} className="hover:bg-[#141A1E]/40 transition">
+                    <td className="p-3.5 font-bold text-[#47EC84] font-mono">{log.actor}</td>
+                    <td className="p-3.5 font-bold uppercase text-white">{log.action}</td>
+                    <td className="p-3.5 font-mono text-[11px] text-[#F5B041]">
                       {log.resource_type}:{log.resource_id}
                     </td>
-                    <td className="p-3.5 text-aurora-muted font-mono text-[10px] max-w-xs truncate">
+                    <td className="p-3.5 text-zinc-400 font-mono text-[10px] max-w-xs truncate">
                       {JSON.stringify(log.payload)}
                     </td>
-                    <td className="p-3.5 font-mono text-aurora-muted text-[11px]">
+                    <td className="p-3.5 font-mono text-zinc-400 text-[11px]">
                       {new Date(log.created_at).toLocaleString()}
                     </td>
                   </tr>

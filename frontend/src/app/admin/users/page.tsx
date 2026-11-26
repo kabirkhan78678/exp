@@ -13,7 +13,6 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const loadUsers = async () => {
     try {
@@ -63,27 +62,27 @@ export default function AdminUsersPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-aurora-text">User & Player Directory</h1>
-          <p className="text-xs text-aurora-muted">Inspect player balances, audit KYC compliance, and control access states.</p>
+          <h1 className="text-xl font-bold text-white font-display">User & Player Directory</h1>
+          <p className="text-xs text-zinc-400">Inspect player balances, audit KYC compliance, and control access states.</p>
         </div>
 
         <div className="relative min-w-[280px]">
-          <Search className="w-4 h-4 text-aurora-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search username or email..."
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-aurora-surface border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-purple"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0D1214] border border-[#1E262A] text-xs text-white focus:outline-none focus:border-[#47EC84]"
           />
         </div>
       </div>
 
       {/* Users Table */}
-      <div className="rounded-2xl bg-aurora-surface border border-aurora-border overflow-hidden">
+      <div className="rounded-2xl bg-[#0D1214] border border-[#1E262A] overflow-hidden shadow-card">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-aurora-elevated/70 text-aurora-muted uppercase font-mono text-[10px] border-b border-aurora-border">
+            <thead className="bg-[#141A1E] text-zinc-400 uppercase font-mono text-[10px] border-b border-[#1E262A]">
               <tr>
                 <th className="p-3.5">User</th>
                 <th className="p-3.5">Role</th>
@@ -95,44 +94,44 @@ export default function AdminUsersPage() {
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-aurora-border/40">
+            <tbody className="divide-y divide-[#1E262A]">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-aurora-muted">Loading users...</td>
+                  <td colSpan={8} className="p-8 text-center text-zinc-400">Loading users...</td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-aurora-muted">No users found.</td>
+                  <td colSpan={8} className="p-8 text-center text-zinc-400">No users found.</td>
                 </tr>
               ) : (
                 users.map((u) => (
-                  <tr key={u.id} className="hover:bg-aurora-elevated/20 transition">
+                  <tr key={u.id} className="hover:bg-[#141A1E]/40 transition">
                     <td className="p-3.5">
-                      <div className="font-semibold text-aurora-text">{u.username}</div>
-                      <div className="text-[10px] text-aurora-muted font-mono">{u.email}</div>
+                      <div className="font-semibold text-white">{u.username}</div>
+                      <div className="text-[10px] text-zinc-400 font-mono">{u.email}</div>
                     </td>
-                    <td className="p-3.5 font-mono text-[11px] uppercase text-aurora-muted">{u.role}</td>
+                    <td className="p-3.5 font-mono text-[11px] uppercase text-zinc-400">{u.role}</td>
                     <td className="p-3.5">
                       <select
                         value={u.vip_tier}
                         onChange={(e) => handleUpdateVIP(u.id, e.target.value)}
-                        className="bg-aurora-elevated border border-aurora-border rounded px-2 py-1 text-[11px] font-mono text-aurora-gold focus:outline-none"
+                        className="bg-[#141A1E] border border-[#1E262A] rounded px-2 py-1 text-[11px] font-mono text-[#F5B041] focus:outline-none"
                       >
                         {['BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'ELITE'].map((v) => (
                           <option key={v} value={v}>{v}</option>
                         ))}
                       </select>
                     </td>
-                    <td className="p-3.5 font-mono text-aurora-gold">₹{parseFloat(u.demo_balance).toFixed(0)}</td>
-                    <td className="p-3.5 font-mono text-aurora-cyan">₹{parseFloat(u.main_balance).toFixed(2)}</td>
+                    <td className="p-3.5 font-mono text-[#F5B041]">₹{parseFloat(u.demo_balance).toFixed(0)}</td>
+                    <td className="p-3.5 font-mono text-[#47EC84]">₹{parseFloat(u.main_balance).toFixed(2)}</td>
                     <td className="p-3.5">
                       <select
                         value={u.kyc_status}
                         onChange={(e) => handleUpdateKYC(u.id, e.target.value)}
                         className={`rounded px-2 py-1 text-[10px] font-mono font-bold border focus:outline-none ${
                           u.kyc_status === 'VERIFIED'
-                            ? 'bg-aurora-success/15 text-aurora-success border-aurora-success/30'
-                            : 'bg-aurora-elevated text-aurora-muted border-aurora-border'
+                            ? 'bg-[#47EC84]/15 text-[#47EC84] border-[#47EC84]/30'
+                            : 'bg-[#141A1E] text-zinc-400 border-[#1E262A]'
                         }`}
                       >
                         {['UNVERIFIED', 'PENDING', 'VERIFIED', 'REJECTED'].map((s) => (
@@ -143,8 +142,8 @@ export default function AdminUsersPage() {
                     <td className="p-3.5">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
                         u.is_frozen
-                          ? 'bg-aurora-danger/20 text-aurora-danger border border-aurora-danger/40'
-                          : 'bg-aurora-success/15 text-aurora-success border border-aurora-success/30'
+                          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
+                          : 'bg-[#47EC84]/15 text-[#47EC84] border border-[#47EC84]/30'
                       }`}>
                         {u.is_frozen ? 'FROZEN' : 'ACTIVE'}
                       </span>
@@ -154,8 +153,8 @@ export default function AdminUsersPage() {
                         onClick={() => handleFreezeToggle(u)}
                         className={`px-3 py-1 rounded-lg text-xs font-semibold transition ${
                           u.is_frozen
-                            ? 'bg-aurora-success/20 text-aurora-success border border-aurora-success/30 hover:bg-aurora-success/30'
-                            : 'bg-aurora-danger/20 text-aurora-danger border border-aurora-danger/30 hover:bg-aurora-danger/30'
+                            ? 'bg-[#47EC84]/20 text-[#47EC84] border border-[#47EC84]/30 hover:bg-[#47EC84]/30'
+                            : 'bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30'
                         }`}
                       >
                         {u.is_frozen ? 'Unfreeze' : 'Freeze'}

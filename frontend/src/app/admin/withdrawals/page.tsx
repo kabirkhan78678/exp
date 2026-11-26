@@ -40,15 +40,15 @@ export default function AdminWithdrawalsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-aurora-text">Withdrawal Approvals Queue</h1>
-        <p className="text-xs text-aurora-muted">
+        <h1 className="text-xl font-bold text-white font-display">Withdrawal Approvals Queue</h1>
+        <p className="text-xs text-zinc-400">
           Review player payout requests. Approving dispatches payment reference; rejecting immediately refunds the reserved balance via double-entry ledger.
         </p>
       </div>
 
-      <div className="rounded-2xl bg-aurora-surface border border-aurora-border overflow-hidden">
+      <div className="rounded-2xl bg-[#0D1214] border border-[#1E262A] overflow-hidden shadow-card">
         <table className="w-full text-left text-xs">
-          <thead className="bg-aurora-elevated/70 text-aurora-muted uppercase font-mono text-[10px] border-b border-aurora-border">
+          <thead className="bg-[#141A1E] text-zinc-400 uppercase font-mono text-[10px] border-b border-[#1E262A]">
             <tr>
               <th className="p-3.5">Player</th>
               <th className="p-3.5">Amount</th>
@@ -59,37 +59,37 @@ export default function AdminWithdrawalsPage() {
               <th className="p-3.5 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-aurora-border/40">
+          <tbody className="divide-y divide-[#1E262A]">
             {loading ? (
               <tr>
-                <td colSpan={7} className="p-8 text-center text-aurora-muted">Loading queue...</td>
+                <td colSpan={7} className="p-8 text-center text-zinc-400">Loading queue...</td>
               </tr>
             ) : withdrawals.length === 0 ? (
               <tr>
-                <td colSpan={7} className="p-8 text-center text-aurora-muted">No withdrawal requests found.</td>
+                <td colSpan={7} className="p-8 text-center text-zinc-400">No withdrawal requests found.</td>
               </tr>
             ) : (
               withdrawals.map((w) => (
-                <tr key={w.id} className="hover:bg-aurora-elevated/20 transition">
+                <tr key={w.id} className="hover:bg-[#141A1E]/40 transition">
                   <td className="p-3.5">
-                    <div className="font-semibold text-aurora-text">{w.username}</div>
-                    <div className="text-[10px] text-aurora-muted font-mono">{w.email}</div>
+                    <div className="font-semibold text-white">{w.username}</div>
+                    <div className="text-[10px] text-zinc-400 font-mono">{w.email}</div>
                   </td>
-                  <td className="p-3.5 font-mono font-bold text-aurora-cyan">₹{parseFloat(w.amount).toFixed(2)}</td>
-                  <td className="p-3.5 font-mono text-[11px] text-aurora-muted">{w.payout_channel}</td>
-                  <td className="p-3.5 font-mono text-[11px] text-aurora-text">{JSON.stringify(w.payout_details)}</td>
+                  <td className="p-3.5 font-mono font-bold text-[#47EC84]">₹{parseFloat(w.amount).toFixed(2)}</td>
+                  <td className="p-3.5 font-mono text-[11px] text-zinc-400">{w.payout_channel}</td>
+                  <td className="p-3.5 font-mono text-[11px] text-zinc-300">{JSON.stringify(w.payout_details)}</td>
                   <td className="p-3.5">
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
                       w.status === 'COMPLETED'
-                        ? 'bg-aurora-success/15 text-aurora-success border border-aurora-success/30'
+                        ? 'bg-[#47EC84]/15 text-[#47EC84] border border-[#47EC84]/30'
                         : w.status === 'REJECTED'
-                        ? 'bg-aurora-danger/15 text-aurora-danger border border-aurora-danger/30'
-                        : 'bg-aurora-gold/15 text-aurora-gold border border-aurora-gold/30'
+                        ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                        : 'bg-[#F5B041]/15 text-[#F5B041] border border-[#F5B041]/30'
                     }`}>
                       {w.status}
                     </span>
                   </td>
-                  <td className="p-3.5 font-mono text-aurora-muted text-[11px]">
+                  <td className="p-3.5 font-mono text-zinc-400 text-[11px]">
                     {new Date(w.created_at).toLocaleString()}
                   </td>
                   <td className="p-3.5 text-right">
@@ -97,19 +97,19 @@ export default function AdminWithdrawalsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleAction(w.id, 'approve')}
-                          className="px-2.5 py-1 bg-aurora-success/20 text-aurora-success hover:bg-aurora-success/30 border border-aurora-success/30 rounded text-xs font-bold"
+                          className="px-2.5 py-1 bg-[#47EC84]/20 text-[#47EC84] hover:bg-[#47EC84]/30 border border-[#47EC84]/30 rounded text-xs font-bold"
                         >
                           Approve
                         </button>
                         <button
                           onClick={() => handleAction(w.id, 'reject')}
-                          className="px-2.5 py-1 bg-aurora-danger/20 text-aurora-danger hover:bg-aurora-danger/30 border border-aurora-danger/30 rounded text-xs font-bold"
+                          className="px-2.5 py-1 bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30 rounded text-xs font-bold"
                         >
                           Reject
                         </button>
                       </div>
                     ) : (
-                      <span className="text-aurora-muted text-[10px] uppercase font-mono">Settled</span>
+                      <span className="text-zinc-500 text-[10px] uppercase font-mono">Settled</span>
                     )}
                   </td>
                 </tr>

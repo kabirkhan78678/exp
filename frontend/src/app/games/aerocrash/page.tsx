@@ -545,7 +545,7 @@ export default function AeroCrashPage() {
               {panel1.isBetPlaced && gameState === 'FLYING' && !panel1.cashedOut ? (
                 <button
                   onClick={() => handleCashoutPanel(1, multiplier)}
-                  className="w-full h-20 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-black text-base shadow-[0_0_25px_rgba(249,115,22,0.6)] flex flex-col items-center justify-center transition transform active:scale-95 animate-pulse"
+                  className="w-full h-20 rounded-2xl btn-gold-3d text-slate-950 font-black text-base shadow-glowGold flex flex-col items-center justify-center transition active:scale-95 animate-pulse"
                 >
                   <span className="text-xs uppercase tracking-wider font-extrabold text-slate-900">CASH OUT</span>
                   <span className="text-lg font-mono font-black text-slate-950">
@@ -555,10 +555,10 @@ export default function AeroCrashPage() {
               ) : panel1.isBetPlaced && panel1.cashedOut ? (
                 <button
                   disabled
-                  className="w-full h-20 rounded-2xl bg-zinc-900 border border-emerald-500/40 text-emerald-400 font-black text-sm flex flex-col items-center justify-center cursor-default"
+                  className="w-full h-20 rounded-2xl bg-zinc-900/90 border border-[#47EC84]/40 text-[#47EC84] font-black text-sm flex flex-col items-center justify-center cursor-default shadow-glowGreen"
                 >
                   <span className="text-xs">CASHED OUT</span>
-                  <span className="text-base font-mono text-emerald-300">₹{panel1.payoutAmount.toFixed(2)}</span>
+                  <span className="text-base font-mono text-[#47EC84]">₹{panel1.payoutAmount.toFixed(2)}</span>
                 </button>
               ) : panel1.isBetPlaced && gameState === 'COUNTDOWN' ? (
                 <button
@@ -572,7 +572,7 @@ export default function AeroCrashPage() {
                 <button
                   onClick={() => handlePlaceBet(1)}
                   disabled={gameState !== 'COUNTDOWN'}
-                  className="w-full h-20 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-black text-lg shadow-[0_0_20px_rgba(34,197,94,0.4)] flex flex-col items-center justify-center transition transform active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full h-20 rounded-2xl btn-emerald-3d text-slate-950 font-black text-lg shadow-glowGreen flex flex-col items-center justify-center transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <span className="text-sm uppercase tracking-wider">BET</span>
                   <span className="text-lg font-mono">₹{panel1.stake}.00</span>
@@ -651,7 +651,7 @@ export default function AeroCrashPage() {
               {panel2.isBetPlaced && gameState === 'FLYING' && !panel2.cashedOut ? (
                 <button
                   onClick={() => handleCashoutPanel(2, multiplier)}
-                  className="w-full h-20 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 font-black text-base shadow-[0_0_25px_rgba(249,115,22,0.6)] flex flex-col items-center justify-center transition transform active:scale-95 animate-pulse"
+                  className="w-full h-20 rounded-2xl btn-gold-3d text-slate-950 font-black text-base shadow-glowGold flex flex-col items-center justify-center transition active:scale-95 animate-pulse"
                 >
                   <span className="text-xs uppercase tracking-wider font-extrabold text-slate-900">CASH OUT</span>
                   <span className="text-lg font-mono font-black text-slate-950">
@@ -661,10 +661,10 @@ export default function AeroCrashPage() {
               ) : panel2.isBetPlaced && panel2.cashedOut ? (
                 <button
                   disabled
-                  className="w-full h-20 rounded-2xl bg-zinc-900 border border-emerald-500/40 text-emerald-400 font-black text-sm flex flex-col items-center justify-center cursor-default"
+                  className="w-full h-20 rounded-2xl bg-zinc-900/90 border border-[#47EC84]/40 text-[#47EC84] font-black text-sm flex flex-col items-center justify-center cursor-default shadow-glowGreen"
                 >
                   <span className="text-xs">CASHED OUT</span>
-                  <span className="text-base font-mono text-emerald-300">₹{panel2.payoutAmount.toFixed(2)}</span>
+                  <span className="text-base font-mono text-[#47EC84]">₹{panel2.payoutAmount.toFixed(2)}</span>
                 </button>
               ) : panel2.isBetPlaced && gameState === 'COUNTDOWN' ? (
                 <button
@@ -678,7 +678,7 @@ export default function AeroCrashPage() {
                 <button
                   onClick={() => handlePlaceBet(2)}
                   disabled={gameState !== 'COUNTDOWN'}
-                  className="w-full h-20 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-black text-lg shadow-[0_0_20px_rgba(34,197,94,0.4)] flex flex-col items-center justify-center transition transform active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full h-20 rounded-2xl btn-emerald-3d text-slate-950 font-black text-lg shadow-glowGreen flex flex-col items-center justify-center transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <span className="text-sm uppercase tracking-wider">BET</span>
                   <span className="text-lg font-mono">₹{panel2.stake}.00</span>

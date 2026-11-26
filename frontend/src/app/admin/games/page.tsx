@@ -52,22 +52,22 @@ export default function AdminGamesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-aurora-text">Game Risk & Exposure Controls</h1>
-        <p className="text-xs text-aurora-muted">
+        <h1 className="text-xl font-bold text-white font-display">Game Risk & Exposure Controls</h1>
+        <p className="text-xs text-zinc-400">
           Configure permitted stake limits, published house edges, and maintenance toggles. Note: Outcomes remain strictly dictated by documented game rules and provably fair seeds.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {games.map((g) => (
-          <div key={g.slug} className="p-6 rounded-3xl bg-aurora-surface border border-aurora-border space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-aurora-border">
+          <div key={g.slug} className="p-6 rounded-3xl bg-[#0D1214] border border-[#1E262A] space-y-4 shadow-card">
+            <div className="flex items-center justify-between pb-3 border-b border-[#1E262A]">
               <div>
-                <h3 className="font-bold text-sm text-aurora-text">{g.name}</h3>
-                <span className="text-[10px] text-aurora-muted font-mono">{g.slug} • {g.category}</span>
+                <h3 className="font-bold text-sm text-white font-display">{g.name}</h3>
+                <span className="text-[10px] text-zinc-400 font-mono">{g.slug} • {g.category}</span>
               </div>
               <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
-                g.is_active ? 'bg-aurora-success/15 text-aurora-success border border-aurora-success/30' : 'bg-aurora-danger/15 text-aurora-danger border border-aurora-danger/30'
+                g.is_active ? 'bg-[#47EC84]/15 text-[#47EC84] border border-[#47EC84]/30' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
               }`}>
                 {g.is_active ? 'ACTIVE' : 'DISABLED'}
               </span>
@@ -75,33 +75,33 @@ export default function AdminGamesPage() {
 
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block text-aurora-muted mb-1">Min Stake (₹)</label>
+                <label className="block text-zinc-400 mb-1">Min Stake (₹)</label>
                 <input
                   type="number"
                   value={g.min_stake}
                   onChange={(e) => handleChange(g.slug, 'min_stake', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-aurora-elevated border border-aurora-border text-aurora-text font-mono focus:outline-none focus:border-aurora-purple"
+                  className="w-full px-3 py-2 rounded-xl bg-[#141A1E] border border-[#1E262A] text-white font-mono focus:outline-none focus:border-[#47EC84]"
                 />
               </div>
 
               <div>
-                <label className="block text-aurora-muted mb-1">Max Stake (₹)</label>
+                <label className="block text-zinc-400 mb-1">Max Stake (₹)</label>
                 <input
                   type="number"
                   value={g.max_stake}
                   onChange={(e) => handleChange(g.slug, 'max_stake', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-aurora-elevated border border-aurora-border text-aurora-text font-mono focus:outline-none focus:border-aurora-purple"
+                  className="w-full px-3 py-2 rounded-xl bg-[#141A1E] border border-[#1E262A] text-white font-mono focus:outline-none focus:border-[#47EC84]"
                 />
               </div>
 
               <div>
-                <label className="block text-aurora-muted mb-1">House Edge Ratio (e.g. 0.03 = 3%)</label>
+                <label className="block text-zinc-400 mb-1">House Edge Ratio (e.g. 0.03 = 3%)</label>
                 <input
                   type="number"
                   step="0.005"
                   value={g.house_edge}
                   onChange={(e) => handleChange(g.slug, 'house_edge', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-aurora-elevated border border-aurora-border text-aurora-text font-mono focus:outline-none focus:border-aurora-purple"
+                  className="w-full px-3 py-2 rounded-xl bg-[#141A1E] border border-[#1E262A] text-white font-mono focus:outline-none focus:border-[#47EC84]"
                 />
               </div>
 
@@ -111,9 +111,9 @@ export default function AdminGamesPage() {
                     type="checkbox"
                     checked={g.is_maintenance}
                     onChange={(e) => handleChange(g.slug, 'is_maintenance', e.target.checked)}
-                    className="accent-aurora-danger"
+                    className="accent-rose-500 rounded"
                   />
-                  <span className="text-xs text-aurora-text">Maintenance Mode</span>
+                  <span className="text-xs text-zinc-300">Maintenance Mode</span>
                 </label>
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function AdminGamesPage() {
             <button
               onClick={() => handleUpdate(g)}
               disabled={savingSlug === g.slug}
-              className="w-full py-2.5 bg-aurora-elevated hover:bg-aurora-surface text-aurora-purple border border-aurora-purple/40 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2"
+              className="w-full py-2.5 btn-emerald-3d text-slate-950 font-black text-xs rounded-xl transition flex items-center justify-center gap-2"
             >
               <Save className="w-3.5 h-3.5" />
               <span>{savingSlug === g.slug ? 'Saving...' : 'Save Configuration'}</span>

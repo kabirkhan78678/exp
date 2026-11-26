@@ -972,7 +972,7 @@ export default function CarromPage() {
             <button
               onClick={handleStrike}
               disabled={isStriking}
-              className="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-slate-950 font-black text-sm rounded-2xl shadow-lg transition transform active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-4 btn-gold-3d text-slate-950 font-black text-sm rounded-2xl shadow-glowGold transition active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <Disc className={`w-4 h-4 ${isStriking ? 'animate-spin' : ''}`} />
               <span>{isStriking ? 'Striker in Motion...' : 'STRIKE NOW!'}</span>
@@ -980,7 +980,7 @@ export default function CarromPage() {
 
             <button
               onClick={handleFinishMatch}
-              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-slate-950 font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2"
+              className="w-full py-3.5 btn-emerald-3d text-slate-950 font-black text-xs rounded-xl shadow-glowGreen transition active:scale-95 flex items-center justify-center gap-2"
             >
               <Trophy className="w-4 h-4" />
               <span>Claim Match Victory (Pot ₹180)</span>

@@ -8,6 +8,7 @@ import {
   ArrowUpRight, FileText, ArrowLeft, ShieldCheck 
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
+import { VeltrixLogoMark } from '@/components/GameArtwork';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,15 +24,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!isAdmin) {
     return (
-      <div className="p-12 text-center max-w-md mx-auto space-y-4">
-        <ShieldAlert className="w-14 h-14 text-aurora-danger mx-auto animate-pulse" />
-        <h2 className="text-xl font-bold text-aurora-text">Admin Access Required</h2>
-        <p className="text-xs text-aurora-muted leading-relaxed">
-          The Super Admin Control Center is restricted to authorized personnel. Sign in with administrative credentials.
+      <div className="p-12 text-center max-w-md mx-auto space-y-4 my-16">
+        <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500 mx-auto animate-pulse">
+          <ShieldAlert className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-black text-white font-display">Administrative Clearance Required</h2>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          The Veltrix Super Admin Command Suite is restricted to authorized financial officers. Sign in with administrative credentials.
         </p>
         <button
           onClick={() => openModal('login')}
-          className="px-6 py-2.5 bg-gradient-to-r from-aurora-purple to-indigo-600 text-white font-bold text-xs rounded-xl shadow-glowPurple"
+          className="px-6 py-2.5 btn-gold-3d text-slate-950 font-black text-xs rounded-xl shadow-glowGold"
         >
           Sign In with Admin Account
         </button>
@@ -42,27 +45,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="space-y-6">
       {/* Admin Top Navigation Strip */}
-      <div className="bg-aurora-surface border-b border-aurora-border px-4 lg:px-8 py-3">
+      <div className="bg-[#0D1214] border-b border-[#1E262A] px-4 lg:px-8 py-3.5 shadow-md">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-aurora-purple/20 border border-aurora-purple/40 flex items-center justify-center text-aurora-purple font-black text-xs">
-              ADM
-            </div>
+            <VeltrixLogoMark className="w-8 h-8" />
             <div>
-              <div className="text-sm font-black text-aurora-text flex items-center gap-2">
-                <span>Super Admin Control Center</span>
-                <span className="px-1.5 py-0.5 text-[9px] font-mono bg-aurora-purple/20 text-aurora-purple rounded border border-aurora-purple/40">
-                  {user?.role?.toUpperCase()}
+              <div className="text-sm font-black text-white flex items-center gap-2 font-display">
+                <span>Super Admin Control Suite</span>
+                <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-[#F5B041]/15 text-[#F5B041] rounded border border-[#F5B041]/30">
+                  {user?.role?.toUpperCase() || 'SUPERADMIN'}
                 </span>
               </div>
-              <p className="text-[10px] text-aurora-muted">Financial limits, risk controls & settlement monitoring</p>
+              <p className="text-[10px] text-zinc-400">Ledger audit, risk exposure limits & settlement approvals</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <Link
               href="/dashboard"
-              className="px-3.5 py-1.5 bg-aurora-elevated hover:bg-aurora-surface text-aurora-muted hover:text-aurora-text text-xs font-semibold rounded-xl border border-aurora-border flex items-center gap-1.5 transition"
+              className="px-3.5 py-1.5 bg-[#141A1E] hover:bg-[#1E262A] text-zinc-300 hover:text-white text-xs font-semibold rounded-xl border border-[#1E262A] flex items-center gap-1.5 transition"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to Player App</span>
@@ -71,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Subnav Pills */}
-        <div className="max-w-7xl mx-auto flex items-center gap-2 mt-3 overflow-x-auto pb-1 scrollbar-none">
+        <div className="max-w-7xl mx-auto flex items-center gap-2 mt-3.5 overflow-x-auto pb-1 scrollbar-none">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -79,10 +80,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
                   isActive
-                    ? 'bg-aurora-purple/20 text-aurora-purple border border-aurora-purple/40 shadow-glowPurple'
-                    : 'text-aurora-muted hover:text-aurora-text hover:bg-aurora-elevated border border-transparent'
+                    ? 'bg-[#47EC84]/15 text-[#47EC84] border border-[#47EC84]/40 shadow-glowGreen'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-[#141A1E] border border-transparent'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -93,7 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
 
-      <div className="px-4 lg:px-8 max-w-7xl mx-auto">
+      <div className="px-4 lg:px-8 max-w-7xl mx-auto pb-16">
         {children}
       </div>
     </div>
