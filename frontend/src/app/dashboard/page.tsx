@@ -127,7 +127,7 @@ export default function DashboardHomePage() {
   }, [transactions, totalWagered, totalWon]);
 
   return (
-    <div className="space-y-5 sm:space-y-7 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full">
+    <div className="space-y-5 sm:space-y-7 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-6 w-full overflow-x-clip">
       {/* 1. VIP COMMAND HERO BANNER */}
       <section className="relative rounded-3xl p-4 xs:p-6 sm:p-8 lux-card bg-gradient-to-br from-[#0F261A] via-[#111719] to-[#0B0E10] bg-lux-grid border border-[#47EC84]/25 overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-5">
         <div className="absolute -top-24 -left-16 w-64 h-64 bg-[#47EC84]/15 rounded-full blur-3xl pointer-events-none" />
@@ -288,22 +288,22 @@ export default function DashboardHomePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div className="p-4 sm:p-5 rounded-3xl lux-card space-y-3.5 flex flex-col justify-between">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-[#47EC84]/15 border border-[#47EC84]/35 flex items-center justify-center text-[#47EC84] shrink-0">
+            <div className="flex flex-wrap items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#47EC84]/15 border border-[#47EC84]/35 flex items-center justify-center text-[#47EC84] shrink-0">
                   <Sparkles className="w-5 h-5" />
                 </div>
-                <div>
-                  <div className="font-display font-black text-sm text-white">Daily Streak Spin</div>
-                  <div className="text-[11px] text-slate-400">Guaranteed bonus drop every 24h</div>
+                <div className="min-w-0">
+                  <div className="font-display font-black text-sm text-white truncate">Daily Streak Spin</div>
+                  <div className="text-[11px] text-slate-400 truncate">Guaranteed bonus drop every 24h</div>
                 </div>
               </div>
-              <div className="flex items-center gap-1 font-mono tabular-nums text-xs font-black shrink-0">
-                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{spinClock.h}</span>
+              <div className="flex items-center gap-1 font-mono tabular-nums text-[11px] sm:text-xs font-black shrink-0">
+                <span className="px-1.5 sm:px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{spinClock.h}</span>
                 <span className="text-slate-500">:</span>
-                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{spinClock.m}</span>
+                <span className="px-1.5 sm:px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{spinClock.m}</span>
                 <span className="text-slate-500">:</span>
-                <span className="px-2 py-1 rounded-lg bg-black/60 border border-[#47EC84]/35 text-[#47EC84]">{spinClock.s}</span>
+                <span className="px-1.5 sm:px-2 py-1 rounded-lg bg-black/60 border border-[#47EC84]/35 text-[#47EC84]">{spinClock.s}</span>
               </div>
             </div>
             <button
@@ -315,22 +315,22 @@ export default function DashboardHomePage() {
           </div>
 
           <div className="p-4 sm:p-5 rounded-3xl lux-card space-y-3.5 flex flex-col justify-between">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-[#F5B041]/15 border border-[#F5B041]/35 flex items-center justify-center text-[#F5B041] shrink-0">
+            <div className="flex flex-wrap items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#F5B041]/15 border border-[#F5B041]/35 flex items-center justify-center text-[#F5B041] shrink-0">
                   <Gift className="w-5 h-5" />
                 </div>
-                <div>
-                  <div className="font-display font-black text-sm text-white">Imperial Lucky Box</div>
-                  <div className="text-[11px] text-slate-400">High-roller VIP cashback prize pool</div>
+                <div className="min-w-0">
+                  <div className="font-display font-black text-sm text-white truncate">Imperial Lucky Box</div>
+                  <div className="text-[11px] text-slate-400 truncate">High-roller VIP cashback prize pool</div>
                 </div>
               </div>
-              <div className="flex items-center gap-1 font-mono tabular-nums text-xs font-black shrink-0">
-                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{luckyClock.h}</span>
+              <div className="flex items-center gap-1 font-mono tabular-nums text-[11px] sm:text-xs font-black shrink-0">
+                <span className="px-1.5 sm:px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{luckyClock.h}</span>
                 <span className="text-slate-500">:</span>
-                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{luckyClock.m}</span>
+                <span className="px-1.5 sm:px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{luckyClock.m}</span>
                 <span className="text-slate-500">:</span>
-                <span className="px-2 py-1 rounded-lg bg-black/60 border border-[#F5B041]/35 text-[#F5B041]">{luckyClock.s}</span>
+                <span className="px-1.5 sm:px-2 py-1 rounded-lg bg-black/60 border border-[#F5B041]/35 text-[#F5B041]">{luckyClock.s}</span>
               </div>
             </div>
             <button

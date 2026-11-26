@@ -47,7 +47,8 @@ export default function AdminWithdrawalsPage() {
       </div>
 
       <div className="rounded-2xl bg-[#0D1214] border border-[#1E262A] overflow-hidden shadow-card">
-        <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left text-xs">
           <thead className="bg-[#141A1E] text-zinc-400 uppercase font-mono text-[10px] border-b border-[#1E262A]">
             <tr>
               <th className="p-3.5">Player</th>
@@ -117,6 +118,7 @@ export default function AdminWithdrawalsPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

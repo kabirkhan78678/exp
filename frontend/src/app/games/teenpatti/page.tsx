@@ -259,8 +259,66 @@ export default function TeenPattiPage() {
   const myHandEval = evaluateHand(myCards);
   const nextCallAmount = isSeen ? currentStake * 2 : currentStake;
 
+  const renderOpponentSeat = (op: OpponentSeat) => (
+    <div
+      key={op.id}
+      className={`flex items-center gap-2 sm:gap-2.5 p-2 sm:p-2.5 rounded-2xl border transition ${
+        op.packed
+          ? 'bg-black/40 border-white/5 opacity-45'
+          : 'bg-black/60 border-[#F5B041]/30 shadow-md'
+      }`}
+    >
+      <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#0E1E16] border-2 border-[#F5B041] flex items-center justify-center font-mono font-black text-[10px] sm:text-xs text-white shrink-0">
+        {op.avatar}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center justify-between gap-1">
+          <span className="text-[10px] sm:text-[11px] font-bold text-white truncate">{op.name}</span>
+          <span
+            className={`px-1 py-0.5 rounded text-[7px] sm:text-[8px] font-black uppercase shrink-0 ${
+              op.packed
+                ? 'bg-rose-500/20 text-rose-400'
+                : op.isSeen
+                ? 'bg-[#47EC84]/20 text-[#47EC84]'
+                : 'bg-[#F5B041]/20 text-[#F5B041]'
+            }`}
+          >
+            {op.packed ? 'PACK' : op.isSeen ? 'SEEN' : 'BLIND'}
+          </span>
+        </div>
+        <div className="text-[9px] sm:text-[10px] font-mono text-slate-300 mt-0.5 truncate">{op.lastAction}</div>
+
+        {isShowdown && !op.packed && op.cards.length === 3 ? (
+          <div className="flex flex-wrap items-center gap-1 mt-1.5">
+            {op.cards.map((c, idx) => (
+              <span
+                key={idx}
+                className={`px-1 sm:px-1.5 py-0.5 rounded bg-white text-[9px] sm:text-[10px] font-mono font-black ${
+                  ['♥', '♦'].includes(c.suit) ? 'text-red-600' : 'text-slate-900'
+                }`}
+              >
+                {formatRank(c.rank)}{c.suit}
+              </span>
+            ))}
+          </div>
+        ) : (
+          !op.packed && (
+            <div className="flex items-center -space-x-1.5 mt-1.5">
+              {[0, 1, 2].map((k) => (
+                <span
+                  key={k}
+                  className="w-3.5 h-[18px] sm:w-4 sm:h-5 rounded-sm bg-gradient-to-b from-[#6B1022] to-[#26040B] border border-[#F5B041]/60"
+                />
+              ))}
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-32 w-full overflow-x-hidden">
+    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-6 w-full overflow-x-clip">
       {/* 1. SALON HEADER & BOOT SELECTOR */}
       <div className="lux-card rounded-2xl p-3 xs:p-4 flex flex-wrap items-center justify-between gap-3 border-[#F5B041]/20">
         <div>
@@ -352,72 +410,15 @@ export default function TeenPattiPage() {
           </div>
 
           {/* 4 OPPONENT SEATS IN CURVED ARCH + CENTER POT */}
-          <div className="relative z-10 my-3 sm:my-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+          <div className="relative z-10 my-3 sm:my-4 grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-center">
             {/* Left Opponents Column (2 Seats on Desktop, 2-col row on Mobile) */}
-            <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-2.5 sm:gap-4">
-              {opponents.slice(0, 2).map((op) => (
-                <div
-                  key={op.id}
-                  className={`flex items-center gap-2.5 p-2.5 rounded-2xl border transition ${
-                    op.packed
-                      ? 'bg-black/40 border-white/5 opacity-45'
-                      : 'bg-black/60 border-[#F5B041]/30 shadow-md'
-                  }`}
-                >
-                  <div className="w-9 h-9 rounded-full bg-[#0E1E16] border-2 border-[#F5B041] flex items-center justify-center font-mono font-black text-xs text-white shrink-0">
-                    {op.avatar}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[11px] font-bold text-white truncate">{op.name}</span>
-                      <span
-                        className={`px-1.5 py-0.2 rounded text-[8px] font-black uppercase ${
-                          op.packed
-                            ? 'bg-rose-500/20 text-rose-400'
-                            : op.isSeen
-                            ? 'bg-[#47EC84]/20 text-[#47EC84]'
-                            : 'bg-[#F5B041]/20 text-[#F5B041]'
-                        }`}
-                      >
-                        {op.packed ? 'PACK' : op.isSeen ? 'SEEN' : 'BLIND'}
-                      </span>
-                    </div>
-                    <div className="text-[10px] font-mono text-slate-300 mt-0.5">{op.lastAction}</div>
-
-                    {/* Opponent Mini Cards (Flip Open on Showdown!) */}
-                    {isShowdown && !op.packed && op.cards.length === 3 ? (
-                      <div className="flex items-center gap-1 mt-1.5">
-                        {op.cards.map((c, idx) => (
-                          <span
-                            key={idx}
-                            className={`px-1.5 py-0.5 rounded bg-white text-[10px] font-mono font-black ${
-                              ['♥', '♦'].includes(c.suit) ? 'text-red-600' : 'text-slate-900'
-                            }`}
-                          >
-                            {formatRank(c.rank)}{c.suit}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      !op.packed && (
-                        <div className="flex items-center -space-x-1.5 mt-1.5">
-                          {[0, 1, 2].map((k) => (
-                            <span
-                              key={k}
-                              className="w-4 h-5 rounded-sm bg-gradient-to-b from-[#6B1022] to-[#26040B] border border-[#F5B041]/60"
-                            />
-                          ))}
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              ))}
+            <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-2 sm:gap-4">
+              {opponents.slice(0, 2).map(renderOpponentSeat)}
             </div>
 
             {/* CENTER TABLE FELT POT PILE (4 Cols) */}
             <div className="md:col-span-4 flex flex-col items-center justify-center">
-              <div className="relative p-4 px-7 rounded-3xl bg-black/75 border-2 border-[#F5B041]/55 shadow-glowGold text-center backdrop-blur-md">
+              <div className="relative p-3.5 px-6 sm:p-4 sm:px-7 rounded-3xl bg-black/75 border-2 border-[#F5B041]/55 shadow-glowGold text-center backdrop-blur-md">
                 <div className="flex items-center justify-center gap-1.5 text-[10px] font-black tracking-widest text-[#F5B041] uppercase">
                   <GoldRupeeCoin className="w-4 h-4" />
                   <span>TABLE POT</span>
@@ -440,64 +441,8 @@ export default function TeenPattiPage() {
             </div>
 
             {/* Right Opponents Column (2 Seats on Desktop, 2-col row on Mobile) */}
-            <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-2.5 sm:gap-4">
-              {opponents.slice(2, 4).map((op) => (
-                <div
-                  key={op.id}
-                  className={`flex items-center gap-2.5 p-2.5 rounded-2xl border transition ${
-                    op.packed
-                      ? 'bg-black/40 border-white/5 opacity-45'
-                      : 'bg-black/60 border-[#F5B041]/30 shadow-md'
-                  }`}
-                >
-                  <div className="w-9 h-9 rounded-full bg-[#0E1E16] border-2 border-[#F5B041] flex items-center justify-center font-mono font-black text-xs text-white shrink-0">
-                    {op.avatar}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[11px] font-bold text-white truncate">{op.name}</span>
-                      <span
-                        className={`px-1.5 py-0.2 rounded text-[8px] font-black uppercase ${
-                          op.packed
-                            ? 'bg-rose-500/20 text-rose-400'
-                            : op.isSeen
-                            ? 'bg-[#47EC84]/20 text-[#47EC84]'
-                            : 'bg-[#F5B041]/20 text-[#F5B041]'
-                        }`}
-                      >
-                        {op.packed ? 'PACK' : op.isSeen ? 'SEEN' : 'BLIND'}
-                      </span>
-                    </div>
-                    <div className="text-[10px] font-mono text-slate-300 mt-0.5">{op.lastAction}</div>
-
-                    {isShowdown && !op.packed && op.cards.length === 3 ? (
-                      <div className="flex items-center gap-1 mt-1.5">
-                        {op.cards.map((c, idx) => (
-                          <span
-                            key={idx}
-                            className={`px-1.5 py-0.5 rounded bg-white text-[10px] font-mono font-black ${
-                              ['♥', '♦'].includes(c.suit) ? 'text-red-600' : 'text-slate-900'
-                            }`}
-                          >
-                            {formatRank(c.rank)}{c.suit}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      !op.packed && (
-                        <div className="flex items-center -space-x-1.5 mt-1.5">
-                          {[0, 1, 2].map((k) => (
-                            <span
-                              key={k}
-                              className="w-4 h-5 rounded-sm bg-gradient-to-b from-[#6B1022] to-[#26040B] border border-[#F5B041]/60"
-                            />
-                          ))}
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              ))}
+            <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-1 gap-2 sm:gap-4">
+              {opponents.slice(2, 4).map(renderOpponentSeat)}
             </div>
           </div>
 
@@ -545,11 +490,11 @@ export default function TeenPattiPage() {
       </div>
 
       {/* 3. BOTTOM PLAYER ACTION DOCK */}
-      <div className="lux-card rounded-3xl p-3.5 sm:p-5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 border-[#47EC84]/25">
+      <div className="lux-card rounded-3xl p-3 sm:p-5 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-2 sm:gap-3 border-[#47EC84]/25">
         {isShowdown || hasFolded ? (
           <button
             onClick={() => startNewHand(bootAmount)}
-            className="w-full sm:w-auto min-w-[220px] px-8 py-3.5 btn-emerald-3d font-black text-xs sm:text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition"
+            className="col-span-2 sm:w-auto min-w-[220px] px-8 py-3.5 btn-emerald-3d font-black text-xs sm:text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Deal Next Hand (Boot ₹{bootAmount})</span>
@@ -559,7 +504,7 @@ export default function TeenPattiPage() {
             <button
               onClick={handlePack}
               disabled={isAiThinking}
-              className="px-5 py-3 bg-[#FF2E54]/15 hover:bg-[#FF2E54]/30 text-[#FF5C7A] border border-[#FF2E54]/40 rounded-2xl text-xs sm:text-sm font-black transition active:scale-95 disabled:opacity-40"
+              className="px-4 sm:px-5 py-3 bg-[#FF2E54]/15 hover:bg-[#FF2E54]/30 text-[#FF5C7A] border border-[#FF2E54]/40 rounded-2xl text-xs sm:text-sm font-black transition active:scale-95 disabled:opacity-40"
             >
               Pack (Fold)
             </button>
@@ -567,7 +512,7 @@ export default function TeenPattiPage() {
             <button
               onClick={() => handleAction('PLAY')}
               disabled={isAiThinking}
-              className="px-6 py-3 btn-emerald-3d font-black text-xs sm:text-sm rounded-2xl transition active:scale-95 disabled:opacity-40 flex items-center gap-1.5"
+              className="px-4 sm:px-6 py-3 btn-emerald-3d font-black text-xs sm:text-sm rounded-2xl transition active:scale-95 disabled:opacity-40 flex items-center justify-center gap-1.5"
             >
               <span>{isAiThinking ? 'Waiting...' : `${isSeen ? 'Chaal' : 'Blind'} ₹${nextCallAmount}`}</span>
             </button>
@@ -575,7 +520,7 @@ export default function TeenPattiPage() {
             <button
               onClick={() => handleAction('RAISE')}
               disabled={isAiThinking}
-              className="px-5 py-3 bg-white/[0.06] hover:bg-white/[0.12] border border-[#47EC84]/40 text-[#47EC84] font-black text-xs sm:text-sm rounded-2xl transition active:scale-95 disabled:opacity-40"
+              className="px-4 sm:px-5 py-3 bg-white/[0.06] hover:bg-white/[0.12] border border-[#47EC84]/40 text-[#47EC84] font-black text-xs sm:text-sm rounded-2xl transition active:scale-95 disabled:opacity-40"
             >
               Raise 2x (₹{nextCallAmount * 2})
             </button>
@@ -583,7 +528,7 @@ export default function TeenPattiPage() {
             <button
               onClick={handleShowdown}
               disabled={isAiThinking}
-              className="px-6 py-3 btn-gold-3d font-black text-xs sm:text-sm rounded-2xl transition active:scale-95 disabled:opacity-40 flex items-center gap-1.5"
+              className="px-4 sm:px-6 py-3 btn-gold-3d font-black text-xs sm:text-sm rounded-2xl transition active:scale-95 disabled:opacity-40 flex items-center justify-center gap-1.5"
             >
               <Coins className="w-4 h-4" />
               <span>Showdown</span>

@@ -358,8 +358,118 @@ export default function AeroCrashPage() {
     }
   };
 
+  const renderBetPanel = (panelNum: 1 | 2, state: BetPanelState) => {
+    const presets = panelNum === 1 ? [50, 100, 200, 500] : [100, 200, 500, 1000];
+    const setPanel = panelNum === 1 ? setPanel1 : setPanel2;
+
+    return (
+      <div className="p-3.5 xs:p-4 sm:p-5 rounded-3xl bg-[#140608] border-2 border-[#2e0e13] shadow-xl flex flex-col justify-between space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-red-950/40 gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-zinc-300 shrink-0">BET {panelNum}</span>
+          <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer text-xs">
+            <span className="text-zinc-400 text-[11px] whitespace-nowrap">Auto Cash Out:</span>
+            <input
+              type="checkbox"
+              checked={state.isAutoCashoutEnabled}
+              onChange={(e) => setPanel((p) => ({ ...p, isAutoCashoutEnabled: e.target.checked }))}
+              className="accent-red-600 rounded w-4 h-4"
+            />
+            {state.isAutoCashoutEnabled && (
+              <input
+                type="number"
+                step="0.1"
+                min="1.01"
+                value={state.autoCashout}
+                onChange={(e) => setPanel((p) => ({ ...p, autoCashout: e.target.value }))}
+                className="w-16 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-xs font-mono text-white text-center"
+              />
+            )}
+          </label>
+        </div>
+
+        <div className="grid grid-cols-12 gap-2.5 sm:gap-3 items-center">
+          {/* Stake Stepper (Full width on mobile, 5 cols on desktop) */}
+          <div className="col-span-12 sm:col-span-5 space-y-2">
+            <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-2xl p-1">
+              <button
+                onClick={() => adjustStake(panelNum, -50)}
+                disabled={state.isBetPlaced}
+                className="w-9 h-9 sm:w-8 sm:h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center font-bold text-sm shrink-0"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              <div className="flex-1 text-center font-mono font-bold text-sm text-white min-w-0 truncate px-1">
+                ₹{state.stake}
+              </div>
+              <button
+                onClick={() => adjustStake(panelNum, 50)}
+                disabled={state.isBetPlaced}
+                className="w-9 h-9 sm:w-8 sm:h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center font-bold text-sm shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-4 gap-1.5">
+              {presets.map((amt) => (
+                <button
+                  key={amt}
+                  disabled={state.isBetPlaced}
+                  onClick={() => applyPreset(panelNum, amt)}
+                  className="py-1.5 sm:py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[10px] font-mono text-zinc-300 font-bold"
+                >
+                  {amt}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Primary Action Button */}
+          <div className="col-span-12 sm:col-span-7">
+            {state.isBetPlaced && gameState === 'FLYING' && !state.cashedOut ? (
+              <button
+                onClick={() => handleCashoutPanel(panelNum, multiplier)}
+                className="w-full h-14 sm:h-20 rounded-2xl btn-gold-3d text-slate-950 font-black text-base shadow-glowGold flex flex-col items-center justify-center transition active:scale-95 animate-pulse"
+              >
+                <span className="text-[11px] sm:text-xs uppercase tracking-wider font-extrabold text-slate-900">CASH OUT</span>
+                <span className="text-base sm:text-lg font-mono font-black text-slate-950">
+                  ₹{(state.stake * multiplier).toFixed(2)}
+                </span>
+              </button>
+            ) : state.isBetPlaced && state.cashedOut ? (
+              <button
+                disabled
+                className="w-full h-14 sm:h-20 rounded-2xl bg-zinc-900/90 border border-[#47EC84]/40 text-[#47EC84] font-black text-sm flex flex-col items-center justify-center cursor-default shadow-glowGreen"
+              >
+                <span className="text-xs">CASHED OUT</span>
+                <span className="text-base font-mono text-[#47EC84]">₹{state.payoutAmount.toFixed(2)}</span>
+              </button>
+            ) : state.isBetPlaced && gameState === 'COUNTDOWN' ? (
+              <button
+                disabled
+                className="w-full h-14 sm:h-20 rounded-2xl bg-red-950/40 border border-red-500/50 text-red-300 font-black text-sm flex flex-col items-center justify-center cursor-default"
+              >
+                <span className="text-xs uppercase">WAITING LAUNCH</span>
+                <span className="text-base font-mono text-red-200">₹{state.stake}.00</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => handlePlaceBet(panelNum)}
+                disabled={gameState !== 'COUNTDOWN'}
+                className="w-full h-14 sm:h-20 rounded-2xl btn-emerald-3d text-slate-950 font-black text-lg shadow-glowGreen flex flex-col items-center justify-center transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <span className="text-xs sm:text-sm uppercase tracking-wider">BET</span>
+                <span className="text-base sm:text-lg font-mono">₹{state.stake}.00</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="space-y-3 xs:space-y-4 px-2 xs:px-3 sm:px-6 py-2.5 xs:py-3 sm:py-4 max-w-7xl mx-auto select-none bg-[#0a0203] min-h-[calc(100vh-5rem)] rounded-2xl sm:rounded-3xl border border-[#230b0f] pb-28 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-3 xs:space-y-4 px-2 xs:px-3 sm:px-6 py-2.5 xs:py-3 sm:py-4 max-w-7xl mx-auto select-none bg-[#0a0203] min-h-[calc(100dvh-5rem)] rounded-2xl sm:rounded-3xl border border-[#230b0f] pb-6 w-full max-w-full overflow-x-clip">
       {/* Top Multiplier History Bar (Authentic Spribe Color Coding) */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none px-2 bg-[#140608] py-2 rounded-2xl border border-[#2e0e13]">
         <div className="flex items-center gap-1 text-[11px] text-red-300 font-bold mr-2 uppercase tracking-wider shrink-0">
@@ -368,10 +478,6 @@ export default function AeroCrashPage() {
         </div>
         {recentHistory.map((item, idx) => {
           const val = item.multiplier;
-          // Spribe Color rules:
-          // < 2.00x: Blue
-          // 2.00x - 9.99x: Purple
-          // >= 10.00x: Hot Magenta / Rose
           const colorClass = 
             val >= 10.0
               ? 'bg-[#E11D48]/20 text-[#FB7185] border-[#E11D48]/50 shadow-[0_0_8px_rgba(225,29,72,0.4)]'
@@ -392,19 +498,19 @@ export default function AeroCrashPage() {
       </div>
 
       {/* Main Aviator Flight Arena Window */}
-      <div className="relative rounded-3xl bg-[#110406] border-2 border-[#2e0e13] overflow-hidden shadow-2xl min-h-[360px] sm:min-h-[440px] flex flex-col justify-between">
+      <div className="relative rounded-3xl bg-[#110406] border-2 border-[#2e0e13] overflow-hidden shadow-2xl min-h-[250px] xs:min-h-[290px] sm:min-h-[430px] flex flex-col justify-between">
         {/* Canvas Flight Viewport */}
         <canvas
           ref={canvasRef}
           width={760}
           height={440}
-          className="w-full h-full absolute inset-0 z-0"
+          className="w-full h-full object-cover absolute inset-0 z-0"
         />
 
         {/* Top Controls Overlay */}
-        <div className="relative z-10 p-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-red-950/80 border border-red-500/30 text-xs font-black text-red-400 tracking-wider flex items-center gap-1.5 shadow-sm">
+        <div className="relative z-10 p-3 xs:p-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="px-2.5 xs:px-3 py-1 rounded-full bg-red-950/80 border border-red-500/30 text-[10px] xs:text-xs font-black text-red-400 tracking-wider flex items-center gap-1.5 shadow-sm shrink-0">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
               AVIATOR LIVE
             </span>
@@ -422,23 +528,23 @@ export default function AeroCrashPage() {
 
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2 rounded-xl bg-black/50 border border-red-500/20 text-zinc-400 hover:text-white transition"
+            className="p-2 rounded-xl bg-black/50 border border-red-500/20 text-zinc-400 hover:text-white transition shrink-0"
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-red-400" /> : <VolumeX className="w-4 h-4" />}
           </button>
         </div>
 
-        {/* Center Multiplier Typography (Original Aviator Clean Big Numbers) */}
-        <div className="relative z-10 flex flex-col items-center justify-center my-auto text-center pointer-events-none">
+        {/* Center Multiplier Typography */}
+        <div className="relative z-10 flex flex-col items-center justify-center my-auto text-center pointer-events-none px-3">
           {gameState === 'COUNTDOWN' && (
-            <div className="space-y-2 animate-fade-in bg-black/40 backdrop-blur-md p-6 rounded-3xl border border-red-500/20">
-              <div className="text-xs uppercase tracking-widest text-red-400 font-bold">
+            <div className="space-y-2 animate-fade-in bg-black/45 backdrop-blur-md p-4 xs:p-6 rounded-3xl border border-red-500/20 max-w-full">
+              <div className="text-[10px] xs:text-xs uppercase tracking-widest text-red-400 font-bold">
                 WAITING FOR NEXT ROUND
               </div>
-              <div className="text-5xl sm:text-7xl font-black text-white font-mono tracking-tight">
+              <div className="text-4xl xs:text-5xl sm:text-7xl font-black text-white font-mono tracking-tight">
                 {countdown}s
               </div>
-              <div className="w-52 h-1.5 bg-zinc-800 rounded-full mx-auto overflow-hidden">
+              <div className="w-40 xs:w-52 h-1.5 bg-zinc-800 rounded-full mx-auto overflow-hidden">
                 <div 
                   className="h-full bg-red-600 transition-all duration-1000 shadow-[0_0_10px_#E50914]"
                   style={{ width: `${(countdown / 5) * 100}%` }}
@@ -449,7 +555,7 @@ export default function AeroCrashPage() {
 
           {gameState === 'FLYING' && (
             <div className="space-y-1">
-              <div className="text-6xl sm:text-9xl font-black font-mono tracking-tight text-white drop-shadow-[0_4px_30px_rgba(229,9,20,0.6)]">
+              <div className="text-5xl xs:text-6xl sm:text-8xl font-black font-mono tracking-tight text-white drop-shadow-[0_4px_30px_rgba(229,9,20,0.6)]">
                 {multiplier.toFixed(2)}x
               </div>
             </div>
@@ -457,10 +563,10 @@ export default function AeroCrashPage() {
 
           {gameState === 'CRASHED' && (
             <div className="space-y-1 animate-scale-up">
-              <div className="text-base sm:text-xl font-black uppercase tracking-widest text-red-500">
+              <div className="text-sm xs:text-base sm:text-xl font-black uppercase tracking-widest text-red-500">
                 FLEW AWAY!
               </div>
-              <div className="text-6xl sm:text-9xl font-black font-mono tracking-tight text-red-600 drop-shadow-[0_4px_35px_rgba(229,9,20,0.8)]">
+              <div className="text-5xl xs:text-6xl sm:text-8xl font-black font-mono tracking-tight text-red-600 drop-shadow-[0_4px_35px_rgba(229,9,20,0.8)]">
                 {multiplier.toFixed(2)}x
               </div>
             </div>
@@ -468,225 +574,16 @@ export default function AeroCrashPage() {
         </div>
 
         {/* Bottom Banner Status */}
-        <div className="relative z-10 px-4 py-2 border-t border-red-950/60 bg-black/40 flex items-center justify-between text-xs text-zinc-400">
-          <span className="font-mono text-[11px]">Round: {roundData?.round_number || 'AV-LIVE'}</span>
-          <span className="text-red-400 text-[11px] font-semibold">Server Authoritative • Spribe Engine</span>
+        <div className="relative z-10 px-3 xs:px-4 py-2 border-t border-red-950/60 bg-black/40 flex items-center justify-between gap-2 text-xs text-zinc-400">
+          <span className="font-mono text-[10px] xs:text-[11px] truncate">Round: {roundData?.round_number || 'AV-LIVE'}</span>
+          <span className="text-red-400 text-[10px] xs:text-[11px] font-semibold shrink-0">Provably Fair • Spribe</span>
         </div>
       </div>
 
-      {/* DUAL BETTING DESKS (Original Spribe Aviator 2-Bet Control System) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Panel 1 */}
-        <div className="p-4 sm:p-5 rounded-3xl bg-[#140608] border-2 border-[#2e0e13] shadow-xl flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between pb-2 border-b border-red-950/40">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">BET 1</span>
-            {/* Auto Cash Out toggle */}
-            <label className="flex items-center gap-2 cursor-pointer text-xs">
-              <span className="text-zinc-400 text-[11px]">Auto Cash Out:</span>
-              <input
-                type="checkbox"
-                checked={panel1.isAutoCashoutEnabled}
-                onChange={(e) => setPanel1((p) => ({ ...p, isAutoCashoutEnabled: e.target.checked }))}
-                className="accent-red-600 rounded"
-              />
-              {panel1.isAutoCashoutEnabled && (
-                <input
-                  type="number"
-                  step="0.1"
-                  min="1.01"
-                  value={panel1.autoCashout}
-                  onChange={(e) => setPanel1((p) => ({ ...p, autoCashout: e.target.value }))}
-                  className="w-16 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-xs font-mono text-white text-center"
-                />
-              )}
-            </label>
-          </div>
-
-          <div className="grid grid-cols-12 gap-3 items-center">
-            {/* Stake Stepper (5 Cols) */}
-            <div className="col-span-5 space-y-2">
-              <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-2xl p-1">
-                <button
-                  onClick={() => adjustStake(1, -50)}
-                  disabled={panel1.isBetPlaced}
-                  className="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center font-bold text-sm"
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <div className="flex-1 text-center font-mono font-bold text-sm text-white">
-                  ₹{panel1.stake}
-                </div>
-                <button
-                  onClick={() => adjustStake(1, 50)}
-                  disabled={panel1.isBetPlaced}
-                  className="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center font-bold text-sm"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Chips row */}
-              <div className="grid grid-cols-4 gap-1">
-                {[50, 100, 200, 500].map((amt) => (
-                  <button
-                    key={amt}
-                    disabled={panel1.isBetPlaced}
-                    onClick={() => applyPreset(1, amt)}
-                    className="py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[10px] font-mono text-zinc-300 font-bold"
-                  >
-                    {amt}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Massive Green BET / Orange CASH OUT Button (7 Cols) */}
-            <div className="col-span-7">
-              {panel1.isBetPlaced && gameState === 'FLYING' && !panel1.cashedOut ? (
-                <button
-                  onClick={() => handleCashoutPanel(1, multiplier)}
-                  className="w-full h-20 rounded-2xl btn-gold-3d text-slate-950 font-black text-base shadow-glowGold flex flex-col items-center justify-center transition active:scale-95 animate-pulse"
-                >
-                  <span className="text-xs uppercase tracking-wider font-extrabold text-slate-900">CASH OUT</span>
-                  <span className="text-lg font-mono font-black text-slate-950">
-                    ₹{(panel1.stake * multiplier).toFixed(2)}
-                  </span>
-                </button>
-              ) : panel1.isBetPlaced && panel1.cashedOut ? (
-                <button
-                  disabled
-                  className="w-full h-20 rounded-2xl bg-zinc-900/90 border border-[#47EC84]/40 text-[#47EC84] font-black text-sm flex flex-col items-center justify-center cursor-default shadow-glowGreen"
-                >
-                  <span className="text-xs">CASHED OUT</span>
-                  <span className="text-base font-mono text-[#47EC84]">₹{panel1.payoutAmount.toFixed(2)}</span>
-                </button>
-              ) : panel1.isBetPlaced && gameState === 'COUNTDOWN' ? (
-                <button
-                  disabled
-                  className="w-full h-20 rounded-2xl bg-red-950/40 border border-red-500/50 text-red-300 font-black text-sm flex flex-col items-center justify-center cursor-default"
-                >
-                  <span className="text-xs uppercase">WAITING LAUNCH</span>
-                  <span className="text-base font-mono text-red-200">₹{panel1.stake}.00</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => handlePlaceBet(1)}
-                  disabled={gameState !== 'COUNTDOWN'}
-                  className="w-full h-20 rounded-2xl btn-emerald-3d text-slate-950 font-black text-lg shadow-glowGreen flex flex-col items-center justify-center transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <span className="text-sm uppercase tracking-wider">BET</span>
-                  <span className="text-lg font-mono">₹{panel1.stake}.00</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Panel 2 */}
-        <div className="p-4 sm:p-5 rounded-3xl bg-[#140608] border-2 border-[#2e0e13] shadow-xl flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between pb-2 border-b border-red-950/40">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">BET 2</span>
-            {/* Auto Cash Out toggle */}
-            <label className="flex items-center gap-2 cursor-pointer text-xs">
-              <span className="text-zinc-400 text-[11px]">Auto Cash Out:</span>
-              <input
-                type="checkbox"
-                checked={panel2.isAutoCashoutEnabled}
-                onChange={(e) => setPanel2((p) => ({ ...p, isAutoCashoutEnabled: e.target.checked }))}
-                className="accent-red-600 rounded"
-              />
-              {panel2.isAutoCashoutEnabled && (
-                <input
-                  type="number"
-                  step="0.1"
-                  min="1.01"
-                  value={panel2.autoCashout}
-                  onChange={(e) => setPanel2((p) => ({ ...p, autoCashout: e.target.value }))}
-                  className="w-16 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-xs font-mono text-white text-center"
-                />
-              )}
-            </label>
-          </div>
-
-          <div className="grid grid-cols-12 gap-3 items-center">
-            {/* Stake Stepper (5 Cols) */}
-            <div className="col-span-5 space-y-2">
-              <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-2xl p-1">
-                <button
-                  onClick={() => adjustStake(2, -50)}
-                  disabled={panel2.isBetPlaced}
-                  className="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center font-bold text-sm"
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <div className="flex-1 text-center font-mono font-bold text-sm text-white">
-                  ₹{panel2.stake}
-                </div>
-                <button
-                  onClick={() => adjustStake(2, 50)}
-                  disabled={panel2.isBetPlaced}
-                  className="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center font-bold text-sm"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Chips row */}
-              <div className="grid grid-cols-4 gap-1">
-                {[100, 200, 500, 1000].map((amt) => (
-                  <button
-                    key={amt}
-                    disabled={panel2.isBetPlaced}
-                    onClick={() => applyPreset(2, amt)}
-                    className="py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[10px] font-mono text-zinc-300 font-bold"
-                  >
-                    {amt}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Massive Green BET / Orange CASH OUT Button (7 Cols) */}
-            <div className="col-span-7">
-              {panel2.isBetPlaced && gameState === 'FLYING' && !panel2.cashedOut ? (
-                <button
-                  onClick={() => handleCashoutPanel(2, multiplier)}
-                  className="w-full h-20 rounded-2xl btn-gold-3d text-slate-950 font-black text-base shadow-glowGold flex flex-col items-center justify-center transition active:scale-95 animate-pulse"
-                >
-                  <span className="text-xs uppercase tracking-wider font-extrabold text-slate-900">CASH OUT</span>
-                  <span className="text-lg font-mono font-black text-slate-950">
-                    ₹{(panel2.stake * multiplier).toFixed(2)}
-                  </span>
-                </button>
-              ) : panel2.isBetPlaced && panel2.cashedOut ? (
-                <button
-                  disabled
-                  className="w-full h-20 rounded-2xl bg-zinc-900/90 border border-[#47EC84]/40 text-[#47EC84] font-black text-sm flex flex-col items-center justify-center cursor-default shadow-glowGreen"
-                >
-                  <span className="text-xs">CASHED OUT</span>
-                  <span className="text-base font-mono text-[#47EC84]">₹{panel2.payoutAmount.toFixed(2)}</span>
-                </button>
-              ) : panel2.isBetPlaced && gameState === 'COUNTDOWN' ? (
-                <button
-                  disabled
-                  className="w-full h-20 rounded-2xl bg-red-950/40 border border-red-500/50 text-red-300 font-black text-sm flex flex-col items-center justify-center cursor-default"
-                >
-                  <span className="text-xs uppercase">WAITING LAUNCH</span>
-                  <span className="text-base font-mono text-red-200">₹{panel2.stake}.00</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => handlePlaceBet(2)}
-                  disabled={gameState !== 'COUNTDOWN'}
-                  className="w-full h-20 rounded-2xl btn-emerald-3d text-slate-950 font-black text-lg shadow-glowGreen flex flex-col items-center justify-center transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <span className="text-sm uppercase tracking-wider">BET</span>
-                  <span className="text-lg font-mono">₹{panel2.stake}.00</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
+      {/* DUAL BETTING DESKS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+        {renderBetPanel(1, panel1)}
+        {renderBetPanel(2, panel2)}
       </div>
 
       {/* Fairness & Seed Audit Modal */}

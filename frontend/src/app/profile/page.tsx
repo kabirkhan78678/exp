@@ -42,7 +42,7 @@ export default function PlayerProfilePage() {
   const totalWon = parseFloat(user?.profile?.total_won || '0');
 
   return (
-    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-5xl mx-auto pb-32 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-5xl mx-auto pb-6 w-full max-w-full overflow-x-clip">
       {/* 1. High-Roller Player Profile Header */}
       <div className="p-5 sm:p-7 rounded-3xl lux-card border-white/10 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 bg-[#47EC84]/10 rounded-full blur-3xl pointer-events-none" />

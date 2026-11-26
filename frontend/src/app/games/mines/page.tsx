@@ -129,7 +129,7 @@ export default function MinesGamePage() {
   const isBoardRevealed = gamePhase === 'BUSTED' || gamePhase === 'CASHED_OUT';
 
   return (
-    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-32 w-full overflow-x-hidden">
+    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-6 w-full overflow-x-clip">
       {/* Header Bar */}
       <div className="lux-card rounded-2xl p-3.5 xs:p-4 flex flex-wrap items-center justify-between gap-3 border-[#47EC84]/20">
         <div className="flex items-center gap-3">
@@ -301,7 +301,7 @@ export default function MinesGamePage() {
         </div>
 
         {/* 5x5 Vault Grid Stage (8 Cols) */}
-        <div className="lg:col-span-8 lux-card rounded-3xl p-3.5 xs:p-5 sm:p-7 order-1 lg:order-2 flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="lg:col-span-8 lux-card rounded-3xl p-3 xs:p-4 sm:p-7 order-1 lg:order-2 flex flex-col items-center justify-center relative overflow-hidden">
           {gamePhase === 'CASHED_OUT' && (
             <div className="mb-3 px-4 py-1.5 rounded-full bg-[#47EC84]/20 border border-[#47EC84] text-[#47EC84] text-xs font-black flex items-center gap-1.5 animate-scale-up">
               <CheckCircle2 className="w-4 h-4" />
@@ -316,7 +316,7 @@ export default function MinesGamePage() {
             </div>
           )}
 
-          <div className="grid grid-cols-5 gap-2 xs:gap-2.5 sm:gap-3 w-full max-w-[460px]">
+          <div className="grid grid-cols-5 gap-1.5 xs:gap-2.5 sm:gap-3 w-full max-w-[360px] sm:max-w-[460px]">
             {Array.from({ length: 25 }, (_, idx) => {
               const isSafeRevealed = revealedSafe.includes(idx);
               const isMine = mineIndices.includes(idx);

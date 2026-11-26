@@ -16,9 +16,9 @@ export const MobileBottomNav: React.FC = () => {
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-[calc(0.65rem+env(safe-area-inset-bottom,0px))] left-3 right-3 z-50 pointer-events-none flex justify-center">
+    <div className="lg:hidden fixed bottom-[calc(0.6rem+env(safe-area-inset-bottom,0px))] left-3 right-3 z-40 pointer-events-none flex justify-center">
       {/* Dynamic Floating Obsidian Capsule Dock */}
-      <nav className="pointer-events-auto bg-[#0F1315]/95 backdrop-blur-2xl border border-white/[0.14] rounded-full p-1.5 shadow-[0_16px_44px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.08)] flex items-center justify-between gap-1 max-w-[350px] xs:max-w-sm w-full">
+      <nav className="pointer-events-auto bg-[#0F1315]/95 backdrop-blur-2xl border border-white/[0.14] rounded-full p-1.5 shadow-[0_16px_44px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.08)] flex items-center justify-between gap-1 max-w-[368px] sm:max-w-sm w-full">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -30,10 +30,10 @@ export const MobileBottomNav: React.FC = () => {
             <Link
               key={item.label}
               href={item.href}
-              className={`relative flex items-center justify-center gap-1.5 transition-all duration-300 active:scale-95 rounded-full ${
+              className={`relative flex items-center justify-center gap-1.5 h-11 transition-all duration-300 active:scale-95 rounded-full ${
                 isActive
-                  ? 'flex-1 py-2.5 px-3.5 btn-emerald-3d font-extrabold'
-                  : 'w-12 h-10 text-slate-400 hover:text-white hover:bg-white/[0.06]'
+                  ? 'flex-1 px-3.5 btn-emerald-3d font-extrabold'
+                  : 'w-12 text-slate-400 hover:text-white hover:bg-white/[0.06]'
               }`}
               title={item.label}
             >

@@ -48,14 +48,14 @@ export const Navbar: React.FC = () => {
   );
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handlePointerOutside = (e: PointerEvent) => {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfileOpen(false);
       if (balanceRef.current && !balanceRef.current.contains(e.target as Node)) setBalanceOpen(false);
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotificationsOpen(false);
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchFocused(false);
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('pointerdown', handlePointerOutside);
+    return () => document.removeEventListener('pointerdown', handlePointerOutside);
   }, []);
 
   const activeAmount = activeBalanceType === 'DEMO' ? balances.DEMO : balances.MAIN;
@@ -70,28 +70,34 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full h-14 xs:h-[60px] sm:h-16 bg-[#0B0E10]/90 backdrop-blur-2xl border-b border-white/[0.08] px-2.5 xs:px-3.5 sm:px-6 lg:px-8 flex items-center justify-between shadow-[0_8px_32px_rgba(0,0,0,0.65)] select-none max-w-full">
+    <header className="sticky top-0 z-50 w-full max-w-full min-h-[3.5rem] sm:min-h-[4rem] pt-[env(safe-area-inset-top,0px)] px-2.5 xs:px-3.5 sm:px-6 lg:px-8 flex items-center justify-between gap-1.5 select-none">
+      {/* Backdrop layer placed on pseudo-child so sticky & fixed popovers never get clipped on iOS Safari */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[#0B0E10]/92 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.65)] -z-10"
+      />
+
       {/* 1. Left: Hexagonal Crest & Wordmark */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
-          <div className="relative flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-            <VeltrixLogoMark className="w-8 h-8 sm:w-9 sm:h-9 drop-shadow-[0_0_12px_rgba(71,236,132,0.35)]" />
+      <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink">
+        <Link href="/" className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 group min-w-0">
+          <div className="relative flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105">
+            <VeltrixLogoMark className="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 drop-shadow-[0_0_12px_rgba(71,236,132,0.35)]" />
             <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#47EC84] shadow-[0_0_8px_#47EC84] animate-pulse" />
           </div>
 
-          <div className="flex flex-col">
-            <div className="hidden xs:flex items-center gap-1.5">
-              <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.22em] font-extrabold text-[#F5B041]">
+          <div className="flex flex-col min-w-0">
+            <div className="hidden sm:flex items-center gap-1.5">
+              <span className="text-[9px] uppercase tracking-[0.22em] font-extrabold text-[#F5B041]">
                 IMPERIAL HOUSE
               </span>
-              <span className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full bg-[#47EC84]/10 border border-[#47EC84]/25 text-[8px] font-mono text-[#47EC84]">
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-[#47EC84]/10 border border-[#47EC84]/25 text-[8px] font-mono text-[#47EC84]">
                 <span className="w-1 h-1 rounded-full bg-[#47EC84] animate-ping" />
                 LIVE
               </span>
             </div>
-            <div className="font-display text-sm xs:text-base sm:text-lg font-extrabold tracking-tight text-white leading-none flex items-center gap-1">
+            <div className="font-display text-[13px] xs:text-[15px] sm:text-lg font-extrabold tracking-tight text-white leading-none flex items-center gap-1 whitespace-nowrap">
               <span>VELTRIX</span>
-              <span className="text-[#47EC84] drop-shadow-[0_0_10px_rgba(71,236,132,0.4)]">ARENA</span>
+              <span className="text-[#47EC84] drop-shadow-[0_0_10px_rgba(71,236,132,0.4)] hidden xs:inline">ARENA</span>
             </div>
           </div>
         </Link>
@@ -155,24 +161,28 @@ export const Navbar: React.FC = () => {
         )}
       </div>
 
-      {/* 3. Right: Sculpted Vault Capsule & VIP Utilities */}
+      {/* 3. Right: Sculpted Vault Capsule, Guaranteed Bell & VIP Utilities */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-        {isAuthenticated ? (
+        {isAuthenticated && (
           <>
             {/* Signature Vault Balance Capsule */}
             <div className="relative" ref={balanceRef}>
-              <div className="flex items-center bg-[#121619] border border-white/[0.12] hover:border-[#47EC84]/40 rounded-full p-0.5 xs:p-1 pl-1.5 xs:pl-2 sm:pl-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition">
+              <div className="flex items-center bg-[#121619] border border-white/[0.12] hover:border-[#47EC84]/40 rounded-full p-0.5 xs:p-1 pl-1.5 sm:pl-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition">
                 <button
-                  onClick={() => setBalanceOpen(!balanceOpen)}
-                  className="flex items-center gap-1.5 sm:gap-2 pr-1.5 sm:pr-2 group active:scale-95 transition"
+                  onClick={() => {
+                    setBalanceOpen(!balanceOpen);
+                    setNotificationsOpen(false);
+                    setProfileOpen(false);
+                  }}
+                  className="flex items-center gap-1 sm:gap-2 pr-1 sm:pr-2 group active:scale-95 transition"
                   title="Switch Demo / Real Cash Wallet"
                 >
-                  <GoldRupeeCoin className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 group-hover:rotate-12 transition-transform duration-300" />
+                  <GoldRupeeCoin className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 shrink-0 group-hover:rotate-12 transition-transform duration-300" />
 
-                  <div className="flex flex-col text-left">
-                    <div className="flex items-center gap-1">
+                  <div className="flex flex-col text-left max-w-[74px] xs:max-w-[92px] sm:max-w-none">
+                    <div className="flex items-center gap-0.5">
                       <span
-                        className={`text-[7.5px] xs:text-[8px] font-black uppercase tracking-widest leading-none ${
+                        className={`text-[7px] xs:text-[8px] font-black uppercase tracking-wider leading-none ${
                           activeBalanceType === 'DEMO' ? 'text-[#F5B041]' : 'text-[#47EC84]'
                         }`}
                       >
@@ -180,21 +190,22 @@ export const Navbar: React.FC = () => {
                       </span>
                       <ChevronDown className="w-2.5 h-2.5 text-slate-400 group-hover:text-white transition" />
                     </div>
-                    <span className="font-mono tabular-nums text-[11px] xs:text-xs sm:text-sm font-black text-white leading-tight mt-0.5">
+                    <span className="font-mono tabular-nums text-[11px] xs:text-xs sm:text-sm font-black text-white leading-tight mt-0.5 truncate">
                       ₹{formattedBalance}
                     </span>
                   </div>
                 </button>
 
-                <div className="w-px h-4 xs:h-5 bg-white/10 mx-0.5 sm:mx-1" />
+                <div className="w-px h-4 bg-white/10 mx-0.5 sm:mx-1" />
 
                 <button
                   onClick={() => openModal('deposit')}
-                  className="relative overflow-hidden h-7 xs:h-[30px] sm:h-8 px-2.5 xs:px-3 sm:px-3.5 rounded-full btn-emerald-3d flex items-center gap-1 font-black text-xs active:scale-95 transition shrink-0"
+                  className="relative overflow-hidden w-7 h-7 sm:w-auto sm:h-8 sm:px-3.5 rounded-full btn-emerald-3d flex items-center justify-center gap-1 font-black text-xs active:scale-95 transition shrink-0"
                   title="Instant QR Deposit"
+                  aria-label="Deposit"
                 >
                   <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                  <span className="text-[10px] xs:text-[11px] sm:text-xs font-extrabold uppercase tracking-wide hidden xs:inline">
+                  <span className="text-xs font-extrabold uppercase tracking-wide hidden sm:inline">
                     Deposit
                   </span>
                 </button>
@@ -202,7 +213,7 @@ export const Navbar: React.FC = () => {
 
               {/* Balance Vault Popover */}
               {balanceOpen && (
-                <div className="fixed sm:absolute top-16 sm:top-full left-3 right-3 sm:left-auto sm:right-0 sm:mt-2.5 sm:w-80 max-w-sm mx-auto sm:mx-0 lux-card rounded-2xl p-4 z-50 animate-scale-up">
+                <div className="fixed sm:absolute top-[calc(3.85rem+env(safe-area-inset-top,0px))] sm:top-full inset-x-3 sm:inset-x-auto sm:right-0 sm:mt-2.5 sm:w-80 max-w-sm mx-auto sm:mx-0 lux-card rounded-2xl p-4 z-50 animate-scale-up">
                   <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
                     <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                       <Wallet className="w-3.5 h-3.5 text-[#47EC84]" />
@@ -304,140 +315,150 @@ export const Navbar: React.FC = () => {
               )}
             </div>
 
-            {/* Daily Gift Chest (Desktop / Tablet) */}
+            {/* Daily Gift Chest (Tablet / Desktop) */}
             <button
               onClick={() => openModal('dailyReward')}
               title="Claim Daily Streak Bonus"
-              className="hidden sm:flex relative p-2 rounded-full bg-[#121619] hover:bg-[#191F23] border border-white/[0.08] hover:border-[#F5B041]/50 text-[#F5B041] transition active:scale-95 shrink-0"
+              className="hidden sm:flex items-center justify-center relative w-9 h-9 rounded-full bg-[#121619] hover:bg-[#191F23] border border-white/[0.08] hover:border-[#F5B041]/50 text-[#F5B041] transition active:scale-95 shrink-0"
             >
               <Gift className="w-4 h-4" />
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#47EC84] shadow-[0_0_6px_#47EC84]" />
             </button>
-
-            {/* Notifications Bell */}
-            <div className="hidden xs:block relative" ref={notifRef}>
-              <button
-                onClick={() => {
-                  setNotificationsOpen(!notificationsOpen);
-                  setHasUnreadNotifs(false);
-                }}
-                title="Activity Alerts"
-                className="relative p-1.5 sm:p-2 rounded-full bg-[#121619] hover:bg-[#191F23] border border-white/[0.08] hover:border-white/20 text-slate-300 transition active:scale-95 shrink-0"
-              >
-                <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                {hasUnreadNotifs && (
-                  <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#FF2E54] shadow-[0_0_8px_#FF2E54] animate-pulse" />
-                )}
-              </button>
-
-              {notificationsOpen && (
-                <div className="fixed sm:absolute top-16 sm:top-full left-3 right-3 sm:left-auto sm:right-0 sm:mt-2.5 sm:w-80 max-w-sm mx-auto sm:mx-0 lux-card rounded-2xl p-3 z-50 animate-scale-up">
-                  <div className="flex items-center justify-between pb-2 border-b border-white/[0.08] px-1">
-                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <Bell className="w-3.5 h-3.5 text-[#47EC84]" />
-                      Arena Telemetry
-                    </span>
-                    <span className="text-[10px] text-[#47EC84] font-mono">LIVE</span>
-                  </div>
-                  <div className="divide-y divide-white/[0.06] mt-1 max-h-64 overflow-y-auto">
-                    {notificationsList.map((item) => (
-                      <div key={item.id} className="py-2.5 px-2 hover:bg-white/[0.03] rounded-xl transition">
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="text-xs font-bold text-white">{item.title}</p>
-                          <span className="text-[9px] text-slate-400 shrink-0">{item.time}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-400 mt-0.5">{item.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* VIP Profile Avatar Ring */}
-            <div className="relative" ref={profileRef}>
-              <button
-                onClick={() => setProfileOpen(!profileOpen)}
-                className="relative p-0.5 rounded-full bg-gradient-to-tr from-[#47EC84] via-emerald-300 to-[#F5B041] shadow-[0_0_14px_rgba(71,236,132,0.3)] active:scale-95 transition shrink-0"
-                title="VIP Account Menu"
-              >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#0B0E10] flex items-center justify-center font-display font-black text-[10px] xs:text-xs text-[#47EC84]">
-                  {user?.username?.substring(0, 2).toUpperCase() || 'VX'}
-                </div>
-                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#47EC84] border-2 border-[#0B0E10]" />
-              </button>
-
-              {profileOpen && (
-                <div
-                  className="fixed sm:absolute top-16 sm:top-full left-3 right-3 sm:left-auto sm:right-0 sm:mt-2.5 sm:w-64 max-w-sm mx-auto sm:mx-0 lux-card rounded-2xl p-2 z-50 animate-scale-up"
-                  onClick={() => setProfileOpen(false)}
-                >
-                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] mb-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="text-xs font-black text-white truncate">{user?.username || 'VIP Player'}</p>
-                        <p className="text-[10px] text-slate-400 truncate">{user?.email}</p>
-                      </div>
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-[#F5B041]/20 text-[#F5B041] border border-[#F5B041]/30 flex items-center gap-1 shrink-0">
-                        <Crown className="w-2.5 h-2.5" />
-                        {vipTier || 'BRONZE'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-0.5">
-                    <Link href="/profile" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-200 hover:text-white hover:bg-white/[0.06] transition font-medium">
-                      <UserIcon className="w-4 h-4 text-[#47EC84]" />
-                      <span>My Profile & VIP</span>
-                    </Link>
-
-                    <Link href="/wallet" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-200 hover:text-white hover:bg-white/[0.06] transition font-medium">
-                      <Wallet className="w-4 h-4 text-[#F5B041]" />
-                      <span>Deposit & Withdraw</span>
-                    </Link>
-
-                    <Link href="/rewards" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-200 hover:text-white hover:bg-white/[0.06] transition font-medium">
-                      <Trophy className="w-4 h-4 text-[#47EC84]" />
-                      <span>VIP Rewards</span>
-                    </Link>
-
-                    {isAdmin && (
-                      <Link href="/admin" className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-violet-300 font-semibold hover:bg-violet-950/30 transition border border-violet-500/20 my-1">
-                        <span className="flex items-center gap-2">
-                          <Flame className="w-4 h-4" />
-                          Admin Center
-                        </span>
-                        <ArrowRight className="w-3 h-3" />
-                      </Link>
-                    )}
-
-                    <div className="pt-1 border-t border-white/[0.08] mt-1">
-                      <button
-                        onClick={logout}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-[#FF2E54] hover:bg-rose-950/30 transition font-bold"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
           </>
+        )}
+
+        {/* Notifications Bell — ALWAYS visible across iPhone 12, mobile & desktop */}
+        <div className="relative shrink-0" ref={notifRef}>
+          <button
+            onClick={() => {
+              setNotificationsOpen(!notificationsOpen);
+              setHasUnreadNotifs(false);
+              setBalanceOpen(false);
+              setProfileOpen(false);
+            }}
+            title="Activity Alerts"
+            aria-label="Notifications"
+            className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#121619] hover:bg-[#191F23] border border-white/[0.12] hover:border-[#47EC84]/40 text-slate-200 flex items-center justify-center transition active:scale-95 shrink-0 shadow-sm"
+          >
+            <Bell className="w-4 h-4 text-slate-100 stroke-[2.2]" />
+            {hasUnreadNotifs && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FF2E54] ring-2 ring-[#121619] shadow-[0_0_8px_#FF2E54] animate-pulse" />
+            )}
+          </button>
+
+          {notificationsOpen && (
+            <div className="fixed sm:absolute top-[calc(3.85rem+env(safe-area-inset-top,0px))] sm:top-full inset-x-3 sm:inset-x-auto sm:right-0 sm:mt-2.5 sm:w-80 max-w-sm mx-auto sm:mx-0 lux-card rounded-2xl p-3 z-50 animate-scale-up">
+              <div className="flex items-center justify-between pb-2 border-b border-white/[0.08] px-1">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Bell className="w-3.5 h-3.5 text-[#47EC84]" />
+                  Arena Telemetry
+                </span>
+                <span className="text-[10px] text-[#47EC84] font-mono">LIVE</span>
+              </div>
+              <div className="divide-y divide-white/[0.06] mt-1 max-h-64 overflow-y-auto">
+                {notificationsList.map((item) => (
+                  <div key={item.id} className="py-2.5 px-2 hover:bg-white/[0.03] rounded-xl transition">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-xs font-bold text-white">{item.title}</p>
+                      <span className="text-[9px] text-slate-400 shrink-0">{item.time}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {isAuthenticated ? (
+          /* VIP Profile Avatar Ring */
+          <div className="relative shrink-0" ref={profileRef}>
+            <button
+              onClick={() => {
+                setProfileOpen(!profileOpen);
+                setBalanceOpen(false);
+                setNotificationsOpen(false);
+              }}
+              className="relative p-0.5 rounded-full bg-gradient-to-tr from-[#47EC84] via-emerald-300 to-[#F5B041] shadow-[0_0_14px_rgba(71,236,132,0.3)] active:scale-95 transition shrink-0"
+              title="VIP Account Menu"
+              aria-label="Account Menu"
+            >
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#0B0E10] flex items-center justify-center font-display font-black text-[10px] xs:text-xs text-[#47EC84]">
+                {user?.username?.substring(0, 2).toUpperCase() || 'VX'}
+              </div>
+              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#47EC84] border-2 border-[#0B0E10]" />
+            </button>
+
+            {profileOpen && (
+              <div
+                className="fixed sm:absolute top-[calc(3.85rem+env(safe-area-inset-top,0px))] sm:top-full inset-x-3 sm:inset-x-auto sm:right-0 sm:mt-2.5 sm:w-64 max-w-sm mx-auto sm:mx-0 lux-card rounded-2xl p-2 z-50 animate-scale-up"
+                onClick={() => setProfileOpen(false)}
+              >
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] mb-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-black text-white truncate">{user?.username || 'VIP Player'}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{user?.email}</p>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-[#F5B041]/20 text-[#F5B041] border border-[#F5B041]/30 flex items-center gap-1 shrink-0">
+                      <Crown className="w-2.5 h-2.5" />
+                      {vipTier || 'BRONZE'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-0.5">
+                  <Link href="/profile" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-200 hover:text-white hover:bg-white/[0.06] transition font-medium">
+                    <UserIcon className="w-4 h-4 text-[#47EC84]" />
+                    <span>My Profile & VIP</span>
+                  </Link>
+
+                  <Link href="/wallet" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-200 hover:text-white hover:bg-white/[0.06] transition font-medium">
+                    <Wallet className="w-4 h-4 text-[#F5B041]" />
+                    <span>Deposit & Withdraw</span>
+                  </Link>
+
+                  <Link href="/rewards" className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-slate-200 hover:text-white hover:bg-white/[0.06] transition font-medium">
+                    <Trophy className="w-4 h-4 text-[#47EC84]" />
+                    <span>VIP Rewards</span>
+                  </Link>
+
+                  {isAdmin && (
+                    <Link href="/admin" className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-violet-300 font-semibold hover:bg-violet-950/30 transition border border-violet-500/20 my-1">
+                      <span className="flex items-center gap-2">
+                        <Flame className="w-4 h-4" />
+                        Admin Center
+                      </span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+
+                  <div className="pt-1 border-t border-white/[0.08] mt-1">
+                    <button
+                      onClick={logout}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-[#FF2E54] hover:bg-rose-950/30 transition font-bold"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         ) : (
-          <div className="flex items-center gap-1.5 xs:gap-2">
+          <div className="flex items-center gap-1 xs:gap-1.5 shrink-0">
             <button
               onClick={() => openModal('login')}
-              className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold text-slate-200 hover:text-[#47EC84] rounded-full hover:bg-white/[0.05] transition"
+              className="px-2.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs font-bold text-slate-200 hover:text-[#47EC84] rounded-full hover:bg-white/[0.05] transition whitespace-nowrap"
             >
               Sign In
             </button>
             <button
               onClick={() => openModal('register')}
-              className="px-3.5 py-1.5 sm:px-5 sm:py-2 text-xs font-black btn-emerald-3d rounded-full transition active:scale-95 flex items-center gap-1.5"
+              className="px-3 py-1.5 sm:px-5 sm:py-2 text-[11px] sm:text-xs font-black btn-emerald-3d rounded-full transition active:scale-95 flex items-center gap-1 whitespace-nowrap"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               <span>Play Now</span>
             </button>
           </div>

@@ -180,7 +180,7 @@ export const Modals: React.FC = () => {
     <>
       {/* Toast Notification Banner */}
       {notification && (
-        <div className="fixed top-20 right-4 z-50 max-w-sm p-4 rounded-2xl lux-card border-white/20 shadow-lux flex items-start gap-3 backdrop-blur-2xl animate-fade-in">
+        <div className="fixed top-[calc(4.25rem+env(safe-area-inset-top,0px))] left-3 right-3 sm:left-auto sm:right-4 z-[60] max-w-sm mx-auto sm:mx-0 p-3.5 sm:p-4 rounded-2xl lux-card border-white/20 shadow-lux flex items-start gap-3 backdrop-blur-2xl animate-fade-in">
           {notification.type === 'success' ? (
             <CheckCircle2 className="w-5 h-5 text-[#47EC84] shrink-0 mt-0.5" />
           ) : notification.type === 'error' ? (
@@ -188,10 +188,10 @@ export const Modals: React.FC = () => {
           ) : (
             <Sparkles className="w-5 h-5 text-[#F5B041] shrink-0 mt-0.5" />
           )}
-          <div className="flex-1 text-xs text-white leading-relaxed">
+          <div className="flex-1 text-xs text-white leading-relaxed min-w-0">
             {notification.message}
           </div>
-          <button onClick={clearNotification} className="text-slate-400 hover:text-white">
+          <button onClick={clearNotification} className="text-slate-400 hover:text-white shrink-0">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -199,10 +199,10 @@ export const Modals: React.FC = () => {
 
       {/* Modal Dialog Backdrop */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md lux-card border-white/15 rounded-3xl shadow-lux overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 xs:p-4">
+          <div className="relative w-full max-w-md max-h-[90dvh] flex flex-col lux-card border-white/15 rounded-3xl shadow-lux overflow-hidden animate-scale-up">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-5 border-b border-white/[0.08] bg-black/40">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-white/[0.08] bg-black/40 shrink-0">
               <div className="flex items-center gap-2.5">
                 <VeltrixLogoMark className="w-7 h-7" />
                 <h3 className="font-display font-black text-sm text-white capitalize tracking-wide">
@@ -218,7 +218,7 @@ export const Modals: React.FC = () => {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6">
+            <div className="p-4 xs:p-5 sm:p-6 overflow-y-auto">
               {errorMessage && (
                 <div className="mb-4 p-3 bg-red-950/40 border border-red-500/40 rounded-xl text-xs text-red-300 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
@@ -432,8 +432,8 @@ export const Modals: React.FC = () => {
                         Amount to Pay: ₹{parseFloat(paymentIntent.amount).toFixed(2)}
                       </div>
 
-                      <div className="p-3 bg-black/60 rounded-xl border border-white/10 text-[11px] text-slate-300 flex items-center justify-between">
-                        <span className="truncate max-w-[240px] font-mono">{paymentIntent.intent_reference}</span>
+                      <div className="p-3 bg-black/60 rounded-xl border border-white/10 text-[11px] text-slate-300 flex items-center justify-between gap-2">
+                        <span className="truncate min-w-0 flex-1 font-mono text-left">{paymentIntent.intent_reference}</span>
                         <button
                           type="button"
                           onClick={() => {
@@ -441,7 +441,7 @@ export const Modals: React.FC = () => {
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2000);
                           }}
-                          className="text-[#47EC84] hover:underline flex items-center gap-1 font-bold"
+                          className="text-[#47EC84] hover:underline flex items-center gap-1 font-bold shrink-0"
                         >
                           <Copy className="w-3 h-3" />
                           {copied ? 'Copied' : 'Copy UPI'}

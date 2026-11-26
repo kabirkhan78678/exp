@@ -227,7 +227,7 @@ export default function DragonTigerPage() {
   const tigerPct = 100 - dragonPct;
 
   return (
-    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-32 w-full overflow-x-hidden">
+    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-6 w-full overflow-x-clip">
       {/* 1. MACAU SALON HEADER BAR */}
       <div className="lux-card rounded-2xl p-3 xs:p-4 flex flex-wrap items-center justify-between gap-3 border-[#F5B041]/20">
         <div className="flex items-center gap-3">
@@ -268,17 +268,17 @@ export default function DragonTigerPage() {
         {/* LEFT/CENTER: IMPERIAL CRIMSON & GOLD TABLE (8 COLS) */}
         <div className="lg:col-span-8 relative rounded-[28px] p-1.5 bg-gradient-to-b from-[#69481B] via-[#3B230B] to-[#1A0D04] shadow-[0_24px_60px_rgba(0,0,0,0.9)]">
           {/* Inner Felt Surface */}
-          <div className="casino-imperial-felt rounded-[22px] border border-[#F5B041]/35 p-3.5 xs:p-5 sm:p-7 relative overflow-hidden">
+          <div className="casino-imperial-felt rounded-[22px] border border-[#F5B041]/35 p-3 xs:p-4 sm:p-7 relative overflow-hidden">
             {/* Decorative Gold Corner Filigree */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="px-2.5 py-1 rounded-full bg-black/60 border border-[#F5B041]/30 text-[9px] font-mono text-[#F5B041] flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <div className="px-2.5 py-1 rounded-full bg-black/60 border border-[#F5B041]/30 text-[9px] font-mono text-[#F5B041] flex items-center gap-1.5 shrink-0">
                 <ShieldCheck className="w-3 h-3 text-[#47EC84]" />
                 <span>8-DECK SHOE</span>
               </div>
 
               {/* Phase Banner Pill */}
               <div
-                className={`px-4 py-1 rounded-full text-[10px] sm:text-xs font-black tracking-widest uppercase border shadow-lg ${
+                className={`px-3 sm:px-4 py-1 rounded-full text-[10px] sm:text-xs font-black tracking-wider uppercase border shadow-lg text-center ${
                   phase === 'DEALING'
                     ? 'bg-[#F5B041]/20 border-[#F5B041] text-[#F5B041] animate-pulse'
                     : phase === 'RESULT' && lastPayout > totalStake
@@ -289,19 +289,19 @@ export default function DragonTigerPage() {
                 }`}
               >
                 {phase === 'BETTING' && 'Place Your Chips'}
-                {phase === 'DEALING' && 'No More Bets — Dealing'}
-                {phase === 'RESULT' && (winner ? `${winner} WINS${lastPayout > 0 ? ` (+₹${lastPayout})` : ''}` : 'Round Complete')}
+                {phase === 'DEALING' && 'No More Bets'}
+                {phase === 'RESULT' && (winner ? `${winner} WINS${lastPayout > 0 ? ` (+₹${lastPayout})` : ''}` : 'Complete')}
               </div>
 
               {!isAuthenticated ? (
                 <button
                   onClick={() => openModal('login')}
-                  className="text-[10px] font-bold text-[#47EC84] hover:underline"
+                  className="text-[10px] font-bold text-[#47EC84] hover:underline shrink-0"
                 >
                   Save Stats →
                 </button>
               ) : (
-                <span className="text-[10px] font-mono text-slate-400">{activeBalanceType}</span>
+                <span className="text-[10px] font-mono text-slate-400 shrink-0">{activeBalanceType}</span>
               )}
             </div>
 
@@ -520,12 +520,12 @@ export default function DragonTigerPage() {
         </div>
 
         {/* Table Controls: Clear / Rebet / 2x / Deal */}
-        <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 w-full lg:w-auto">
+        <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center justify-center sm:justify-end gap-2 w-full lg:w-auto">
           <button
             type="button"
             onClick={clearBets}
             disabled={phase === 'DEALING'}
-            className="px-3.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-bold text-slate-300 flex items-center gap-1.5 active:scale-95 transition"
+            className="px-3 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5 active:scale-95 transition"
           >
             <Trash2 className="w-3.5 h-3.5" />
             <span>Clear</span>
@@ -535,7 +535,7 @@ export default function DragonTigerPage() {
             type="button"
             onClick={rebetPrevious}
             disabled={phase === 'DEALING'}
-            className="px-3.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-bold text-slate-300 flex items-center gap-1.5 active:scale-95 transition"
+            className="px-3 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5 active:scale-95 transition"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Rebet</span>
@@ -545,7 +545,7 @@ export default function DragonTigerPage() {
             type="button"
             onClick={doubleBets}
             disabled={phase === 'DEALING'}
-            className="px-3.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-mono font-black text-[#F5B041] active:scale-95 transition"
+            className="px-3 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-mono font-black text-[#F5B041] active:scale-95 transition text-center"
           >
             2x
           </button>
@@ -554,7 +554,7 @@ export default function DragonTigerPage() {
             type="button"
             onClick={handleDeal}
             disabled={phase === 'DEALING'}
-            className="flex-1 sm:flex-initial min-w-[170px] px-7 py-3 btn-gold-3d font-black text-xs sm:text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition disabled:opacity-50"
+            className="col-span-3 sm:col-span-1 sm:min-w-[170px] px-7 py-3 btn-gold-3d font-black text-xs sm:text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition disabled:opacity-50"
           >
             {phase === 'DEALING' ? (
               <>

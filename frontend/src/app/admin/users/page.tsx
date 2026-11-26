@@ -66,7 +66,7 @@ export default function AdminUsersPage() {
           <p className="text-xs text-zinc-400">Inspect player balances, audit KYC compliance, and control access states.</p>
         </div>
 
-        <div className="relative min-w-[280px]">
+        <div className="relative w-full sm:w-auto sm:min-w-[280px]">
           <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"

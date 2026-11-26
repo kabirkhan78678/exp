@@ -75,7 +75,7 @@ export default function LandingPage() {
   const current = promoBanners[activeBanner];
 
   return (
-    <div className="space-y-5 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full">
+    <div className="space-y-5 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-6 w-full overflow-x-clip">
       <section className="relative rounded-3xl overflow-hidden lux-card border border-white/[0.1]">
         <div className={`bg-gradient-to-br ${current.glow} bg-lux-grid p-4 xs:p-6 sm:p-8 transition-all duration-500 grid grid-cols-1 md:grid-cols-12 gap-5 items-center`}>
           <div className="md:col-span-7 space-y-3 sm:space-y-4 z-10">

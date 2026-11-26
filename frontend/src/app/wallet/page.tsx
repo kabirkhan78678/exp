@@ -154,7 +154,7 @@ function WalletCashierContent() {
   });
 
   return (
-    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-6 w-full max-w-full overflow-x-clip">
       {/* 1. Header & Live Telemetry */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
         <div className="space-y-1">
@@ -252,29 +252,31 @@ function WalletCashierContent() {
       {/* 3. High-Roller Unified Cashier Station */}
       <div className="rounded-3xl lux-card overflow-hidden">
         {/* Tab Switcher */}
-        <div className="grid grid-cols-2 border-b border-white/[0.08] bg-black/40 p-2 gap-2">
+        <div className="grid grid-cols-2 border-b border-white/[0.08] bg-black/40 p-1.5 xs:p-2 gap-1.5 xs:gap-2">
           <button
             onClick={() => setActiveTab('DEPOSIT')}
-            className={`py-3.5 rounded-2xl font-display font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-98 ${
+            className={`py-3 xs:py-3.5 px-2 rounded-2xl font-display font-black text-[11px] xs:text-xs sm:text-sm flex items-center justify-center gap-1.5 xs:gap-2 transition-all duration-200 active:scale-98 ${
               activeTab === 'DEPOSIT'
                 ? 'btn-emerald-3d shadow-glowGreen text-slate-950'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
-            <ArrowDownLeft className="w-4 h-4 stroke-[2.5]" />
-            <span>Instant UPI Dynamic QR</span>
+            <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5] shrink-0" />
+            <span className="sm:hidden">UPI QR Deposit</span>
+            <span className="hidden sm:inline">Instant UPI Dynamic QR</span>
           </button>
 
           <button
             onClick={() => setActiveTab('WITHDRAW')}
-            className={`py-3.5 rounded-2xl font-display font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-98 ${
+            className={`py-3 xs:py-3.5 px-2 rounded-2xl font-display font-black text-[11px] xs:text-xs sm:text-sm flex items-center justify-center gap-1.5 xs:gap-2 transition-all duration-200 active:scale-98 ${
               activeTab === 'WITHDRAW'
                 ? 'btn-gold-3d shadow-glowGold text-slate-950'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
             }`}
           >
-            <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
-            <span>Instant Payout (UPI / Bank)</span>
+            <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5] shrink-0" />
+            <span className="sm:hidden">Withdraw Cash</span>
+            <span className="hidden sm:inline">Instant Payout (UPI / Bank)</span>
           </button>
         </div>
 
@@ -572,9 +574,9 @@ function WalletCashierContent() {
               {filteredTxs.map((tx) => {
                 const isPositive = tx.transaction_type.includes('WIN') || tx.transaction_type === 'DEPOSIT';
                 return (
-                  <div key={tx.id} className="p-3.5 sm:p-4 flex items-center justify-between hover:bg-white/[0.03] transition">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold font-mono border ${
+                  <div key={tx.id} className="p-3.5 sm:p-4 flex items-center justify-between gap-2.5 hover:bg-white/[0.03] transition">
+                    <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold font-mono border shrink-0 ${
                         isPositive 
                           ? 'bg-[#47EC84]/15 text-[#47EC84] border-[#47EC84]/30' 
                           : 'bg-red-500/15 text-red-400 border-red-500/30'
@@ -582,15 +584,15 @@ function WalletCashierContent() {
                         {isPositive ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-bold text-white truncate max-w-[120px] xs:max-w-[180px] sm:max-w-xs">
+                        <div className="text-xs font-bold text-white truncate">
                           {tx.description || tx.transaction_type}
                         </div>
-                        <div className="text-[10px] font-mono text-slate-400 truncate max-w-[120px] xs:max-w-[180px]">
+                        <div className="text-[10px] font-mono text-slate-400 truncate">
                           {tx.reference_no}
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <div className={`text-xs sm:text-sm font-black font-mono tabular-nums ${isPositive ? 'text-[#47EC84]' : 'text-red-400'}`}>
                         {isPositive ? '+' : '-'}₹{parseFloat(tx.total_amount).toFixed(2)}
                       </div>

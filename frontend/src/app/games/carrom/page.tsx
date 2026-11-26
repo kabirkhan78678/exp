@@ -783,7 +783,7 @@ export default function CarromPage() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 px-2 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto select-none bg-[#0c0906] min-h-[calc(100vh-5rem)] rounded-2xl sm:rounded-3xl border border-[#2a170e] pb-28 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 sm:space-y-6 px-2 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto select-none bg-[#0c0906] min-h-[calc(100dvh-5rem)] rounded-2xl sm:rounded-3xl border border-[#2a170e] pb-6 w-full max-w-full overflow-x-clip">
       {/* Top Header & Match Stats */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3 xs:p-4 rounded-2xl bg-[#19110a] border border-[#3b2314]">
         <div className="flex items-center gap-2.5 xs:gap-3">
@@ -834,7 +834,7 @@ export default function CarromPage() {
       {/* Main Board Viewport and Tactical Controls */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Canvas Board (8 Cols) */}
-        <div className="lg:col-span-8 rounded-3xl bg-[#140d07] border-2 border-[#3b2314] p-3 sm:p-5 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="lg:col-span-8 rounded-3xl bg-[#140d07] border-2 border-[#3b2314] p-2.5 xs:p-3 sm:p-5 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
           {/* Canvas */}
           <canvas
             ref={canvasRef}
@@ -846,27 +846,27 @@ export default function CarromPage() {
             onTouchStart={handlePointerDown}
             onTouchMove={handlePointerMove}
             onTouchEnd={handlePointerUp}
-            className="rounded-2xl max-w-full aspect-square shadow-2xl cursor-crosshair touch-none border border-amber-950"
+            className="rounded-2xl w-full h-auto max-w-[460px] sm:max-w-[520px] aspect-square shadow-2xl cursor-crosshair touch-none border border-amber-950"
           />
 
           {/* Interactive Baseline Slider Track under canvas */}
-          <div className="w-full max-w-[480px] mt-4 px-2 space-y-2">
-            <div className="flex items-center justify-between text-xs text-amber-200/70">
+          <div className="w-full max-w-[480px] mt-3.5 px-1 xs:px-2 space-y-2">
+            <div className="flex items-center justify-between text-[11px] sm:text-xs text-amber-200/70">
               <span className="flex items-center gap-1 text-amber-400 font-semibold">
-                <ChevronLeft className="w-3.5 h-3.5" /> Slide Striker
+                <ChevronLeft className="w-3.5 h-3.5" /> Slide
               </span>
               <span className="font-mono text-amber-300 font-bold">X: {strikerX}px</span>
               <span className="flex items-center gap-1 text-amber-400 font-semibold">
-                Slide Striker <ChevronRight className="w-3.5 h-3.5" />
+                Slide <ChevronRight className="w-3.5 h-3.5" />
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 xs:gap-2.5">
               <button
                 type="button"
                 onClick={() => updateStrikerPosition(strikerX - 25)}
                 disabled={isStriking}
-                className="p-2 rounded-xl bg-[#2b180d] hover:bg-[#3d2314] text-amber-100 border border-amber-900/60 disabled:opacity-40"
+                className="p-2 rounded-xl bg-[#2b180d] hover:bg-[#3d2314] text-amber-100 border border-amber-900/60 disabled:opacity-40 shrink-0"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -878,14 +878,14 @@ export default function CarromPage() {
                 value={strikerX}
                 disabled={isStriking}
                 onChange={(e) => updateStrikerPosition(Number(e.target.value))}
-                className="flex-1 h-3 rounded-lg bg-[#2b180d] accent-amber-500 cursor-pointer"
+                className="flex-1 min-w-[110px] h-3 rounded-lg bg-[#2b180d] accent-amber-500 cursor-pointer"
               />
 
               <button
                 type="button"
                 onClick={() => updateStrikerPosition(strikerX + 25)}
                 disabled={isStriking}
-                className="p-2 rounded-xl bg-[#2b180d] hover:bg-[#3d2314] text-amber-100 border border-amber-900/60 disabled:opacity-40"
+                className="p-2 rounded-xl bg-[#2b180d] hover:bg-[#3d2314] text-amber-100 border border-amber-900/60 disabled:opacity-40 shrink-0"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -894,7 +894,7 @@ export default function CarromPage() {
                 type="button"
                 onClick={() => updateStrikerPosition(270)}
                 disabled={isStriking}
-                className="px-3 py-2 rounded-xl bg-[#2b180d] hover:bg-[#3d2314] text-amber-300 border border-amber-900/60 text-xs font-bold font-mono"
+                className="px-2.5 xs:px-3 py-2 rounded-xl bg-[#2b180d] hover:bg-[#3d2314] text-amber-300 border border-amber-900/60 text-[11px] sm:text-xs font-bold font-mono shrink-0"
               >
                 Center
               </button>
@@ -903,7 +903,7 @@ export default function CarromPage() {
         </div>
 
         {/* Tactical Controls & Score Deck (4 Cols) */}
-        <div className="lg:col-span-4 rounded-3xl bg-[#19110a] border border-[#3b2314] p-6 shadow-xl space-y-6">
+        <div className="lg:col-span-4 rounded-3xl bg-[#19110a] border border-[#3b2314] p-4 sm:p-6 shadow-xl space-y-5 sm:space-y-6">
           {/* Score Header */}
           <div className="p-4 rounded-2xl bg-[#2b180d] border border-amber-900/60 flex items-center justify-between">
             <div>

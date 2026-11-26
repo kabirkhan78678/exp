@@ -24,7 +24,7 @@ export default function RewardsPage() {
   ];
 
   return (
-    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full">
+    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-6 w-full overflow-x-clip">
       <div className="space-y-1.5">
         <h1 className="font-display text-2xl sm:text-3xl font-black text-white">
           VIP Tiers & Imperial Rewards

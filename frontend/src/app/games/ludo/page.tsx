@@ -285,7 +285,7 @@ export default function LudoArenaPage() {
   const secs = (matchSeconds % 60).toString().padStart(2, '0');
 
   return (
-    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-32 w-full overflow-x-hidden">
+    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-7xl mx-auto pb-6 w-full overflow-x-clip">
       {/* Header Bar */}
       <div className="lux-card rounded-2xl p-3.5 xs:p-4 flex flex-wrap items-center justify-between gap-3 border-[#F5B041]/25">
         <div className="flex items-center gap-3">
@@ -349,8 +349,8 @@ export default function LudoArenaPage() {
       {/* Main Layout: 15x15 SVG Ludo Board + Points/Dice Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
         {/* 15x15 Interactive Royal Ludo Board (7 Cols) */}
-        <div className="lg:col-span-7 lux-card rounded-3xl p-3 sm:p-5 flex flex-col items-center justify-center">
-          <div className="w-full max-w-[500px] aspect-square rounded-2xl overflow-hidden border-4 border-[#3D2510] shadow-2xl bg-[#F8FAFC]">
+        <div className="lg:col-span-7 lux-card rounded-3xl p-2.5 xs:p-3 sm:p-5 flex flex-col items-center justify-center">
+          <div className="w-full max-w-[350px] xs:max-w-[375px] sm:max-w-[500px] aspect-square rounded-2xl overflow-hidden border-4 border-[#3D2510] shadow-2xl bg-[#F8FAFC]">
             <svg viewBox="0 0 15 15" className="w-full h-full select-none">
               {/* Base Cream Grid */}
               <rect width="15" height="15" fill="#F8FAFC" />

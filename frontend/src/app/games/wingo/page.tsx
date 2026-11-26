@@ -145,7 +145,7 @@ export default function WingoParityPage() {
   };
 
   return (
-    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-5xl mx-auto pb-32 w-full overflow-x-hidden">
+    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-5xl mx-auto pb-6 w-full overflow-x-clip">
       {/* 1. WINGO TIMER TOP HEADER CARD */}
       <div className="lux-card rounded-3xl p-4 sm:p-5 border-[#47EC84]/25 bg-gradient-to-br from-[#0F261A] via-[#111517] to-[#0B0E10]">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -338,13 +338,13 @@ export default function WingoParityPage() {
         {/* Stake Bar + Submit Ticket + Instant Quick Draw */}
         <div className="pt-2 border-t border-white/[0.08] space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1.5">
               {[10, 50, 100, 500, 1000].map((v) => (
                 <button
                   key={v}
                   type="button"
                   onClick={() => setChipAmount(v)}
-                  className={`px-3 py-1.5 rounded-xl text-[11px] font-mono font-black border transition ${
+                  className={`px-2.5 xs:px-3 py-1.5 rounded-xl text-[11px] font-mono font-black border transition ${
                     chipAmount === v
                       ? 'btn-emerald-3d border-transparent'
                       : 'bg-black/50 border-white/10 text-slate-300'

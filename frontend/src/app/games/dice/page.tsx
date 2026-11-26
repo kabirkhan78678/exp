@@ -102,7 +102,7 @@ export default function FairDicePage() {
       : `linear-gradient(to right, #FF2E54 0%, #FF2E54 ${sliderPct}%, #47EC84 ${sliderPct}%, #47EC84 100%)`;
 
   return (
-    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-6xl mx-auto pb-32 w-full overflow-x-hidden">
+    <div className="space-y-4 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-5 max-w-6xl mx-auto pb-6 w-full overflow-x-clip">
       <div className="lux-card rounded-2xl p-3.5 xs:p-4 flex flex-wrap items-center justify-between gap-3 border-[#47EC84]/20">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#47EC84]/15 border border-[#47EC84]/40 flex items-center justify-center text-[#47EC84] shadow-glowGreen shrink-0">
@@ -210,8 +210,8 @@ export default function FairDicePage() {
           </div>
         </div>
 
-        <div className="lg:col-span-8 lux-card rounded-3xl p-5 sm:p-8 order-1 lg:order-2 space-y-8">
-          <div className="flex flex-col items-center justify-center py-2">
+        <div className="lg:col-span-8 lux-card rounded-3xl p-4 sm:p-8 order-1 lg:order-2 space-y-6 sm:space-y-8">
+          <div className="flex flex-col items-center justify-center py-1 sm:py-2">
             <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 mb-1">
               Cryptographic Outcome
             </div>
@@ -273,10 +273,10 @@ export default function FairDicePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xs:grid-cols-3 gap-2.5 sm:gap-3">
-            <div className="p-3 rounded-2xl bg-[#0A0D0F] border border-white/[0.08]">
-              <div className="text-[10px] font-bold uppercase text-slate-400 mb-1">Multiplier</div>
-              <div className="font-mono tabular-nums text-base sm:text-lg font-black text-[#F5B041]">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="p-2.5 sm:p-3 rounded-2xl bg-[#0A0D0F] border border-white/[0.08]">
+              <div className="text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1 truncate">Multiplier</div>
+              <div className="font-mono tabular-nums text-sm xs:text-base sm:text-lg font-black text-[#F5B041]">
                 {multiplier.toFixed(2)}x
               </div>
             </div>
@@ -284,20 +284,20 @@ export default function FairDicePage() {
             <button
               type="button"
               onClick={toggleCondition}
-              className="p-3 rounded-2xl bg-[#0A0D0F] border border-[#47EC84]/35 hover:border-[#47EC84] transition text-left group"
+              className="p-2.5 sm:p-3 rounded-2xl bg-[#0A0D0F] border border-[#47EC84]/35 hover:border-[#47EC84] transition text-left group"
             >
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase text-slate-400 mb-1">
-                <span>Roll {condition}</span>
-                <ArrowLeftRight className="w-3.5 h-3.5 text-[#47EC84] group-hover:rotate-180 transition-transform" />
+              <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1 gap-1">
+                <span className="truncate">Roll {condition}</span>
+                <ArrowLeftRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#47EC84] group-hover:rotate-180 transition-transform shrink-0" />
               </div>
-              <div className="font-mono tabular-nums text-base sm:text-lg font-black text-white">
+              <div className="font-mono tabular-nums text-sm xs:text-base sm:text-lg font-black text-white">
                 {target.toFixed(2)}
               </div>
             </button>
 
-            <div className="p-3 rounded-2xl bg-[#0A0D0F] border border-white/[0.08]">
-              <div className="text-[10px] font-bold uppercase text-slate-400 mb-1">Win Chance</div>
-              <div className="font-mono tabular-nums text-base sm:text-lg font-black text-[#47EC84]">
+            <div className="p-2.5 sm:p-3 rounded-2xl bg-[#0A0D0F] border border-white/[0.08]">
+              <div className="text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1 truncate">Win Chance</div>
+              <div className="font-mono tabular-nums text-sm xs:text-base sm:text-lg font-black text-[#47EC84]">
                 {winChance.toFixed(2)}%
               </div>
             </div>

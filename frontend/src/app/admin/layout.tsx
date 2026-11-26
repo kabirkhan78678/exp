@@ -94,7 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
 
-      <div className="px-4 lg:px-8 max-w-7xl mx-auto pb-16">
+      <div className="px-3 sm:px-4 lg:px-8 max-w-7xl mx-auto pb-8 overflow-x-clip">
         {children}
       </div>
     </div>

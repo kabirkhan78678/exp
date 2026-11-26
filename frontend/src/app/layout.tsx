@@ -32,8 +32,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   viewportFit: 'cover',
   themeColor: '#07090A',
 };
@@ -45,7 +43,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`dark ${outfit.variable} ${jakarta.variable} ${geistMono.variable}`}>
-      <body className="bg-[#07090A] text-[#F1F5F9] font-sans antialiased selection:bg-[#47EC84] selection:text-slate-950 overflow-x-hidden">
+      <body className="bg-[#07090A] text-[#F1F5F9] font-sans antialiased selection:bg-[#47EC84] selection:text-slate-950 overflow-x-clip min-h-[100dvh]">
         <ClientShell>{children}</ClientShell>
       </body>
     </html>

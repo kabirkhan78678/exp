@@ -83,7 +83,7 @@ export default function SupportPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-6 w-full max-w-full overflow-x-clip">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
         <div className="space-y-1">
@@ -166,9 +166,9 @@ export default function SupportPage() {
       )}
 
       {/* Ticket Thread & History View */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Ticket List (1 Col) */}
-        <div className="rounded-3xl lux-card p-4 space-y-2.5 h-[500px] overflow-y-auto">
+        <div className="rounded-3xl lux-card p-3.5 sm:p-4 space-y-2.5 max-h-[300px] lg:h-[500px] lg:max-h-none overflow-y-auto">
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 mb-2">My Open Inquiries</div>
           {tickets.length === 0 ? (
             <div className="p-8 text-center text-xs text-slate-400">No active tickets opened yet.</div>
@@ -199,7 +199,7 @@ export default function SupportPage() {
         </div>
 
         {/* Conversation Thread (2 Cols) */}
-        <div className="lg:col-span-2 rounded-3xl lux-card p-6 flex flex-col justify-between h-[500px]">
+        <div className="lg:col-span-2 rounded-3xl lux-card p-4 sm:p-6 flex flex-col justify-between min-h-[380px] lg:h-[500px]">
           {selectedTicket ? (
             <>
               {/* Top Meta */}

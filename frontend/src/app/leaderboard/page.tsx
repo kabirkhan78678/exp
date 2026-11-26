@@ -18,7 +18,7 @@ export default function LeaderboardPage() {
   ];
 
   return (
-    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-6 w-full max-w-full overflow-x-clip">
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
         <div className="space-y-1">
@@ -81,7 +81,7 @@ export default function LeaderboardPage() {
         {/* Rank 1 (Gold Crown Champion) */}
         <div className="order-1 sm:order-2 p-8 rounded-3xl lux-card border-2 border-[#F5B041] shadow-glowGold flex flex-col items-center justify-center text-center sm:-translate-y-4 relative overflow-hidden bg-gradient-to-b from-[#181510] via-[#0E0F11] to-[#07090A]">
           <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#F5B041] via-amber-300 to-[#F5B041] animate-pulse" />
-          <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-3xl bg-[#F5B041]/20 text-[#F5B041] flex items-center justify-center font-black text-3xl mb-3 border-2 border-[#F5B041]/60 shadow-glowGold">
+          <div className="w-[72px] h-[72px] sm:w-20 sm:h-20 rounded-3xl bg-[#F5B041]/20 text-[#F5B041] flex items-center justify-center font-black text-3xl mb-3 border-2 border-[#F5B041]/60 shadow-glowGold">
             👑
           </div>
           <div className="font-display font-black text-lg sm:text-xl text-white flex items-center gap-1.5">
@@ -120,40 +120,42 @@ export default function LeaderboardPage() {
 
       {/* Leaderboard Table */}
       <div className="rounded-2xl lux-card overflow-hidden">
-        <table className="w-full text-left text-xs">
-          <thead className="bg-black/60 text-slate-400 uppercase font-mono text-[10px] border-b border-white/[0.08]">
-            <tr>
-              <th className="p-4 sm:p-5">Rank</th>
-              <th className="p-4 sm:p-5">Player Handle</th>
-              <th className="p-4 sm:p-5 hidden sm:table-cell">VIP Tier</th>
-              <th className="p-4 sm:p-5 hidden sm:table-cell">Rounds</th>
-              <th className="p-4 sm:p-5 hidden md:table-cell">Win Rate</th>
-              <th className="p-4 sm:p-5 text-right">Verified Cash Won</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/[0.06]">
-            {leaders.map((lead) => (
-              <tr key={lead.rank} className="hover:bg-white/[0.03] transition">
-                <td className="p-4 sm:p-5 font-display font-black text-sm text-[#F5B041] tabular-nums">
-                  #{lead.rank}
-                </td>
-                <td className="p-4 sm:p-5 font-display font-bold text-white text-sm">
-                  {lead.username}
-                </td>
-                <td className="p-4 sm:p-5 hidden sm:table-cell font-mono text-xs">
-                  <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/10 text-slate-300">
-                    {lead.vip}
-                  </span>
-                </td>
-                <td className="p-4 sm:p-5 hidden sm:table-cell font-mono text-slate-400">{lead.gamesPlayed}</td>
-                <td className="p-4 sm:p-5 hidden md:table-cell font-mono text-[#47EC84]">{lead.winRate}</td>
-                <td className="p-4 sm:p-5 text-right font-display font-black text-sm text-[#47EC84] font-mono tabular-nums">
-                  {lead.totalWon}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-black/60 text-slate-400 uppercase font-mono text-[10px] border-b border-white/[0.08]">
+              <tr>
+                <th className="p-3.5 sm:p-5">Rank</th>
+                <th className="p-3.5 sm:p-5">Player Handle</th>
+                <th className="p-3.5 sm:p-5 hidden sm:table-cell">VIP Tier</th>
+                <th className="p-3.5 sm:p-5 hidden sm:table-cell">Rounds</th>
+                <th className="p-3.5 sm:p-5 hidden md:table-cell">Win Rate</th>
+                <th className="p-3.5 sm:p-5 text-right">Verified Cash Won</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-white/[0.06]">
+              {leaders.map((lead) => (
+                <tr key={lead.rank} className="hover:bg-white/[0.03] transition">
+                  <td className="p-3.5 sm:p-5 font-display font-black text-sm text-[#F5B041] tabular-nums">
+                    #{lead.rank}
+                  </td>
+                  <td className="p-3.5 sm:p-5 font-display font-bold text-white text-sm">
+                    {lead.username}
+                  </td>
+                  <td className="p-3.5 sm:p-5 hidden sm:table-cell font-mono text-xs">
+                    <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/10 text-slate-300">
+                      {lead.vip}
+                    </span>
+                  </td>
+                  <td className="p-3.5 sm:p-5 hidden sm:table-cell font-mono text-slate-400">{lead.gamesPlayed}</td>
+                  <td className="p-3.5 sm:p-5 hidden md:table-cell font-mono text-[#47EC84]">{lead.winRate}</td>
+                  <td className="p-3.5 sm:p-5 text-right font-display font-black text-sm text-[#47EC84] font-mono tabular-nums">
+                    {lead.totalWon}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
