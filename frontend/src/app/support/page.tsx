@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   HelpCircle, MessageSquare, Send, Plus, 
-  Clock, CheckCircle2, AlertCircle 
+  Clock, CheckCircle2, AlertCircle, Headphones, ShieldCheck
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { api } from '@/lib/api';
@@ -23,8 +23,8 @@ export default function SupportPage() {
   const loadTickets = async () => {
     try {
       const res = await api.getTickets();
-      setTickets(res.tickets);
-      if (res.tickets.length > 0 && !selectedTicket) {
+      setTickets(res.tickets || []);
+      if (res.tickets && res.tickets.length > 0 && !selectedTicket) {
         setSelectedTicket(res.tickets[0]);
       }
     } catch {}
@@ -66,37 +66,48 @@ export default function SupportPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="p-12 text-center max-w-md mx-auto space-y-4">
-        <HelpCircle className="w-12 h-12 text-aurora-gold mx-auto" />
-        <h2 className="text-xl font-bold text-aurora-text">Sign In Required</h2>
-        <p className="text-xs text-aurora-muted">Please log in to your Veltrix account to access dedicated 24/7 support tickets.</p>
+      <div className="p-12 text-center max-w-md mx-auto space-y-4 my-16">
+        <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-[#F5B041] mx-auto shadow-lux">
+          <Headphones className="w-8 h-8" />
+        </div>
+        <h2 className="font-display text-2xl font-black text-white">VIP Concierge Desk</h2>
+        <p className="text-xs text-slate-400">Please sign in to access priority 24/7 ticket resolution and live settlement inquiries.</p>
         <button
           onClick={() => openModal('login')}
-          className="px-6 py-2.5 bg-gradient-to-r from-aurora-gold to-amber-500 text-slate-950 font-bold text-xs rounded-xl"
+          className="px-6 py-3 btn-emerald-3d font-display font-black text-xs rounded-xl shadow-glowGreen"
         >
-          Sign In
+          Sign In to Access Concierge
         </button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 px-4 lg:px-8 py-6 max-w-7xl mx-auto">
+    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-aurora-text flex items-center gap-2">
-            <HelpCircle className="w-7 h-7 text-aurora-cyan" />
-            <span>Support & Help Center</span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="telemetry-badge text-[#47EC84] border-[#47EC84]/30 bg-[#47EC84]/10">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#47EC84] animate-ping" />
+              LIVE 24/7 DESK
+            </span>
+            <span className="telemetry-badge text-[#F5B041] border-[#F5B041]/30 bg-[#F5B041]/10">
+              <ShieldCheck className="w-3 h-3" />
+              PRIORITY SLA &lt; 2 MIN
+            </span>
+          </div>
+          <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+            VIP Support & Help Center
           </h1>
-          <p className="text-xs sm:text-sm text-aurora-muted mt-1">
-            24/7 dedicated support for deposit inquiries, game rules, and technical assistance.
+          <p className="text-xs sm:text-sm text-slate-400">
+            Dedicated assistance for UPI dynamic QR deposits, payouts, game rule verifications, and VIP inquiries.
           </p>
         </div>
 
         <button
           onClick={() => setIsCreating(!isCreating)}
-          className="px-5 py-2.5 bg-aurora-elevated hover:bg-aurora-surface text-aurora-cyan border border-aurora-cyan/30 rounded-xl text-xs font-bold transition flex items-center gap-2"
+          className="px-5 py-2.5 btn-emerald-3d font-display font-black rounded-xl text-xs transition flex items-center gap-2 active:scale-95 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>{isCreating ? 'Cancel' : 'New Ticket'}</span>
@@ -105,51 +116,51 @@ export default function SupportPage() {
 
       {/* Ticket Creation Box */}
       {isCreating && (
-        <form onSubmit={handleCreateTicket} className="p-6 rounded-3xl bg-aurora-surface border border-aurora-border space-y-4 animate-scale-up">
-          <h3 className="font-bold text-sm text-aurora-text">Submit Support Inquiry</h3>
+        <form onSubmit={handleCreateTicket} className="p-6 rounded-3xl lux-card border-[#47EC84]/40 space-y-4">
+          <h3 className="font-display font-black text-base text-white">Open Dedicated Support Inquiry</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-aurora-muted mb-1">Category</label>
+              <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase text-[11px]">Category</label>
               <select
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
               >
-                <option value="TECHNICAL">Technical Glitch / Canvas</option>
-                <option value="DEPOSIT">QR Deposit Assistance</option>
-                <option value="WITHDRAWAL">Withdrawal Status</option>
-                <option value="GAME">Game Outcome Verification</option>
+                <option value="TECHNICAL">Technical Glitch / Graphics</option>
+                <option value="DEPOSIT">Instant UPI QR Assistance</option>
+                <option value="WITHDRAWAL">IMPS Withdrawal Inquiry</option>
+                <option value="GAME">Game Fair Hash Verification</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-aurora-muted mb-1">Subject</label>
+              <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase text-[11px]">Subject</label>
               <input
                 type="text"
                 required
                 value={newSubject}
                 onChange={(e) => setNewSubject(e.target.value)}
                 placeholder="Brief summary..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
               />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-aurora-muted mb-1">Detailed Message</label>
+            <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase text-[11px]">Detailed Message</label>
             <textarea
               required
               rows={3}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Describe your issue or question..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+              className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
             />
           </div>
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-2.5 bg-gradient-to-r from-aurora-cyan to-aurora-purple text-slate-950 font-bold text-xs rounded-xl"
+            className="px-6 py-3 btn-emerald-3d font-display font-black text-xs rounded-xl shadow-glowGreen"
           >
-            {submitting ? 'Submitting...' : 'Submit Ticket'}
+            {submitting ? 'Submitting...' : 'Submit Priority Ticket'}
           </button>
         </form>
       )}
@@ -157,67 +168,67 @@ export default function SupportPage() {
       {/* Ticket Thread & History View */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Ticket List (1 Col) */}
-        <div className="rounded-3xl bg-aurora-surface border border-aurora-border p-4 space-y-2 h-[480px] overflow-y-auto">
-          <div className="text-xs font-bold text-aurora-muted uppercase px-2 mb-2">My Inquiries</div>
+        <div className="rounded-3xl lux-card p-4 space-y-2.5 h-[500px] overflow-y-auto">
+          <div className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 mb-2">My Open Inquiries</div>
           {tickets.length === 0 ? (
-            <div className="p-8 text-center text-xs text-aurora-muted">No tickets opened yet.</div>
+            <div className="p-8 text-center text-xs text-slate-400">No active tickets opened yet.</div>
           ) : (
             tickets.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setSelectedTicket(t)}
-                className={`w-full text-left p-3 rounded-2xl border transition ${
+                className={`w-full text-left p-3.5 rounded-2xl border transition active:scale-98 ${
                   selectedTicket?.id === t.id
-                    ? 'bg-aurora-elevated border-aurora-cyan/40 shadow-sm'
-                    : 'bg-aurora-surface border-aurora-border/60 hover:border-aurora-muted'
+                    ? 'bg-[#47EC84]/10 border-[#47EC84] shadow-glowGreen'
+                    : 'bg-white/[0.03] border-white/10 hover:border-white/20'
                 }`}
               >
-                <div className="flex items-center justify-between text-[10px] text-aurora-muted font-mono mb-1">
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1.5">
                   <span>{t.ticket_number}</span>
-                  <span className={`px-1.5 py-0.5 rounded font-bold ${
-                    t.status === 'RESOLVED' ? 'bg-aurora-success/20 text-aurora-success' : 'bg-aurora-gold/20 text-aurora-gold'
+                  <span className={`px-2 py-0.5 rounded-full font-bold ${
+                    t.status === 'RESOLVED' ? 'bg-[#47EC84]/20 text-[#47EC84]' : 'bg-[#F5B041]/20 text-[#F5B041]'
                   }`}>
                     {t.status}
                   </span>
                 </div>
-                <div className="text-xs font-semibold text-aurora-text truncate">{t.subject}</div>
-                <div className="text-[10px] text-aurora-muted mt-1">{t.category}</div>
+                <div className="text-xs font-bold text-white truncate">{t.subject}</div>
+                <div className="text-[10px] text-slate-400 mt-1">{t.category}</div>
               </button>
             ))
           )}
         </div>
 
         {/* Conversation Thread (2 Cols) */}
-        <div className="lg:col-span-2 rounded-3xl bg-aurora-surface border border-aurora-border p-6 flex flex-col justify-between h-[480px]">
+        <div className="lg:col-span-2 rounded-3xl lux-card p-6 flex flex-col justify-between h-[500px]">
           {selectedTicket ? (
             <>
               {/* Top Meta */}
-              <div className="pb-3 border-b border-aurora-border flex items-center justify-between">
+              <div className="pb-3 border-b border-white/[0.08] flex items-center justify-between">
                 <div>
-                  <h3 className="font-bold text-sm text-aurora-text">{selectedTicket.subject}</h3>
-                  <p className="text-[11px] text-aurora-muted">Ticket #{selectedTicket.ticket_number} • {selectedTicket.category}</p>
+                  <h3 className="font-display font-black text-base text-white">{selectedTicket.subject}</h3>
+                  <p className="text-xs text-slate-400">Ticket #{selectedTicket.ticket_number} • {selectedTicket.category}</p>
                 </div>
-                <span className="px-2.5 py-1 text-xs font-mono font-bold rounded-full bg-aurora-elevated border border-aurora-border text-aurora-gold">
+                <span className="telemetry-badge text-[#F5B041] border-[#F5B041]/40 bg-[#F5B041]/10">
                   {selectedTicket.status}
                 </span>
               </div>
 
               {/* Message History */}
-              <div className="flex-1 overflow-y-auto py-4 space-y-3">
+              <div className="flex-1 overflow-y-auto py-4 space-y-3.5">
                 {selectedTicket.messages?.map((m: any) => (
                   <div
                     key={m.id}
-                    className={`p-3.5 rounded-2xl max-w-md text-xs leading-relaxed ${
+                    className={`p-4 rounded-2xl max-w-md text-xs leading-relaxed ${
                       m.is_admin_reply
-                        ? 'bg-aurora-purple/20 border border-aurora-purple/30 text-aurora-text ml-auto'
-                        : 'bg-aurora-elevated border border-aurora-border text-aurora-text'
+                        ? 'bg-purple-950/40 border border-purple-500/40 text-white ml-auto'
+                        : 'bg-white/[0.04] border border-white/10 text-white'
                     }`}
                   >
-                    <div className="text-[10px] font-bold text-aurora-gold mb-1">
-                      {m.is_admin_reply ? '🛡️ Veltrix Support Agent' : m.sender_name}
+                    <div className="text-[10px] font-bold text-[#F5B041] mb-1 font-mono">
+                      {m.is_admin_reply ? '🛡️ Veltrix Concierge Agent' : m.sender_name}
                     </div>
                     <div>{m.message}</div>
-                    <div className="text-[9px] text-aurora-muted font-mono mt-1 text-right">
+                    <div className="text-[9px] text-slate-400 font-mono mt-1.5 text-right">
                       {new Date(m.created_at).toLocaleTimeString()}
                     </div>
                   </div>
@@ -225,26 +236,27 @@ export default function SupportPage() {
               </div>
 
               {/* Reply Box */}
-              <form onSubmit={handleReply} className="flex gap-2 pt-3 border-t border-aurora-border">
+              <form onSubmit={handleReply} className="flex gap-2 pt-3 border-t border-white/[0.08]">
                 <input
                   type="text"
                   required
                   value={replyMessage}
                   onChange={(e) => setReplyMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 px-3.5 py-2 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                  placeholder="Type your message to support..."
+                  className="flex-1 px-4 py-3 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-aurora-cyan to-aurora-purple text-slate-950 font-bold text-xs rounded-xl shadow-glow"
+                  className="px-5 py-3 btn-emerald-3d font-display font-black text-xs rounded-xl shadow-glowGreen"
                 >
                   <Send className="w-4 h-4" />
                 </button>
               </form>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center my-auto text-center text-xs text-aurora-muted">
-              Select a ticket on the left to view the thread.
+            <div className="flex flex-col items-center justify-center my-auto text-center text-xs text-slate-400 space-y-2">
+              <MessageSquare className="w-8 h-8 text-slate-500" />
+              <span>Select an inquiry from the left to view the encrypted conversation thread.</span>
             </div>
           )}
         </div>

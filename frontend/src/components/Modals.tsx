@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Shield, QrCode, CheckCircle2, Copy, AlertTriangle, 
-  Sparkles, Wallet, ArrowUpRight, Clock, RefreshCw 
+  Sparkles, Wallet, ArrowUpRight, Clock, RefreshCw, Crown, Lock
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { api } from '@/lib/api';
+import { VeltrixLogoMark } from '@/components/GameArtwork';
 
 export const Modals: React.FC = () => {
   const { 
@@ -54,7 +55,7 @@ export const Modals: React.FC = () => {
       showNotification(`Welcome back, ${res.user.username}!`, 'success');
       closeModal();
     } catch (err: any) {
-      // If backend is sleeping/cold-starting, log into rich Demo VIP session instantly!
+      // If backend is cold-starting, log into instant Demo VIP session!
       const isRoleAdmin = authLogin.includes('admin');
       const demoUser = {
         id: isRoleAdmin ? 'usr_admin_001' : 'usr_player_001',
@@ -169,7 +170,7 @@ export const Modals: React.FC = () => {
       showNotification(res.message, 'success');
       closeModal();
     } catch (err: any) {
-      showNotification(err.message, 'error');
+      showNotification(err.message || 'Reward already claimed today', 'error');
     } finally {
       setRewardClaiming(false);
     }
@@ -177,20 +178,20 @@ export const Modals: React.FC = () => {
 
   return (
     <>
-      {/* Toast Notification banner */}
+      {/* Toast Notification Banner */}
       {notification && (
-        <div className="fixed top-20 right-4 z-50 max-w-sm p-4 rounded-2xl bg-aurora-surface border border-aurora-border shadow-card flex items-start gap-3 backdrop-blur-xl animate-fade-in">
+        <div className="fixed top-20 right-4 z-50 max-w-sm p-4 rounded-2xl lux-card border-white/20 shadow-lux flex items-start gap-3 backdrop-blur-2xl animate-fade-in">
           {notification.type === 'success' ? (
-            <CheckCircle2 className="w-5 h-5 text-aurora-success shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-5 h-5 text-[#47EC84] shrink-0 mt-0.5" />
           ) : notification.type === 'error' ? (
-            <AlertTriangle className="w-5 h-5 text-aurora-danger shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
           ) : (
-            <Sparkles className="w-5 h-5 text-aurora-cyan shrink-0 mt-0.5" />
+            <Sparkles className="w-5 h-5 text-[#F5B041] shrink-0 mt-0.5" />
           )}
-          <div className="flex-1 text-xs text-aurora-text leading-relaxed">
+          <div className="flex-1 text-xs text-white leading-relaxed">
             {notification.message}
           </div>
-          <button onClick={clearNotification} className="text-aurora-muted hover:text-aurora-text">
+          <button onClick={clearNotification} className="text-slate-400 hover:text-white">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -198,22 +199,20 @@ export const Modals: React.FC = () => {
 
       {/* Modal Dialog Backdrop */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md bg-aurora-surface border border-aurora-border rounded-3xl shadow-card overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative w-full max-w-md lux-card border-white/15 rounded-3xl shadow-lux overflow-hidden animate-scale-up">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-5 border-b border-aurora-border/60">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-aurora-elevated flex items-center justify-center text-aurora-gold font-bold text-sm">
-                  VX
-                </div>
-                <h3 className="font-bold text-sm text-aurora-text capitalize">
+            <div className="flex items-center justify-between p-5 border-b border-white/[0.08] bg-black/40">
+              <div className="flex items-center gap-2.5">
+                <VeltrixLogoMark className="w-7 h-7" />
+                <h3 className="font-display font-black text-sm text-white capitalize tracking-wide">
                   {activeModal === 'login' && 'Sign In to Veltrix'}
-                  {activeModal === 'register' && 'Create Player Account'}
-                  {activeModal === 'deposit' && 'Instant Dynamic QR Deposit'}
-                  {activeModal === 'dailyReward' && 'Claim Daily Reward'}
+                  {activeModal === 'register' && 'Open VIP Player Account'}
+                  {activeModal === 'deposit' && 'Instant Dynamic QR Cashier'}
+                  {activeModal === 'dailyReward' && 'Daily Streak VIP Drop'}
                 </h3>
               </div>
-              <button onClick={closeModal} className="text-aurora-muted hover:text-aurora-text p-1 rounded-lg">
+              <button onClick={closeModal} className="text-slate-400 hover:text-white p-1 rounded-lg">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -221,7 +220,7 @@ export const Modals: React.FC = () => {
             {/* Modal Body */}
             <div className="p-6">
               {errorMessage && (
-                <div className="mb-4 p-3 bg-aurora-danger/10 border border-aurora-danger/30 rounded-xl text-xs text-aurora-danger flex items-center gap-2">
+                <div className="mb-4 p-3 bg-red-950/40 border border-red-500/40 rounded-xl text-xs text-red-300 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
@@ -231,7 +230,7 @@ export const Modals: React.FC = () => {
               {activeModal === 'login' && (
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-medium text-aurora-muted mb-1">
+                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider text-[11px]">
                       Email or Username
                     </label>
                     <input
@@ -240,12 +239,12 @@ export const Modals: React.FC = () => {
                       value={authLogin}
                       onChange={(e) => setAuthLogin(e.target.value)}
                       placeholder="player1@veltrix.arena"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-aurora-muted mb-1">
+                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider text-[11px]">
                       Password
                     </label>
                     <input
@@ -254,27 +253,27 @@ export const Modals: React.FC = () => {
                       value={authPassword}
                       onChange={(e) => setAuthPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                      className="w-full px-4 py-3 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
                     />
                   </div>
 
-                  {/* 1-Click Demo Fill buttons */}
+                  {/* Quick Sandbox Credentials */}
                   <div className="pt-1">
-                    <p className="text-[10px] text-aurora-muted mb-1.5 uppercase font-semibold">1-Click Sandbox Credentials:</p>
+                    <p className="text-[10px] text-slate-400 mb-1.5 uppercase font-mono tracking-wider">Instant 1-Click Sandbox Credentials:</p>
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => handleQuickFill('player')}
-                        className="px-2.5 py-1 text-[11px] bg-aurora-elevated hover:bg-aurora-surface text-aurora-cyan rounded-lg border border-aurora-cyan/30"
+                        className="px-3 py-1.5 text-[11px] bg-white/[0.04] hover:bg-white/[0.08] text-[#47EC84] rounded-lg border border-[#47EC84]/30 font-bold active:scale-95 transition"
                       >
-                        Fill Player (player1)
+                        Player (player1)
                       </button>
                       <button
                         type="button"
                         onClick={() => handleQuickFill('admin')}
-                        className="px-2.5 py-1 text-[11px] bg-aurora-elevated hover:bg-aurora-surface text-aurora-purple rounded-lg border border-aurora-purple/30"
+                        className="px-3 py-1.5 text-[11px] bg-white/[0.04] hover:bg-white/[0.08] text-[#F5B041] rounded-lg border border-[#F5B041]/30 font-bold active:scale-95 transition"
                       >
-                        Fill Admin (admin)
+                        Admin (admin)
                       </button>
                     </div>
                   </div>
@@ -282,9 +281,9 @@ export const Modals: React.FC = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-gradient-to-r from-aurora-cyan to-aurora-purple text-slate-950 font-bold text-xs rounded-xl shadow-glow transition hover:opacity-95"
+                    className="w-full py-3.5 btn-emerald-3d font-display font-black text-xs rounded-xl shadow-glowGreen transition"
                   >
-                    {loading ? 'Authenticating...' : 'Sign In'}
+                    {loading ? 'Authenticating...' : 'Sign In to Arena'}
                   </button>
                 </form>
               )}
@@ -293,63 +292,63 @@ export const Modals: React.FC = () => {
               {activeModal === 'register' && (
                 <form onSubmit={handleRegister} className="space-y-3.5">
                   <div>
-                    <label className="block text-xs font-medium text-aurora-muted mb-1">Email</label>
+                    <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider text-[11px]">Email</label>
                     <input
                       type="email"
                       required
                       value={authEmail}
                       onChange={(e) => setAuthEmail(e.target.value)}
                       placeholder="player@veltrix.arena"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-aurora-muted mb-1">Username</label>
+                    <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider text-[11px]">Username</label>
                     <input
                       type="text"
                       required
                       value={authUsername}
                       onChange={(e) => setAuthUsername(e.target.value)}
-                      placeholder="auroraking"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                      placeholder="highroller99"
+                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-aurora-muted mb-1">Password</label>
+                    <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider text-[11px]">Password</label>
                     <input
                       type="password"
                       required
                       value={authPassword}
                       onChange={(e) => setAuthPassword(e.target.value)}
                       placeholder="At least 6 characters"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan"
+                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-aurora-muted mb-1">Referral Code (Optional)</label>
+                    <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider text-[11px]">Referral Code (Optional)</label>
                     <input
                       type="text"
                       value={authRefCode}
                       onChange={(e) => setAuthRefCode(e.target.value)}
-                      placeholder="PLAY001"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan uppercase"
+                      placeholder="VELTRIX001"
+                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84] uppercase font-mono"
                     />
                   </div>
 
-                  <div className="p-2.5 bg-aurora-gold/10 border border-aurora-gold/20 rounded-xl text-[11px] text-aurora-gold flex items-center gap-2">
+                  <div className="p-2.5 bg-[#47EC84]/10 border border-[#47EC84]/30 rounded-xl text-[11px] text-[#47EC84] flex items-center gap-2">
                     <Sparkles className="w-4 h-4 shrink-0" />
-                    <span>Instant bonus: 10,000 DEMO credits credited immediately upon registration.</span>
+                    <span>Instant VIP Bonus: 10,000 DEMO credits awarded immediately.</span>
                   </div>
 
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 bg-gradient-to-r from-aurora-gold to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-glowGold transition hover:opacity-95"
+                    className="w-full py-3.5 btn-gold-3d font-display font-black text-xs rounded-xl shadow-glowGold transition"
                   >
-                    {loading ? 'Creating Account...' : 'Complete Registration'}
+                    {loading ? 'Creating Account...' : 'Complete VIP Registration'}
                   </button>
                 </form>
               )}
@@ -359,8 +358,8 @@ export const Modals: React.FC = () => {
                 <div>
                   {!paymentIntent ? (
                     <div className="space-y-4">
-                      <p className="text-xs text-aurora-muted">
-                        Select or enter deposit amount. A unique, dynamic UPI payment QR will be generated with a 15-minute countdown.
+                      <p className="text-xs text-slate-400">
+                        Select deposit amount. A unique NPCI dynamic UPI payment QR will be generated with 15-minute countdown.
                       </p>
 
                       <div className="grid grid-cols-4 gap-2">
@@ -369,10 +368,10 @@ export const Modals: React.FC = () => {
                             key={amt}
                             type="button"
                             onClick={() => setDepositAmount(amt)}
-                            className={`py-2 text-xs font-semibold rounded-xl border transition ${
+                            className={`py-2 text-xs font-display font-black rounded-xl border transition ${
                               depositAmount === amt
-                                ? 'bg-aurora-cyan/20 border-aurora-cyan text-aurora-cyan shadow-glow'
-                                : 'bg-aurora-elevated border-aurora-border text-aurora-text hover:border-aurora-muted'
+                                ? 'bg-[#47EC84] text-slate-950 border-[#47EC84] shadow-glowGreen'
+                                : 'bg-black/60 border-white/10 text-white hover:border-[#47EC84]/40'
                             }`}
                           >
                             ₹{amt}
@@ -381,14 +380,14 @@ export const Modals: React.FC = () => {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-aurora-muted mb-1">Custom Amount (₹)</label>
+                        <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider text-[11px]">Custom Amount (₹)</label>
                         <input
                           type="number"
                           min={50}
                           max={500000}
                           value={depositAmount}
                           onChange={(e) => setDepositAmount(Number(e.target.value))}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-aurora-elevated border border-aurora-border text-xs text-aurora-text focus:outline-none focus:border-aurora-cyan font-mono"
+                          className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-white/10 text-xs text-white focus:outline-none focus:border-[#47EC84] font-mono tabular-nums"
                         />
                       </div>
 
@@ -396,42 +395,44 @@ export const Modals: React.FC = () => {
                         type="button"
                         onClick={handleGenerateQR}
                         disabled={loading}
-                        className="w-full py-3 bg-gradient-to-r from-aurora-gold to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-glowGold transition hover:opacity-95 flex items-center justify-center gap-2"
+                        className="w-full py-3.5 btn-emerald-3d font-display font-black text-xs rounded-xl shadow-glowGreen transition flex items-center justify-center gap-2"
                       >
                         <QrCode className="w-4 h-4" />
-                        <span>{loading ? 'Generating Dynamic QR...' : 'Generate Payment QR'}</span>
+                        <span>{loading ? 'Generating Encrypted QR...' : 'Generate Dynamic Payment QR'}</span>
                       </button>
                     </div>
                   ) : (
                     <div className="space-y-4 text-center">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-aurora-elevated rounded-full border border-aurora-border text-xs text-aurora-muted">
-                        <Clock className="w-3.5 h-3.5 text-aurora-gold" />
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.04] rounded-full border border-white/10 text-xs text-slate-400 font-mono">
+                        <Clock className="w-3.5 h-3.5 text-[#F5B041]" />
                         <span>Expires in: {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}</span>
                       </div>
 
-                      {/* Animated QR Canvas representation */}
-                      <div className="p-4 bg-white rounded-2xl w-48 h-48 mx-auto flex flex-col items-center justify-center shadow-lg relative border-4 border-aurora-gold/40">
-                        {/* QR graphic mockup using SVG */}
-                        <svg className="w-36 h-36" viewBox="0 0 100 100" fill="currentColor">
-                          <rect x="0" y="0" width="30" height="30" />
-                          <rect x="5" y="5" width="20" height="20" fill="white" />
-                          <rect x="10" y="10" width="10" height="10" />
-                          <rect x="70" y="0" width="30" height="30" />
-                          <rect x="75" y="5" width="20" height="20" fill="white" />
-                          <rect x="80" y="10" width="10" height="10" />
-                          <rect x="0" y="70" width="30" height="30" />
-                          <rect x="5" y="75" width="20" height="20" fill="white" />
-                          <rect x="10" y="80" width="10" height="10" />
-                          <rect x="40" y="40" width="20" height="20" fill="#080C18" />
-                          <circle cx="50" cy="50" r="5" fill="#D9B76E" />
+                      {/* Vector QR container */}
+                      <div className="p-4 bg-white rounded-2xl w-44 h-44 mx-auto flex flex-col items-center justify-center shadow-2xl relative border-4 border-[#F5B041]/50">
+                        <svg className="w-36 h-36" viewBox="0 0 100 100" fill="#07090A">
+                          <rect x="0" y="0" width="30" height="30" rx="4" />
+                          <rect x="5" y="5" width="20" height="20" fill="white" rx="2" />
+                          <rect x="10" y="10" width="10" height="10" rx="1" />
+                          <rect x="70" y="0" width="30" height="30" rx="4" />
+                          <rect x="75" y="5" width="20" height="20" fill="white" rx="2" />
+                          <rect x="80" y="10" width="10" height="10" rx="1" />
+                          <rect x="0" y="70" width="30" height="30" rx="4" />
+                          <rect x="5" y="75" width="20" height="20" fill="white" rx="2" />
+                          <rect x="10" y="80" width="10" height="10" rx="1" />
+                          <rect x="42" y="42" width="16" height="16" fill="#47EC84" rx="3" />
+                          <rect x="40" y="10" width="8" height="8" />
+                          <rect x="52" y="22" width="8" height="8" />
+                          <rect x="70" y="70" width="10" height="10" />
+                          <rect x="40" y="80" width="8" height="8" />
                         </svg>
                       </div>
 
-                      <div className="text-xs text-aurora-text font-mono font-bold">
-                        Amount: ₹{parseFloat(paymentIntent.amount).toFixed(2)}
+                      <div className="font-display text-base text-[#F5B041] font-black tabular-nums">
+                        Amount to Pay: ₹{parseFloat(paymentIntent.amount).toFixed(2)}
                       </div>
 
-                      <div className="p-2.5 bg-aurora-elevated rounded-xl border border-aurora-border text-[11px] text-aurora-muted flex items-center justify-between">
+                      <div className="p-3 bg-black/60 rounded-xl border border-white/10 text-[11px] text-slate-300 flex items-center justify-between">
                         <span className="truncate max-w-[240px] font-mono">{paymentIntent.intent_reference}</span>
                         <button
                           type="button"
@@ -440,22 +441,21 @@ export const Modals: React.FC = () => {
                             setCopied(true);
                             setTimeout(() => setCopied(false), 2000);
                           }}
-                          className="text-aurora-cyan hover:underline flex items-center gap-1 font-semibold"
+                          className="text-[#47EC84] hover:underline flex items-center gap-1 font-bold"
                         >
                           <Copy className="w-3 h-3" />
                           {copied ? 'Copied' : 'Copy UPI'}
                         </button>
                       </div>
 
-                      {/* 1-Click Sandbox Payment Confirmation */}
                       <button
                         type="button"
                         onClick={handleSandboxConfirm}
                         disabled={loading}
-                        className="w-full py-3 bg-gradient-to-r from-aurora-success to-emerald-600 text-slate-950 font-bold text-xs rounded-xl shadow-glow transition hover:opacity-95 flex items-center justify-center gap-2"
+                        className="w-full py-3.5 btn-emerald-3d font-display font-black text-xs rounded-xl shadow-glowGreen transition flex items-center justify-center gap-2"
                       >
                         <CheckCircle2 className="w-4 h-4" />
-                        <span>{loading ? 'Verifying...' : 'Simulate UPI App Payment Success'}</span>
+                        <span>{loading ? 'Verifying...' : 'Simulate Instant UPI Settlement'}</span>
                       </button>
                     </div>
                   )}
@@ -465,33 +465,33 @@ export const Modals: React.FC = () => {
               {/* DAILY REWARD MODAL */}
               {activeModal === 'dailyReward' && (
                 <div className="text-center space-y-4">
-                  <div className="w-16 h-16 rounded-2xl bg-aurora-gold/20 border border-aurora-gold/40 flex items-center justify-center mx-auto text-aurora-gold shadow-glowGold">
+                  <div className="w-16 h-16 rounded-2xl bg-[#F5B041]/20 border border-[#F5B041]/40 flex items-center justify-center mx-auto text-[#F5B041] shadow-glowGold">
                     <Sparkles className="w-8 h-8" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-base text-aurora-text">Daily Login Streak</h4>
-                    <p className="text-xs text-aurora-muted mt-1">
+                    <h4 className="font-display font-black text-lg text-white">Daily VIP Streak Drop</h4>
+                    <p className="text-xs text-slate-400 mt-1">
                       Claim free credits and loyalty points every 24 hours to fuel your gameplay.
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 py-2">
-                    <div className="p-3 bg-aurora-elevated rounded-xl border border-aurora-border">
-                      <div className="text-xs text-aurora-muted">Demo Credits</div>
-                      <div className="text-lg font-bold text-aurora-gold mt-1">+500</div>
+                    <div className="p-4 bg-black/60 rounded-2xl border border-white/10">
+                      <div className="text-xs text-slate-400">Demo Credits</div>
+                      <div className="font-display text-xl font-black text-[#F5B041] mt-1 tabular-nums">+500</div>
                     </div>
-                    <div className="p-3 bg-aurora-elevated rounded-xl border border-aurora-border">
-                      <div className="text-xs text-aurora-muted">Loyalty Points</div>
-                      <div className="text-lg font-bold text-aurora-cyan mt-1">+25</div>
+                    <div className="p-4 bg-black/60 rounded-2xl border border-white/10">
+                      <div className="text-xs text-slate-400">Loyalty Points</div>
+                      <div className="font-display text-xl font-black text-[#47EC84] mt-1 tabular-nums">+25 PTS</div>
                     </div>
                   </div>
 
                   <button
                     onClick={handleClaimDaily}
                     disabled={rewardClaiming}
-                    className="w-full py-3 bg-gradient-to-r from-aurora-gold to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-glowGold transition hover:opacity-95"
+                    className="w-full py-3.5 btn-gold-3d font-display font-black text-xs rounded-xl shadow-glowGold transition"
                   >
-                    {rewardClaiming ? 'Claiming Reward...' : 'Claim Today\'s Bonus'}
+                    {rewardClaiming ? 'Claiming Reward...' : 'Claim Today\'s VIP Bonus'}
                   </button>
                 </div>
               )}

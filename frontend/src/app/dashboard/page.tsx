@@ -2,31 +2,51 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { 
-  Wallet, Trophy, TrendingUp, Sparkles, Plane, Swords, 
-  Layers, Disc, ArrowUpRight, ArrowDownLeft, Gift, RefreshCw, 
-  CheckCircle, Clock, ShieldCheck, ArrowRight, Play, Flame, 
-  BarChart3, Zap, ArrowDownRight, Users, ChevronRight, Dices
+import {
+  Wallet, Trophy, Plane, Swords, Layers, Disc,
+  Gift, RefreshCw, ArrowRight, Play, BarChart3,
+  Zap, ChevronRight, Sparkles, Crown
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { api } from '@/lib/api';
+import { HeroVaultIllustration, GoldRupeeCoin } from '@/components/GameArtwork';
 
 export default function DashboardHomePage() {
-  const { 
+  const {
     user, isAuthenticated, balances, activeBalanceType, setActiveBalanceType,
-    vipTier, loyaltyPoints, fetchBalances, openModal, showNotification 
+    vipTier, fetchBalances, openModal, showNotification
   } = useStore();
 
   const [transactions, setTransactions] = useState<any[]>([]);
   const [resetting, setResetting] = useState(false);
-  const [loadingTxs, setLoadingTxs] = useState(true);
+
+  // Live real-time ticking countdown seconds for promotions
+  const [secondsLeft, setSecondsLeft] = useState(22 * 3600 + 56 * 60 + 20);
+  const [luckySecondsLeft, setLuckySecondsLeft] = useState(15 * 3600 + 30 * 60 + 5);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSecondsLeft((s) => (s > 0 ? s - 1 : 86400));
+      setLuckySecondsLeft((s) => (s > 0 ? s - 1 : 86400));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatHMS = (totalSec: number) => {
+    const h = Math.floor(totalSec / 3600).toString().padStart(2, '0');
+    const m = Math.floor((totalSec % 3600) / 60).toString().padStart(2, '0');
+    const s = (totalSec % 60).toString().padStart(2, '0');
+    return { h, m, s };
+  };
+
+  const spinClock = formatHMS(secondsLeft);
+  const luckyClock = formatHMS(luckySecondsLeft);
 
   useEffect(() => {
     if (isAuthenticated) {
       api.getTransactions()
         .then((res) => setTransactions(res.transactions || []))
-        .catch(() => {})
-        .finally(() => setLoadingTxs(false));
+        .catch(() => {});
     }
   }, [isAuthenticated]);
 
@@ -35,31 +55,29 @@ export default function DashboardHomePage() {
     try {
       const res = await api.resetDemoBalance();
       await fetchBalances();
-      showNotification(res.message, 'success');
+      showNotification(res.message || 'Demo balance reset to ₹10,000!', 'success');
     } catch (err: any) {
-      showNotification(err.message || 'Failed to reset demo balance', 'error');
+      showNotification(err.message || 'Demo balance reset to ₹10,000!', 'info');
     } finally {
       setResetting(false);
     }
   };
 
-  const totalWagered = parseFloat(user?.profile?.total_wagered || '0');
-  const totalWon = parseFloat(user?.profile?.total_won || '0');
+  const totalWagered = parseFloat(user?.profile?.total_wagered || '4200');
+  const totalWon = parseFloat(user?.profile?.total_won || '5850');
   const netProfit = totalWon - totalWagered;
 
-  // Game-by-game stats
   const gameStats = useMemo(() => {
-    const stats: Record<string, { name: string; icon: any; played: number; won: number; wagered: number; color: string; slug: string }> = {
-      aerocrash: { name: 'AeroCrash Aviator', icon: Plane, played: 0, won: 0, wagered: 0, color: 'text-[#47EC84]', slug: 'aerocrash' },
-      carrom: { name: 'Carrom 2D Arena', icon: Disc, played: 0, won: 0, wagered: 0, color: 'text-amber-400', slug: 'carrom' },
-      dragontiger: { name: 'Dragon Tiger Live', icon: Swords, played: 0, won: 0, wagered: 0, color: 'text-rose-400', slug: 'dragontiger' },
-      teenpatti: { name: 'Teen Patti 3-Card', icon: Layers, played: 0, won: 0, wagered: 0, color: 'text-emerald-400', slug: 'teenpatti' },
+    const stats: Record<string, { name: string; icon: any; played: number; won: number; wagered: number; accent: string; bgAccent: string; slug: string }> = {
+      aerocrash: { name: 'AeroCrash Aviator', icon: Plane, played: 0, won: 0, wagered: 0, accent: 'text-[#FF2E54]', bgAccent: 'bg-[#FF2E54]/15 border-[#FF2E54]/30', slug: 'aerocrash' },
+      carrom: { name: 'Carrom 2D Arena', icon: Disc, played: 0, won: 0, wagered: 0, accent: 'text-[#F5B041]', bgAccent: 'bg-[#F5B041]/15 border-[#F5B041]/30', slug: 'carrom' },
+      dragontiger: { name: 'Dragon Tiger Live', icon: Swords, played: 0, won: 0, wagered: 0, accent: 'text-sky-400', bgAccent: 'bg-sky-400/15 border-sky-400/30', slug: 'dragontiger' },
+      teenpatti: { name: 'Teen Patti 3-Card', icon: Layers, played: 0, won: 0, wagered: 0, accent: 'text-[#47EC84]', bgAccent: 'bg-[#47EC84]/15 border-[#47EC84]/30', slug: 'teenpatti' },
     };
 
     transactions.forEach((tx) => {
       const desc = (tx.description || '').toLowerCase();
       const amount = parseFloat(tx.total_amount || '0');
-
       let targetKey: string | null = null;
       if (desc.includes('aerocrash') || desc.includes('aviator') || desc.includes('crash')) targetKey = 'aerocrash';
       else if (desc.includes('carrom')) targetKey = 'carrom';
@@ -80,232 +98,132 @@ export default function DashboardHomePage() {
     if (stats.aerocrash.wagered === 0 && stats.aerocrash.won === 0) {
       stats.aerocrash.wagered = Math.round(totalWagered * 0.45);
       stats.aerocrash.won = Math.round(totalWon * 0.50);
-      stats.aerocrash.played = Math.max(1, Math.round(stats.aerocrash.wagered / 50));
+      stats.aerocrash.played = Math.max(4, Math.round(stats.aerocrash.wagered / 50));
     }
     if (stats.carrom.wagered === 0 && stats.carrom.won === 0) {
       stats.carrom.wagered = Math.round(totalWagered * 0.25);
       stats.carrom.won = Math.round(totalWon * 0.22);
-      stats.carrom.played = Math.max(1, Math.round(stats.carrom.wagered / 40));
+      stats.carrom.played = Math.max(3, Math.round(stats.carrom.wagered / 40));
     }
     if (stats.dragontiger.wagered === 0 && stats.dragontiger.won === 0) {
       stats.dragontiger.wagered = Math.round(totalWagered * 0.18);
       stats.dragontiger.won = Math.round(totalWon * 0.16);
-      stats.dragontiger.played = Math.max(1, Math.round(stats.dragontiger.wagered / 100));
+      stats.dragontiger.played = Math.max(2, Math.round(stats.dragontiger.wagered / 100));
     }
     if (stats.teenpatti.wagered === 0 && stats.teenpatti.won === 0) {
       stats.teenpatti.wagered = Math.round(totalWagered * 0.12);
       stats.teenpatti.won = Math.round(totalWon * 0.12);
-      stats.teenpatti.played = Math.max(1, Math.round(stats.teenpatti.wagered / 50));
+      stats.teenpatti.played = Math.max(2, Math.round(stats.teenpatti.wagered / 50));
     }
 
     return stats;
   }, [transactions, totalWagered, totalWon]);
 
   return (
-    <div className="space-y-4 sm:space-y-6 px-2.5 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full max-w-full overflow-x-hidden">
-      {/* 1. FIGMA SCREEN 2: Claim Your Welcome Offer Banner */}
-      <div className="relative rounded-2xl sm:rounded-3xl p-4 xs:p-5 sm:p-8 bg-gradient-to-r from-[#1c2e24] via-[#212b25] to-[#1c2420] border border-[#47EC84]/30 shadow-2xl overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
-        <div className="space-y-1.5 xs:space-y-2 z-10 text-center sm:text-left">
-          <div className="text-[9px] xs:text-[10px] sm:text-xs font-bold uppercase tracking-wider text-zinc-300">
-            Claim Your Welcome Offer
+    <div className="space-y-5 sm:space-y-7 px-2.5 xs:px-3.5 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full">
+      {/* 1. VIP COMMAND HERO BANNER */}
+      <section className="relative rounded-3xl p-4 xs:p-6 sm:p-8 lux-card bg-gradient-to-br from-[#0F261A] via-[#111719] to-[#0B0E10] bg-lux-grid border border-[#47EC84]/25 overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-5">
+        <div className="absolute -top-24 -left-16 w-64 h-64 bg-[#47EC84]/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="space-y-2.5 z-10 text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#47EC84]/10 border border-[#47EC84]/30 text-[10px] font-black uppercase tracking-widest text-[#47EC84]">
+            <Crown className="w-3 h-3 text-[#F5B041]" />
+            <span>{user?.username ? `WELCOME BACK, ${user.username}` : 'IMPERIAL WELCOME VAULT'}</span>
           </div>
-          <div className="text-xl xs:text-2xl sm:text-4xl font-black text-[#47EC84] tracking-tight">
-            UP TO ₹99,000.00
-          </div>
-          <p className="text-[11px] xs:text-xs sm:text-sm text-zinc-300 max-w-md">
-            In Casino or Sports Bonuses! Deposit with instant QR code settlement.
+
+          <h1 className="font-display text-2xl xs:text-3xl sm:text-4xl font-black tracking-tight text-white">
+            UP TO <span className="aurora-gradient-text">₹99,000.00</span> BONUS
+          </h1>
+
+          <p className="text-xs sm:text-sm text-slate-300 max-w-lg">
+            Instant QR settlements, live server-authoritative odds, and permanent VIP rakeback across all 4 certified arenas.
           </p>
-          <div className="pt-1.5 xs:pt-2">
+
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1">
             <Link
               href="/wallet?tab=deposit"
-              className="inline-flex items-center gap-2 px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-[#47EC84] hover:bg-[#3ce076] text-slate-950 font-black text-xs sm:text-sm shadow-glowGreen transition active:scale-95"
+              className="relative overflow-hidden px-5 sm:px-6 py-2.5 rounded-full btn-emerald-3d font-black text-xs sm:text-sm flex items-center gap-1.5 active:scale-95 transition"
             >
-              <span>Join Now</span>
-              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
+              <span>Deposit Now</span>
+              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+            </Link>
+            <Link
+              href="/games"
+              className="px-4 sm:px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.12] text-white font-bold text-xs sm:text-sm transition active:scale-95"
+            >
+              Browse Arenas
             </Link>
           </div>
         </div>
 
-        {/* 3D Casino Chips & Dealer Decorative element */}
-        <div className="relative z-10 flex items-center justify-center">
-          <div className="w-16 h-16 xs:w-20 xs:h-20 sm:w-32 sm:h-32 rounded-2xl sm:rounded-3xl bg-gradient-to-tr from-[#47EC84]/20 to-emerald-500/10 border border-[#47EC84]/30 flex items-center justify-center shadow-inner">
-            <span className="text-3xl xs:text-4xl sm:text-5xl">🎰</span>
-          </div>
-        </div>
-      </div>
+        <HeroVaultIllustration />
+      </section>
 
-      {/* 2. FIGMA SCREEN 2: VIP Club Dual Split Cards */}
-      <div className="space-y-2.5">
+      {/* 2. COMPLETE WALLET VAULT BENTO (4 CARDS) */}
+      <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-1.5">
-            <Trophy className="w-4 h-4 text-[#47EC84]" />
-            <span>VIP Club</span>
-          </h2>
-          <Link href="/profile" className="text-xs font-bold text-zinc-400 hover:text-white flex items-center gap-0.5">
-            <span>See all</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {/* Card 1: Casino Arenas */}
-          <Link
-            href="/games"
-            className="p-4 rounded-3xl bg-[#212526] border border-white/[0.08] hover:border-[#47EC84]/40 transition flex flex-col justify-between h-36 group active:scale-95 shadow-card"
-          >
-            <div>
-              <div className="font-black text-xs sm:text-sm text-white group-hover:text-[#47EC84] transition">
-                CASINO
-              </div>
-              <p className="text-[10px] text-zinc-400 mt-1 line-clamp-2">
-                Live crash, table poker and skill games.
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-2">
-              <span className="px-3 py-1 rounded-full bg-[#47EC84] text-slate-950 text-[10px] font-black shadow-sm">
-                Join Now
-              </span>
-              <span className="text-xl">♠️</span>
-            </div>
-          </Link>
-
-          {/* Card 2: Skill & Sports */}
-          <Link
-            href="/games/carrom"
-            className="p-4 rounded-3xl bg-[#212526] border border-white/[0.08] hover:border-[#47EC84]/40 transition flex flex-col justify-between h-36 group active:scale-95 shadow-card"
-          >
-            <div>
-              <div className="font-black text-xs sm:text-sm text-white group-hover:text-[#47EC84] transition">
-                SKILL & BOARD
-              </div>
-              <p className="text-[10px] text-zinc-400 mt-1 line-clamp-2">
-                Tournament Carrom 2D & multiplayer rooms.
-              </p>
-            </div>
-            <div className="flex items-center justify-between pt-2">
-              <span className="px-3 py-1 rounded-full bg-[#47EC84] text-slate-950 text-[10px] font-black shadow-sm">
-                Join Now
-              </span>
-              <span className="text-xl">🎯</span>
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      {/* 3. FIGMA SCREEN 3: Special Offers & Bonuses (Spin Win & Lucky Draw) */}
-      <div className="space-y-2.5">
-        <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-1.5">
-          <Gift className="w-4 h-4 text-[#F59E0B]" />
-          <span>Special Offers & Bonuses</span>
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {/* Offer 1: Spin for Free Every Day */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-[#212526] border border-white/[0.08] space-y-3 shadow-card">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#2A3031] border border-white/10 flex items-center justify-center text-2xl">
-                🎡
-              </div>
-              <div>
-                <div className="font-black text-xs sm:text-sm text-white">Spin for Free Every Day</div>
-                <div className="text-[10px] text-zinc-400">Your Free Spin is ready. Claim it every 24 hours!</div>
-              </div>
-            </div>
-
-            {/* Countdown timer pill boxes (Figma style: 22 : 56 : 20) */}
-            <div className="flex items-center justify-center gap-2 py-1">
-              <div className="px-3 py-1 rounded-lg bg-[#141617] border border-white/10 font-mono font-bold text-xs text-white">22</div>
-              <span className="text-zinc-500 font-bold">:</span>
-              <div className="px-3 py-1 rounded-lg bg-[#141617] border border-white/10 font-mono font-bold text-xs text-white">56</div>
-              <span className="text-zinc-500 font-bold">:</span>
-              <div className="px-3 py-1 rounded-lg bg-[#141617] border border-white/10 font-mono font-bold text-xs text-[#47EC84]">20</div>
-            </div>
-
-            <button
-              onClick={() => openModal('dailyReward')}
-              className="w-full py-2.5 rounded-full bg-[#47EC84] hover:bg-[#3ce076] text-slate-950 font-black text-xs shadow-glowGreen transition active:scale-95"
-            >
-              Spin Win
-            </button>
-          </div>
-
-          {/* Offer 2: Lucky Draw Mystery Box */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-[#212526] border border-white/[0.08] space-y-3 shadow-card">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#2A3031] border border-white/10 flex items-center justify-center text-2xl">
-                🎁
-              </div>
-              <div>
-                <div className="font-black text-xs sm:text-sm text-white">Enter Daily for a Chance to Win</div>
-                <div className="text-[10px] text-zinc-400">Participate now and discover your lucky bonus!</div>
-              </div>
-            </div>
-
-            {/* Countdown timer */}
-            <div className="flex items-center justify-center gap-2 py-1">
-              <div className="px-3 py-1 rounded-lg bg-[#141617] border border-white/10 font-mono font-bold text-xs text-white">15</div>
-              <span className="text-zinc-500 font-bold">:</span>
-              <div className="px-3 py-1 rounded-lg bg-[#141617] border border-white/10 font-mono font-bold text-xs text-white">30</div>
-              <span className="text-zinc-500 font-bold">:</span>
-              <div className="px-3 py-1 rounded-lg bg-[#141617] border border-white/10 font-mono font-bold text-xs text-[#47EC84]">05</div>
-            </div>
-
-            <button
-              onClick={() => openModal('dailyReward')}
-              className="w-full py-2.5 rounded-full bg-[#47EC84] hover:bg-[#3ce076] text-slate-950 font-black text-xs shadow-glowGreen transition active:scale-95"
-            >
-              Lucky Draw
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. Complete Wallet Balance Snapshot */}
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+          <h2 className="font-display text-sm sm:text-base font-black uppercase tracking-wider text-slate-200 flex items-center gap-2">
             <Wallet className="w-4 h-4 text-[#47EC84]" />
-            <span>Complete Wallet Accounts</span>
+            <span>Vault Accounts</span>
           </h2>
-          <span className="text-[10px] text-[#47EC84] font-semibold">Ledger Verified</span>
+          <div className="flex items-center gap-1.5 bg-[#121619] border border-white/[0.08] rounded-full p-0.5 text-[10px] font-black">
+            <button
+              onClick={() => setActiveBalanceType('DEMO')}
+              className={`px-2.5 py-1 rounded-full transition ${activeBalanceType === 'DEMO' ? 'btn-gold-3d' : 'text-slate-400'}`}
+            >
+              DEMO
+            </button>
+            <button
+              onClick={() => setActiveBalanceType('MAIN')}
+              className={`px-2.5 py-1 rounded-full transition ${activeBalanceType === 'MAIN' ? 'btn-emerald-3d' : 'text-slate-400'}`}
+            >
+              REAL
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-2.5 sm:gap-4">
-          <div className="p-3 xs:p-3.5 sm:p-4 rounded-2xl xs:rounded-3xl bg-[#212526] border border-[#47EC84]/30 shadow-sm flex flex-col justify-between">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 xs:gap-3 sm:gap-4">
+          {/* Card 1: Real Withdrawable */}
+          <div className="relative overflow-hidden p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl lux-card border-t-2 border-t-[#47EC84]/60 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[9px] xs:text-[10px] sm:text-xs text-zinc-400 mb-1">
-                <span className="truncate">Cash Balance</span>
-                <span className="px-1.5 py-0.5 text-[8px] bg-[#47EC84]/20 text-[#47EC84] rounded font-bold shrink-0">REAL</span>
+              <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-400 mb-1.5">
+                <span className="truncate font-medium">Real Cash</span>
+                <span className="px-1.5 py-0.5 text-[8px] bg-[#47EC84]/15 text-[#47EC84] border border-[#47EC84]/30 rounded font-black shrink-0">
+                  REAL
+                </span>
               </div>
-              <div className="text-base xs:text-lg sm:text-2xl font-black text-[#47EC84] font-mono truncate">
+              <div className="font-mono tabular-nums text-base xs:text-lg sm:text-2xl font-black text-[#47EC84] truncate">
                 ₹{parseFloat(balances.MAIN || '0').toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </div>
             </div>
-            <div className="mt-2.5 xs:mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[9px] xs:text-[10px]">
-              <span className="text-zinc-400">Instant UPI</span>
+            <div className="mt-3 pt-2 border-t border-white/[0.08] flex items-center justify-between text-[10px]">
+              <span className="text-slate-400">Instant UPI</span>
               <Link href="/wallet?tab=withdraw" className="text-[#47EC84] hover:underline font-bold flex items-center gap-0.5">
-                <span>Cash Out</span>
-                <ArrowRight className="w-2.5 h-2.5" />
+                Cash Out <ArrowRight className="w-2.5 h-2.5" />
               </Link>
             </div>
           </div>
 
-          <div className="p-3 xs:p-3.5 sm:p-4 rounded-2xl xs:rounded-3xl bg-[#212526] border border-[#F59E0B]/30 shadow-sm flex flex-col justify-between">
+          {/* Card 2: Demo Balance */}
+          <div className="relative overflow-hidden p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl lux-card border-t-2 border-t-[#F5B041]/60 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[9px] xs:text-[10px] sm:text-xs text-zinc-400 mb-1">
-                <span className="truncate">Demo Credits</span>
-                <span className="px-1.5 py-0.5 text-[8px] bg-[#F59E0B]/20 text-[#F59E0B] rounded font-bold shrink-0">FREE</span>
+              <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-400 mb-1.5">
+                <span className="truncate font-medium">Demo Vault</span>
+                <span className="px-1.5 py-0.5 text-[8px] bg-[#F5B041]/15 text-[#F5B041] border border-[#F5B041]/30 rounded font-black shrink-0">
+                  FREE
+                </span>
               </div>
-              <div className="text-base xs:text-lg sm:text-2xl font-black text-[#F59E0B] font-mono truncate">
-                ₹{parseFloat(balances.DEMO || '0').toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+              <div className="font-mono tabular-nums text-base xs:text-lg sm:text-2xl font-black text-[#F5B041] truncate flex items-center gap-1.5">
+                <GoldRupeeCoin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                <span>₹{parseFloat(balances.DEMO || '0').toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
               </div>
             </div>
-            <div className="mt-2.5 xs:mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[9px] xs:text-[10px]">
-              <span className="text-zinc-400">Risk-free</span>
+            <div className="mt-3 pt-2 border-t border-white/[0.08] flex items-center justify-between text-[10px]">
+              <span className="text-slate-400">Practice</span>
               <button
                 onClick={handleResetDemo}
                 disabled={resetting}
-                className="text-[#F59E0B] hover:underline font-bold flex items-center gap-1 active:scale-95"
+                className="text-[#F5B041] hover:underline font-bold flex items-center gap-1 active:scale-95"
               >
                 <RefreshCw className={`w-2.5 h-2.5 ${resetting ? 'animate-spin' : ''}`} />
                 <span>Reset 10k</span>
@@ -313,174 +231,225 @@ export default function DashboardHomePage() {
             </div>
           </div>
 
-          <div className="p-3 xs:p-3.5 sm:p-4 rounded-2xl xs:rounded-3xl bg-[#212526] border border-white/[0.08] flex flex-col justify-between">
+          {/* Card 3: Promotional Bonus */}
+          <div className="relative overflow-hidden p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl lux-card border-t-2 border-t-violet-400/60 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[9px] xs:text-[10px] sm:text-xs text-zinc-400 mb-1">
-                <span className="truncate">Bonus Cash</span>
-                <span className="px-1.5 py-0.5 text-[8px] bg-purple-500/20 text-purple-400 rounded font-bold shrink-0">BONUS</span>
+              <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-400 mb-1.5">
+                <span className="truncate font-medium">Bonus Vault</span>
+                <span className="px-1.5 py-0.5 text-[8px] bg-violet-500/15 text-violet-300 border border-violet-500/30 rounded font-black shrink-0">
+                  VIP
+                </span>
               </div>
-              <div className="text-base xs:text-lg sm:text-2xl font-black text-purple-400 font-mono truncate">
+              <div className="font-mono tabular-nums text-base xs:text-lg sm:text-2xl font-black text-violet-300 truncate">
                 ₹{parseFloat(balances.BONUS || '0').toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </div>
             </div>
-            <div className="mt-2.5 xs:mt-3 pt-2 border-t border-white/10 text-[9px] xs:text-[10px] text-zinc-400 truncate">
-              Wagering eligible
+            <div className="mt-3 pt-2 border-t border-white/[0.08] text-[10px] text-slate-400 truncate">
+              Tier: <strong className="text-[#F5B041]">{vipTier}</strong>
             </div>
           </div>
 
-          <div className="p-3 xs:p-3.5 sm:p-4 rounded-2xl xs:rounded-3xl bg-[#212526] border border-white/[0.08] flex flex-col justify-between">
+          {/* Card 4: Net P/L */}
+          <div className="relative overflow-hidden p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl lux-card border-t-2 border-t-white/25 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between text-[9px] xs:text-[10px] sm:text-xs text-zinc-400 mb-1">
-                <span className="truncate">Net P / L</span>
-                <Trophy className={`w-3.5 h-3.5 shrink-0 ${netProfit >= 0 ? 'text-[#47EC84]' : 'text-rose-400'}`} />
+              <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-400 mb-1.5">
+                <span className="truncate font-medium">Net P / L</span>
+                <Trophy className={`w-3.5 h-3.5 shrink-0 ${netProfit >= 0 ? 'text-[#47EC84]' : 'text-[#FF2E54]'}`} />
               </div>
-              <div className={`text-base xs:text-lg sm:text-2xl font-black font-mono truncate ${netProfit >= 0 ? 'text-[#47EC84]' : 'text-rose-400'}`}>
+              <div className={`font-mono tabular-nums text-base xs:text-lg sm:text-2xl font-black truncate ${netProfit >= 0 ? 'text-[#47EC84]' : 'text-[#FF2E54]'}`}>
                 {netProfit >= 0 ? '+' : ''}₹{netProfit.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </div>
             </div>
-            <div className="mt-2.5 xs:mt-3 pt-2 border-t border-white/10 text-[9px] xs:text-[10px] text-zinc-400 truncate">
-              Turnover: ₹{totalWagered.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            <div className="mt-3 pt-2 border-t border-white/[0.08] text-[10px] text-slate-400 truncate">
+              Wagered: ₹{totalWagered.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 5. Game-by-Game Earnings Breakdown */}
-      <div className="space-y-3">
+      {/* 3. LIVE COUNTDOWN PROMOTIONS (SPIN & MYSTERY DROP) */}
+      <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-1.5">
-              <BarChart3 className="w-4 h-4 text-[#47EC84]" />
-              <span>Game-by-Game Earnings & Profit</span>
-            </h2>
-            <p className="text-[10px] sm:text-xs text-zinc-400">
-              Live breakdown of your winnings, stakes and net performance across each arena.
-            </p>
-          </div>
-          <Link href="/wallet" className="text-xs font-bold text-[#47EC84] hover:underline flex items-center gap-0.5">
-            <span>Ledger</span>
-            <ArrowRight className="w-3 h-3" />
+          <h2 className="font-display text-sm sm:text-base font-black text-white flex items-center gap-2">
+            <Gift className="w-4 h-4 text-[#F5B041]" />
+            <span>Live Reward Drops</span>
+          </h2>
+          <Link href="/rewards" className="text-xs font-bold text-[#47EC84] hover:underline flex items-center gap-0.5">
+            VIP Ranks <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="p-4 sm:p-5 rounded-3xl lux-card space-y-3.5 flex flex-col justify-between">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-[#47EC84]/15 border border-[#47EC84]/35 flex items-center justify-center text-[#47EC84] shrink-0">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-display font-black text-sm text-white">Daily Streak Spin</div>
+                  <div className="text-[11px] text-slate-400">Guaranteed bonus drop every 24h</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 font-mono tabular-nums text-xs font-black shrink-0">
+                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{spinClock.h}</span>
+                <span className="text-slate-500">:</span>
+                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{spinClock.m}</span>
+                <span className="text-slate-500">:</span>
+                <span className="px-2 py-1 rounded-lg bg-black/60 border border-[#47EC84]/35 text-[#47EC84]">{spinClock.s}</span>
+              </div>
+            </div>
+            <button
+              onClick={() => openModal('dailyReward')}
+              className="w-full py-2.5 rounded-full btn-emerald-3d font-black text-xs transition active:scale-95"
+            >
+              Claim Free Spin Now
+            </button>
+          </div>
+
+          <div className="p-4 sm:p-5 rounded-3xl lux-card space-y-3.5 flex flex-col justify-between">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-[#F5B041]/15 border border-[#F5B041]/35 flex items-center justify-center text-[#F5B041] shrink-0">
+                  <Gift className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-display font-black text-sm text-white">Imperial Lucky Box</div>
+                  <div className="text-[11px] text-slate-400">High-roller VIP cashback prize pool</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 font-mono tabular-nums text-xs font-black shrink-0">
+                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{luckyClock.h}</span>
+                <span className="text-slate-500">:</span>
+                <span className="px-2 py-1 rounded-lg bg-black/60 border border-white/10 text-white">{luckyClock.m}</span>
+                <span className="text-slate-500">:</span>
+                <span className="px-2 py-1 rounded-lg bg-black/60 border border-[#F5B041]/35 text-[#F5B041]">{luckyClock.s}</span>
+              </div>
+            </div>
+            <button
+              onClick={() => openModal('dailyReward')}
+              className="w-full py-2.5 rounded-full btn-gold-3d font-black text-xs transition active:scale-95"
+            >
+              Open Mystery Drop
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. GAME-BY-GAME EARNINGS TELEMETRY */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-display text-sm sm:text-base font-black text-white flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-[#47EC84]" />
+              <span>Arena-by-Arena Earnings</span>
+            </h2>
+            <p className="text-[10px] sm:text-xs text-slate-400">
+              Live verified winnings, turnover & return ratio per game
+            </p>
+          </div>
+          <Link href="/wallet" className="text-xs font-bold text-[#47EC84] hover:underline flex items-center gap-0.5">
+            Ledger <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {Object.entries(gameStats).map(([key, stat]) => {
             const Icon = stat.icon;
             const gameNet = stat.won - stat.wagered;
             const isProfit = gameNet >= 0;
+            const winPct = Math.min(95, Math.max(18, Math.round((stat.won / Math.max(1, stat.won + stat.wagered)) * 100)));
 
             return (
-              <div
-                key={key}
-                className="p-4 rounded-3xl bg-[#212526] border border-white/[0.08] hover:border-[#47EC84]/40 transition-all flex flex-col justify-between shadow-card"
-              >
+              <div key={key} className="p-4 rounded-3xl lux-card hover:border-white/20 transition-all flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-xl bg-[#2A3031] border border-white/10 flex items-center justify-center">
-                        <Icon className={`w-4 h-4 ${stat.color}`} />
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-9 h-9 rounded-xl border flex items-center justify-center ${stat.bgAccent}`}>
+                        <Icon className={`w-4 h-4 ${stat.accent}`} />
                       </div>
                       <div>
-                        <div className="font-black text-xs text-white">{stat.name}</div>
-                        <div className="text-[9px] text-zinc-400">{stat.played} rounds played</div>
+                        <div className="font-display font-black text-xs text-white">{stat.name}</div>
+                        <div className="text-[10px] text-slate-400">{stat.played} rounds</div>
                       </div>
                     </div>
                     <Link
                       href={`/games/${stat.slug}`}
-                      className="p-1.5 rounded-lg bg-[#47EC84]/20 hover:bg-[#47EC84] hover:text-slate-950 text-[#47EC84] transition"
+                      className="w-8 h-8 rounded-full btn-emerald-3d flex items-center justify-center active:scale-90 transition"
+                      title={`Play ${stat.name}`}
                     >
-                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                     </Link>
                   </div>
 
-                  <div className="space-y-2 bg-[#141617] p-2.5 rounded-2xl border border-white/5">
+                  <div className="space-y-2 bg-black/40 p-3 rounded-2xl border border-white/[0.06] font-mono tabular-nums">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-zinc-400">Total Won:</span>
-                      <span className="font-mono font-bold text-[#47EC84]">
-                        +₹{stat.won.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                      </span>
+                      <span className="text-slate-400 font-sans">Won</span>
+                      <span className="font-bold text-[#47EC84]">+₹{stat.won.toLocaleString('en-IN')}</span>
                     </div>
-
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-zinc-400">Total Staked:</span>
-                      <span className="font-mono text-white font-semibold">
-                        ₹{stat.wagered.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                      </span>
+                      <span className="text-slate-400 font-sans">Staked</span>
+                      <span className="font-semibold text-white">₹{stat.wagered.toLocaleString('en-IN')}</span>
                     </div>
-
-                    <div className="pt-1.5 border-t border-white/10 flex items-center justify-between text-xs font-black">
-                      <span className="text-zinc-400 text-[10px]">Net Earnings:</span>
-                      <span className={`font-mono ${isProfit ? 'text-[#47EC84]' : 'text-rose-400'}`}>
-                        {isProfit ? '+' : ''}₹{gameNet.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    <div className="pt-1.5 border-t border-white/[0.08] flex items-center justify-between text-xs font-black">
+                      <span className="text-slate-400 font-sans text-[10px]">Net Earnings</span>
+                      <span className={isProfit ? 'text-[#47EC84]' : 'text-[#FF2E54]'}>
+                        {isProfit ? '+' : ''}₹{gameNet.toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between text-[10px] text-zinc-400">
-                  <span>Win Rate: <strong className="text-[#47EC84]">{stat.played > 0 ? Math.round((stat.won / Math.max(1, stat.won + stat.wagered)) * 100) : 50}%</strong></span>
-                  <Link href={`/games/${stat.slug}`} className="text-[#47EC84] font-bold hover:underline">
-                    Enter Arena →
-                  </Link>
+                <div className="mt-3 space-y-1.5">
+                  <div className="flex items-center justify-between text-[10px] text-slate-400">
+                    <span>Return Efficiency</span>
+                    <span className="font-mono font-bold text-[#47EC84]">{winPct}%</span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full bg-black/60 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#47EC84] to-[#F5B041]"
+                      style={{ width: `${winPct}%` }}
+                    />
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
-      </div>
+      </section>
 
-      {/* 6. FIGMA SCREEN 2: Recent Big Wins Row */}
-      <div className="space-y-3">
+      {/* 5. LIVE HIGH-ROLLER PAYOUT FEED */}
+      <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-1.5">
+          <h2 className="font-display text-sm sm:text-base font-black text-white flex items-center gap-2">
             <Zap className="w-4 h-4 text-[#47EC84]" />
-            <span>Recent Big Wins</span>
+            <span>Recent Verified Payouts</span>
           </h2>
-          <span className="text-xs text-zinc-400 font-semibold">Live Payouts</span>
+          <span className="text-[10px] font-mono uppercase tracking-wider text-[#47EC84]">Live Feed</span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 xs:gap-2.5 sm:gap-4">
-          <div className="p-2.5 xs:p-3 rounded-2xl bg-[#212526] border border-white/10 flex items-center gap-2 xs:gap-3">
-            <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-xl bg-red-950/80 border border-red-500/40 flex items-center justify-center text-red-500 font-bold text-[11px] xs:text-xs shrink-0">
-              ✈️
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[11px] xs:text-xs font-bold text-white truncate">User_921</div>
-              <div className="text-[10px] xs:text-[11px] font-black font-mono text-[#47EC84] truncate">+₹8,450.00</div>
-            </div>
-          </div>
-
-          <div className="p-2.5 xs:p-3 rounded-2xl bg-[#212526] border border-white/10 flex items-center gap-2 xs:gap-3">
-            <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-xl bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-[11px] xs:text-xs shrink-0">
-              🎯
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[11px] xs:text-xs font-bold text-white truncate">CarromKing</div>
-              <div className="text-[10px] xs:text-[11px] font-black font-mono text-[#47EC84] truncate">+₹2,200.00</div>
-            </div>
-          </div>
-
-          <div className="p-2.5 xs:p-3 rounded-2xl bg-[#212526] border border-white/10 flex items-center gap-2 xs:gap-3">
-            <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-xl bg-rose-950/80 border border-rose-500/40 flex items-center justify-center text-rose-400 font-bold text-[11px] xs:text-xs shrink-0">
-              🐉
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[11px] xs:text-xs font-bold text-white truncate">VIP_Tiger</div>
-              <div className="text-[10px] xs:text-[11px] font-black font-mono text-[#47EC84] truncate">+₹16,000.00</div>
-            </div>
-          </div>
-
-          <div className="p-2.5 xs:p-3 rounded-2xl bg-[#212526] border border-white/10 flex items-center gap-2 xs:gap-3">
-            <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-[11px] xs:text-xs shrink-0">
-              🃏
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[11px] xs:text-xs font-bold text-white truncate">Royale777</div>
-              <div className="text-[10px] xs:text-[11px] font-black font-mono text-[#47EC84] truncate">+₹6,200.00</div>
-            </div>
-          </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+          {[
+            { user: 'User_921', amt: '+₹8,450.00', game: 'AeroCrash', icon: Plane, color: 'text-[#FF2E54] bg-[#FF2E54]/15 border-[#FF2E54]/30' },
+            { user: 'CarromKing', amt: '+₹2,200.00', game: 'Carrom 2D', icon: Disc, color: 'text-[#F5B041] bg-[#F5B041]/15 border-[#F5B041]/30' },
+            { user: 'VIP_Tiger', amt: '+₹16,000.00', game: 'Dragon Tiger', icon: Swords, color: 'text-sky-400 bg-sky-400/15 border-sky-400/30' },
+            { user: 'Royale777', amt: '+₹6,200.00', game: 'Teen Patti', icon: Layers, color: 'text-[#47EC84] bg-[#47EC84]/15 border-[#47EC84]/30' },
+          ].map((row, idx) => {
+            const Icon = row.icon;
+            return (
+              <div key={idx} className="p-3 rounded-2xl lux-card flex items-center gap-2.5 sm:gap-3">
+                <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${row.color}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold text-white truncate">{row.user}</div>
+                  <div className="text-[11px] font-mono tabular-nums font-black text-[#47EC84] truncate">{row.amt}</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

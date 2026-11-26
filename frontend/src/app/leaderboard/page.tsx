@@ -1,44 +1,55 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Trophy, Medal, Award, Flame, Sparkles } from 'lucide-react';
+import { Trophy, Crown, Flame, Sparkles, Medal, Award, ArrowUpRight } from 'lucide-react';
+import { GoldRupeeCoin } from '@/components/GameArtwork';
 
 export default function LeaderboardPage() {
   const [timeframe, setTimeframe] = useState<'DAILY' | 'WEEKLY' | 'ALL_TIME'>('WEEKLY');
 
   const leaders = [
-    { rank: 1, username: 'vip_king', vip: 'GOLD', totalWon: '₹92,000.00', gamesPlayed: 240 },
-    { rank: 2, username: 'aurora_apex', vip: 'PLATINUM', totalWon: '₹74,500.00', gamesPlayed: 185 },
-    { rank: 3, username: 'supersonic_88', vip: 'SILVER', totalWon: '₹48,200.00', gamesPlayed: 130 },
-    { rank: 4, username: 'player1', vip: 'SILVER', totalWon: '₹14,200.00', gamesPlayed: 62 },
-    { rank: 5, username: 'carrom_master', vip: 'BRONZE', totalWon: '₹9,800.00', gamesPlayed: 45 },
-    { rank: 6, username: 'tiger_strike', vip: 'BRONZE', totalWon: '₹7,450.00', gamesPlayed: 38 },
+    { rank: 1, username: 'vip_king', vip: 'ELITE', totalWon: '₹92,450.00', gamesPlayed: 248, winRate: '68%' },
+    { rank: 2, username: 'aurora_apex', vip: 'PLATINUM', totalWon: '₹74,800.00', gamesPlayed: 189, winRate: '64%' },
+    { rank: 3, username: 'supersonic_88', vip: 'GOLD', totalWon: '₹48,200.00', gamesPlayed: 134, winRate: '61%' },
+    { rank: 4, username: 'royal_striker', vip: 'GOLD', totalWon: '₹31,400.00', gamesPlayed: 92, winRate: '58%' },
+    { rank: 5, username: 'player1', vip: 'SILVER', totalWon: '₹14,200.00', gamesPlayed: 62, winRate: '54%' },
+    { rank: 6, username: 'carrom_master', vip: 'BRONZE', totalWon: '₹9,800.00', gamesPlayed: 45, winRate: '51%' },
+    { rank: 7, username: 'tiger_strike', vip: 'BRONZE', totalWon: '₹7,450.00', gamesPlayed: 38, winRate: '49%' },
   ];
 
   return (
-    <div className="space-y-8 px-4 lg:px-8 py-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-aurora-text flex items-center gap-2">
-            <Trophy className="w-7 h-7 text-aurora-gold" />
-            <span>Arena Leaderboards</span>
+    <div className="space-y-6 sm:space-y-8 px-2.5 xs:px-3 sm:px-6 lg:px-8 py-3 sm:py-6 max-w-7xl mx-auto pb-32 w-full max-w-full overflow-x-hidden">
+      {/* Header & Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="telemetry-badge text-[#F5B041] border-[#F5B041]/40 bg-[#F5B041]/10">
+              <Trophy className="w-3 h-3 text-[#F5B041]" />
+              PROVABLY FAIR AUDITED
+            </span>
+            <span className="telemetry-badge text-[#47EC84] border-[#47EC84]/40 bg-[#47EC84]/10">
+              <Sparkles className="w-3 h-3 text-[#47EC84]" />
+              ₹5,00,000 PRIZE POOL
+            </span>
+          </div>
+          <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+            Arena High-Roller Hall of Fame
           </h1>
-          <p className="text-xs sm:text-sm text-aurora-muted mt-1">
-            Top winners ranked by cumulative verified game winnings across all four arenas.
+          <p className="text-xs sm:text-sm text-slate-400">
+            Top winners ranked by verified cumulative cash winnings across all four arenas.
           </p>
         </div>
 
         {/* Timeframe Pills */}
-        <div className="flex items-center gap-1.5 p-1 bg-aurora-surface rounded-xl border border-aurora-border">
+        <div className="flex items-center gap-1.5 p-1.5 bg-black/60 rounded-2xl border border-white/10 self-start sm:self-auto">
           {(['DAILY', 'WEEKLY', 'ALL_TIME'] as const).map((tf) => (
             <button
               key={tf}
               onClick={() => setTimeframe(tf)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-display font-black transition active:scale-95 ${
                 timeframe === tf
-                  ? 'bg-aurora-elevated text-aurora-cyan border border-aurora-cyan/30 shadow-sm'
-                  : 'text-aurora-muted hover:text-aurora-text'
+                  ? 'bg-[#F5B041] text-slate-950 shadow-glowGold'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               {tf.replace('_', ' ')}
@@ -47,62 +58,98 @@ export default function LeaderboardPage() {
         </div>
       </div>
 
-      {/* Podium Top 3 */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-        {/* Rank 2 */}
-        <div className="order-2 sm:order-1 p-6 rounded-3xl bg-aurora-surface border border-aurora-border flex flex-col items-center justify-center text-center">
-          <div className="w-12 h-12 rounded-full bg-slate-400/20 text-slate-300 flex items-center justify-center font-bold text-lg mb-2 border border-slate-400/40">
-            2
+      {/* Podium Top 3 Stage */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 items-end">
+        {/* Rank 2 (Silver) */}
+        <div className="order-2 sm:order-1 p-6 rounded-3xl lux-card border-slate-400/40 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+          <div className="w-14 h-14 rounded-2xl bg-slate-300/15 text-slate-200 flex items-center justify-center font-display font-black text-xl mb-3 border border-slate-300/40 shadow-sm">
+            #2
           </div>
-          <div className="font-bold text-sm text-aurora-text">{leaders[1].username}</div>
-          <span className="text-[10px] text-aurora-purple font-mono font-bold uppercase">{leaders[1].vip}</span>
-          <div className="text-lg font-black text-aurora-text font-mono mt-2">{leaders[1].totalWon}</div>
+          <div className="font-display font-black text-base text-white">{leaders[1].username}</div>
+          <span className="telemetry-badge text-sky-300 border-sky-400/30 bg-sky-400/10 mt-1">
+            {leaders[1].vip} TIER
+          </span>
+          <div className="text-xl font-display font-black text-white font-mono tabular-nums mt-3">
+            {leaders[1].totalWon}
+          </div>
+          <div className="text-[11px] text-slate-400 font-mono mt-1">
+            {leaders[1].gamesPlayed} rounds • {leaders[1].winRate} win rate
+          </div>
         </div>
 
-        {/* Rank 1 */}
-        <div className="order-1 sm:order-2 p-8 rounded-3xl bg-gradient-to-b from-aurora-surface via-aurora-elevated to-aurora-surface border-2 border-aurora-gold/50 shadow-glowGold flex flex-col items-center justify-center text-center sm:-translate-y-2">
-          <div className="w-16 h-16 rounded-full bg-aurora-gold/20 text-aurora-gold flex items-center justify-center font-black text-2xl mb-2 border-2 border-aurora-gold/60">
+        {/* Rank 1 (Gold Crown Champion) */}
+        <div className="order-1 sm:order-2 p-8 rounded-3xl lux-card border-2 border-[#F5B041] shadow-glowGold flex flex-col items-center justify-center text-center sm:-translate-y-4 relative overflow-hidden bg-gradient-to-b from-[#181510] via-[#0E0F11] to-[#07090A]">
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#F5B041] via-amber-300 to-[#F5B041] animate-pulse" />
+          <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-3xl bg-[#F5B041]/20 text-[#F5B041] flex items-center justify-center font-black text-3xl mb-3 border-2 border-[#F5B041]/60 shadow-glowGold">
             👑
           </div>
-          <div className="font-bold text-base text-aurora-text">{leaders[0].username}</div>
-          <span className="text-[10px] text-aurora-gold font-mono font-bold uppercase">{leaders[0].vip}</span>
-          <div className="text-2xl font-black text-aurora-gold font-mono mt-2">{leaders[0].totalWon}</div>
-          <span className="px-2 py-0.5 mt-2 rounded bg-aurora-gold/20 text-aurora-gold text-[10px] font-bold">
-            CHAMPION
+          <div className="font-display font-black text-lg sm:text-xl text-white flex items-center gap-1.5">
+            <span>{leaders[0].username}</span>
+            <Sparkles className="w-4 h-4 text-[#F5B041]" />
+          </div>
+          <span className="telemetry-badge text-[#F5B041] border-[#F5B041]/50 bg-[#F5B041]/20 mt-1.5 font-bold">
+            {leaders[0].vip} SUPREME
+          </span>
+          <div className="text-2xl sm:text-3xl font-display font-black text-[#F5B041] font-mono tabular-nums mt-3">
+            {leaders[0].totalWon}
+          </div>
+          <span className="px-3 py-1 mt-3 rounded-full bg-[#F5B041]/20 text-[#F5B041] border border-[#F5B041]/40 text-[10px] font-black uppercase tracking-wider font-display">
+            ★ REIGNING CHAMPION ★
           </span>
         </div>
 
-        {/* Rank 3 */}
-        <div className="order-3 p-6 rounded-3xl bg-aurora-surface border border-aurora-border flex flex-col items-center justify-center text-center">
-          <div className="w-12 h-12 rounded-full bg-amber-700/20 text-amber-500 flex items-center justify-center font-bold text-lg mb-2 border border-amber-700/40">
-            3
+        {/* Rank 3 (Bronze) */}
+        <div className="order-3 p-6 rounded-3xl lux-card border-amber-700/40 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-amber-600 to-transparent" />
+          <div className="w-14 h-14 rounded-2xl bg-amber-700/15 text-amber-500 flex items-center justify-center font-display font-black text-xl mb-3 border border-amber-700/40 shadow-sm">
+            #3
           </div>
-          <div className="font-bold text-sm text-aurora-text">{leaders[2].username}</div>
-          <span className="text-[10px] text-aurora-cyan font-mono font-bold uppercase">{leaders[2].vip}</span>
-          <div className="text-lg font-black text-aurora-text font-mono mt-2">{leaders[2].totalWon}</div>
+          <div className="font-display font-black text-base text-white">{leaders[2].username}</div>
+          <span className="telemetry-badge text-[#F5B041] border-[#F5B041]/30 bg-[#F5B041]/10 mt-1">
+            {leaders[2].vip} TIER
+          </span>
+          <div className="text-xl font-display font-black text-white font-mono tabular-nums mt-3">
+            {leaders[2].totalWon}
+          </div>
+          <div className="text-[11px] text-slate-400 font-mono mt-1">
+            {leaders[2].gamesPlayed} rounds • {leaders[2].winRate} win rate
+          </div>
         </div>
       </div>
 
       {/* Leaderboard Table */}
-      <div className="rounded-2xl bg-aurora-surface border border-aurora-border overflow-hidden">
+      <div className="rounded-2xl lux-card overflow-hidden">
         <table className="w-full text-left text-xs">
-          <thead className="bg-aurora-elevated/70 text-aurora-muted uppercase font-mono text-[10px] border-b border-aurora-border">
+          <thead className="bg-black/60 text-slate-400 uppercase font-mono text-[10px] border-b border-white/[0.08]">
             <tr>
-              <th className="p-4">Rank</th>
-              <th className="p-4">Player</th>
-              <th className="p-4">VIP Level</th>
-              <th className="p-4">Rounds Played</th>
-              <th className="p-4 text-right">Total Winnings</th>
+              <th className="p-4 sm:p-5">Rank</th>
+              <th className="p-4 sm:p-5">Player Handle</th>
+              <th className="p-4 sm:p-5 hidden sm:table-cell">VIP Tier</th>
+              <th className="p-4 sm:p-5 hidden sm:table-cell">Rounds</th>
+              <th className="p-4 sm:p-5 hidden md:table-cell">Win Rate</th>
+              <th className="p-4 sm:p-5 text-right">Verified Cash Won</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-aurora-border/40">
+          <tbody className="divide-y divide-white/[0.06]">
             {leaders.map((lead) => (
-              <tr key={lead.rank} className="hover:bg-aurora-elevated/30 transition">
-                <td className="p-4 font-mono font-bold text-aurora-gold">#{lead.rank}</td>
-                <td className="p-4 font-semibold text-aurora-text">{lead.username}</td>
-                <td className="p-4 font-mono text-[11px] text-aurora-muted uppercase">{lead.vip}</td>
-                <td className="p-4 font-mono text-aurora-muted">{lead.gamesPlayed}</td>
-                <td className="p-4 text-right font-mono font-bold text-aurora-success">{lead.totalWon}</td>
+              <tr key={lead.rank} className="hover:bg-white/[0.03] transition">
+                <td className="p-4 sm:p-5 font-display font-black text-sm text-[#F5B041] tabular-nums">
+                  #{lead.rank}
+                </td>
+                <td className="p-4 sm:p-5 font-display font-bold text-white text-sm">
+                  {lead.username}
+                </td>
+                <td className="p-4 sm:p-5 hidden sm:table-cell font-mono text-xs">
+                  <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/10 text-slate-300">
+                    {lead.vip}
+                  </span>
+                </td>
+                <td className="p-4 sm:p-5 hidden sm:table-cell font-mono text-slate-400">{lead.gamesPlayed}</td>
+                <td className="p-4 sm:p-5 hidden md:table-cell font-mono text-[#47EC84]">{lead.winRate}</td>
+                <td className="p-4 sm:p-5 text-right font-display font-black text-sm text-[#47EC84] font-mono tabular-nums">
+                  {lead.totalWon}
+                </td>
               </tr>
             ))}
           </tbody>
