@@ -28,9 +28,10 @@ export const Sidebar: React.FC = () => {
   ];
 
   const vaultLinks = [
+    { name: 'Live Tournaments', href: '/tournaments', icon: Trophy, badge: '₹50K', badgeStyle: 'bg-[#F5B041]/20 text-[#F5B041] border-[#F5B041]/40' },
     { name: 'Deposit & Withdraw', href: '/wallet', icon: Wallet },
     { name: 'Player Profile', href: '/profile', icon: User },
-    { name: 'VIP Club & Ranks', href: '/rewards', icon: Gift },
+    { name: 'VIP Club & Promos', href: '/rewards', icon: Gift },
     { name: 'Leaderboards', href: '/leaderboard', icon: Trophy },
     { name: '24/7 Support', href: '/support', icon: HelpCircle },
   ];

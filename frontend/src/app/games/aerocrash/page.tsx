@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { api } from '@/lib/api';
+import { LoungeChatWidget } from '@/components/LoungeChatWidget';
 
 interface BetPanelState {
   stake: number;
@@ -585,6 +586,9 @@ export default function AeroCrashPage() {
         {renderBetPanel(1, panel1)}
         {renderBetPanel(2, panel2)}
       </div>
+
+      {/* LIVE SOCIAL AVIATOR LOUNGE & RAIN DROPS */}
+      <LoungeChatWidget compact />
 
       {/* Fairness & Seed Audit Modal */}
       {showFairnessModal && (

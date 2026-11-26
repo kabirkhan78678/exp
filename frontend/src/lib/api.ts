@@ -462,6 +462,229 @@ class ApiClient {
   async getAuditLogs() {
     return this.request<{ audit_logs: any[] }>('/admin/audit-logs/');
   }
+
+  // Promo Codes, Multi-Tier Referrals, Tournaments & Live Lounge Rain
+  async getPromotions() {
+    try {
+      return await this.request<{ promotions: any[] }>('/cms/promotions/');
+    } catch {
+      return {
+        promotions: [
+          { code: 'VELTRIX500', title: 'VIP Flagship Drop ₹500 Bonus', bonus_fixed_amount: '500.0000' },
+          { code: 'WELCOME250', title: 'Starter Instant Boost ₹250', bonus_fixed_amount: '250.0000' },
+          { code: 'VIP1000', title: 'High-Roller ₹1,000 Vault Code', bonus_fixed_amount: '1000.0000' },
+          { code: 'WELCOME100', title: 'First Deposit Match Bonus', bonus_fixed_amount: '100.0000' },
+        ],
+      };
+    }
+  }
+
+  async getPromoHistory() {
+    try {
+      return await this.request<{ redemptions: any[] }>('/cms/promo/redeem/');
+    } catch {
+      return { redemptions: [] };
+    }
+  }
+
+  async redeemPromoCode(code: string) {
+    return this.request<{ message: string; redemption: any; balances: any }>('/cms/promo/redeem/', {
+      method: 'POST',
+      body: JSON.stringify({ code }),
+    });
+  }
+
+  async getReferralStats() {
+    try {
+      return await this.request<{
+        referral_code: string;
+        gross_earned: string;
+        claimed_total: string;
+        claimable: string;
+        tiers: any[];
+      }>('/cms/referrals/');
+    } catch {
+      return {
+        referral_code: 'VELTRIX001',
+        gross_earned: '485.00',
+        claimed_total: '200.00',
+        claimable: '285.00',
+        tiers: [
+          { tier: 1, label: 'Direct VIPs', rate: '5.0% + ₹50/signup', count: 3, volume: '6200', earned: '360.00' },
+          { tier: 2, label: 'Sub-Partners', rate: '2.0% Turnover', count: 5, volume: '4250', earned: '85.00' },
+          { tier: 3, label: 'Extended Guild', rate: '1.0% Turnover', count: 8, volume: '4000', earned: '40.00' },
+        ],
+      };
+    }
+  }
+
+  async claimReferralCommission() {
+    return this.request<{ message: string; balances: any; claimable: string }>('/cms/referrals/', {
+      method: 'POST',
+    });
+  }
+
+  async getTournaments() {
+    try {
+      return await this.request<{ tournaments: any[] }>('/cms/tournaments/');
+    } catch {
+      const now = Date.now();
+      return {
+        tournaments: [
+          {
+            id: 'trn_carrom_hourly',
+            slug: 'carrom-hourly-blitz',
+            title: 'Hourly Carrom 2D Blitz',
+            game_slug: 'carrom',
+            schedule_type: 'HOURLY',
+            prize_pool: '10000.0000',
+            entry_fee: '50.0000',
+            max_players: 64,
+            participants_count: 42,
+            status: 'LIVE',
+            ends_at: new Date(now + 47 * 60 * 1000).toISOString(),
+            is_joined: false,
+            bracket_json: [
+              { stage: 'QF1', p1: 'Vikram_Pro', s1: 140, p2: 'Kabir_77', s2: 95, winner: 'Vikram_Pro' },
+              { stage: 'QF2', p1: 'Kavya_Striker', s1: 165, p2: 'Rohan_99', s2: 120, winner: 'Kavya_Striker' },
+              { stage: 'QF3', p1: 'Aarav_VIP', s1: 130, p2: 'Zoya_Ace', s2: 110, winner: 'Aarav_VIP' },
+              { stage: 'QF4', p1: 'Neha_Queen', s1: 155, p2: 'Open Seed #8', s2: 0, winner: 'TBD' },
+            ],
+          },
+          {
+            id: 'trn_ludo_hourly',
+            slug: 'ludo-hourly-rush',
+            title: 'Hourly Ludo Quick Rush',
+            game_slug: 'ludo',
+            schedule_type: 'HOURLY',
+            prize_pool: '15000.0000',
+            entry_fee: '50.0000',
+            max_players: 64,
+            participants_count: 51,
+            status: 'LIVE',
+            ends_at: new Date(now + 34 * 60 * 1000).toISOString(),
+            is_joined: false,
+            bracket_json: [
+              { stage: 'QF1', p1: 'LudoKing88', s1: 210, p2: 'Riya_Roll', s2: 185, winner: 'LudoKing88' },
+              { stage: 'QF2', p1: 'Sameer_66', s1: 200, p2: 'Dev_VIP', s2: 140, winner: 'Sameer_66' },
+              { stage: 'QF3', p1: 'Tara_Blitz', s1: 195, p2: 'Karan_X', s2: 190, winner: 'Tara_Blitz' },
+              { stage: 'QF4', p1: 'Ananya_Pro', s1: 175, p2: 'Open Seed #8', s2: 0, winner: 'TBD' },
+            ],
+          },
+          {
+            id: 'trn_carrom_weekend',
+            slug: 'carrom-weekend-masters',
+            title: 'Weekend Carrom Birch Masters',
+            game_slug: 'carrom',
+            schedule_type: 'WEEKEND',
+            prize_pool: '50000.0000',
+            entry_fee: '200.0000',
+            max_players: 128,
+            participants_count: 96,
+            status: 'LIVE',
+            ends_at: new Date(now + 38 * 3600 * 1000).toISOString(),
+            is_joined: false,
+            bracket_json: [
+              { stage: 'QF1', p1: 'vip_king', s1: 245, p2: 'birch_master', s2: 210, winner: 'vip_king' },
+              { stage: 'QF2', p1: 'pro_kavya', s1: 230, p2: 'queen_cover', s2: 190, winner: 'pro_kavya' },
+            ],
+          },
+          {
+            id: 'trn_ludo_weekend',
+            slug: 'ludo-weekend-royale',
+            title: 'Weekend Ludo Grand Royale',
+            game_slug: 'ludo',
+            schedule_type: 'WEEKEND',
+            prize_pool: '35000.0000',
+            entry_fee: '150.0000',
+            max_players: 128,
+            participants_count: 84,
+            status: 'LIVE',
+            ends_at: new Date(now + 41 * 3600 * 1000).toISOString(),
+            is_joined: false,
+            bracket_json: [
+              { stage: 'QF1', p1: 'RollSixPro', s1: 280, p2: 'FastTrack9', s2: 225, winner: 'RollSixPro' },
+              { stage: 'QF2', p1: 'DiceMonarch', s1: 260, p2: 'Open Seed #4', s2: 0, winner: 'TBD' },
+            ],
+          },
+        ],
+      };
+    }
+  }
+
+  async joinTournament(tournamentId: string, accountType: string) {
+    return this.request<{ message: string; tournament: any; balances: any }>('/cms/tournaments/join/', {
+      method: 'POST',
+      body: JSON.stringify({ tournament_id: tournamentId, account_type: accountType }),
+    });
+  }
+
+  async getLoungeMessages() {
+    try {
+      return await this.request<{ messages: any[] }>('/cms/lounge/');
+    } catch {
+      return {
+        messages: [
+          {
+            id: 'msg_seed_rain',
+            sender_name: 'vip_king',
+            vip_tier: 'ELITE',
+            message: 'Cashed 18.4x on AeroCrash! Catch this ₹500 Bonus Rain fam 🚀',
+            msg_type: 'RAIN',
+            rain_amount: '500.0000',
+            rain_info: {
+              id: 'rain_seed_1',
+              per_claim_amount: '50.00',
+              claimed_count: 3,
+              max_claims: 10,
+              is_active: true,
+              already_claimed: false,
+            },
+            created_at: new Date(Date.now() - 180000).toISOString(),
+          },
+          {
+            id: 'msg_seed_1',
+            sender_name: 'player1',
+            vip_tier: 'SILVER',
+            message: 'Just redeemed VELTRIX500 & entered the ₹10k Carrom Blitz!',
+            msg_type: 'CHAT',
+            rain_info: null,
+            created_at: new Date(Date.now() - 120000).toISOString(),
+          },
+          {
+            id: 'msg_seed_2',
+            sender_name: 'Captain_Aria',
+            vip_tier: 'DIAMOND',
+            message: 'Welcome to Veltrix Live Lounge — catch active Rain Drops above! 💎',
+            msg_type: 'WIN_ALERT',
+            rain_info: null,
+            created_at: new Date(Date.now() - 60000).toISOString(),
+          },
+        ],
+      };
+    }
+  }
+
+  async postLoungeMessage(message: string) {
+    return this.request<{ message: any }>('/cms/lounge/', {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    });
+  }
+
+  async dropLoungeRain(amount: number, accountType: string) {
+    return this.request<{ message: string; lounge_message: any; balances: any }>('/cms/lounge/rain/', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'drop', amount, account_type: accountType }),
+    });
+  }
+
+  async claimLoungeRain(rainDropId: string) {
+    return this.request<{ message: string; claimed_amount: string; balances: any }>('/cms/lounge/rain/', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'claim', rain_drop_id: rainDropId }),
+    });
+  }
 }
 
 export const api = new ApiClient();

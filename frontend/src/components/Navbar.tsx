@@ -40,6 +40,8 @@ export const Navbar: React.FC = () => {
     { name: 'Teen Patti 3-Card', tag: 'CARDS • 5-SEAT', href: '/games/teenpatti', icon: Layers, color: 'text-[#47EC84]' },
     { name: 'Carrom 2D Arena', tag: 'SKILL • PHYSICS', href: '/games/carrom', icon: Disc, color: 'text-[#F5B041]' },
     { name: 'Ludo Arena Quick', tag: '2P / 4P • 5M', href: '/games/ludo', icon: Crown, color: 'text-sky-400' },
+    { name: 'Carrom & Ludo Tournaments', tag: 'PRIZES • ₹50K', href: '/tournaments', icon: Trophy, color: 'text-[#F5B041]' },
+    { name: 'Promo Codes & VIP Cashback', tag: 'VELTRIX500', href: '/rewards', icon: Gift, color: 'text-[#47EC84]' },
   ];
 
   const matchingGames = quickGames.filter((g) =>

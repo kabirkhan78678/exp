@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Gamepad2, ArrowLeftRight, User as UserIcon } from 'lucide-react';
+import { Home, Gamepad2, Trophy, ArrowLeftRight, User as UserIcon } from 'lucide-react';
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
@@ -11,6 +11,7 @@ export const MobileBottomNav: React.FC = () => {
   const navItems = [
     { label: 'Home', href: '/dashboard', icon: Home },
     { label: 'Games', href: '/games', icon: Gamepad2 },
+    { label: 'Compete', href: '/tournaments', icon: Trophy },
     { label: 'Cashier', href: '/wallet', icon: ArrowLeftRight },
     { label: 'Profile', href: '/profile', icon: UserIcon },
   ];

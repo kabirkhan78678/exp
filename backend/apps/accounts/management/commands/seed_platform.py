@@ -8,7 +8,10 @@ from apps.wallet.models import WalletAccount, AccountType, TransactionType
 from apps.wallet.services import LedgerService
 from apps.games.models import Game, GameCategory, GameRound, Bet, BetStatus, RoundStatus, MultiplayerRoom, RoomParticipant
 from apps.games.fairness import ProvablyFairRNG
-from apps.cms.models import Banner, Announcement, PromotionCampaign, SupportTicket, TicketMessage
+from apps.cms.models import (
+    Banner, Announcement, PromotionCampaign, SupportTicket,
+    TicketMessage, Tournament, RainDrop, LoungeMessage
+)
 from apps.admin_center.models import AuditLog
 
 class Command(BaseCommand):
@@ -263,16 +266,142 @@ class Command(BaseCommand):
             }
         )
 
-        # 7. Promotions
-        PromotionCampaign.objects.get_or_create(
-            code='WELCOME100',
-            defaults={
-                'title': '100% First Deposit Match (Sandbox)',
+        # 7. Promotions (Including Redeemable Promo Codes)
+        promo_seeds = [
+            {
+                'code': 'WELCOME100',
+                'title': '100% First Deposit Match',
                 'bonus_percentage': Decimal('100.00'),
+                'bonus_fixed_amount': Decimal('100.0000'),
                 'min_deposit': Decimal('100.0000'),
-                'max_bonus': Decimal('5000.0000')
-            }
-        )
+                'max_bonus': Decimal('5000.0000'),
+            },
+            {
+                'code': 'VELTRIX500',
+                'title': 'VIP Flagship Drop ₹500 Bonus',
+                'bonus_percentage': Decimal('0.00'),
+                'bonus_fixed_amount': Decimal('500.0000'),
+                'min_deposit': Decimal('0.0000'),
+                'max_bonus': Decimal('500.0000'),
+            },
+            {
+                'code': 'WELCOME250',
+                'title': 'Starter Instant Boost ₹250',
+                'bonus_percentage': Decimal('0.00'),
+                'bonus_fixed_amount': Decimal('250.0000'),
+                'min_deposit': Decimal('0.0000'),
+                'max_bonus': Decimal('250.0000'),
+            },
+            {
+                'code': 'VIP1000',
+                'title': 'High-Roller ₹1,000 Vault Code',
+                'bonus_percentage': Decimal('0.00'),
+                'bonus_fixed_amount': Decimal('1000.0000'),
+                'min_deposit': Decimal('0.0000'),
+                'max_bonus': Decimal('1000.0000'),
+            },
+        ]
+        for p in promo_seeds:
+            PromotionCampaign.objects.update_or_create(code=p['code'], defaults=p)
+
+        # 7b. Hourly & Weekend Tournaments (Carrom & Ludo ₹10k - ₹50k Prize Pools)
+        tournament_seeds = [
+            {
+                'slug': 'carrom-hourly-blitz',
+                'title': 'Hourly Carrom 2D Blitz',
+                'game_slug': 'carrom',
+                'schedule_type': 'HOURLY',
+                'prize_pool': Decimal('10000.0000'),
+                'entry_fee': Decimal('50.0000'),
+                'max_players': 64,
+                'base_joined_count': 42,
+                'status': 'LIVE',
+                'ends_at': now + datetime.timedelta(minutes=47),
+                'bracket_json': [
+                    {'stage': 'QF1', 'p1': 'Vikram_Pro', 's1': 140, 'p2': 'Kabir_77', 's2': 95, 'winner': 'Vikram_Pro'},
+                    {'stage': 'QF2', 'p1': 'Kavya_Striker', 's1': 165, 'p2': 'Rohan_99', 's2': 120, 'winner': 'Kavya_Striker'},
+                    {'stage': 'QF3', 'p1': 'Aarav_VIP', 's1': 130, 'p2': 'Zoya_Ace', 's2': 110, 'winner': 'Aarav_VIP'},
+                    {'stage': 'QF4', 'p1': 'Neha_Queen', 's1': 155, 'p2': 'Open Seed #8', 's2': 0, 'winner': 'TBD'},
+                ],
+            },
+            {
+                'slug': 'ludo-hourly-rush',
+                'title': 'Hourly Ludo Quick Rush',
+                'game_slug': 'ludo',
+                'schedule_type': 'HOURLY',
+                'prize_pool': Decimal('15000.0000'),
+                'entry_fee': Decimal('50.0000'),
+                'max_players': 64,
+                'base_joined_count': 51,
+                'status': 'LIVE',
+                'ends_at': now + datetime.timedelta(minutes=34),
+                'bracket_json': [
+                    {'stage': 'QF1', 'p1': 'LudoKing88', 's1': 210, 'p2': 'Riya_Roll', 's2': 185, 'winner': 'LudoKing88'},
+                    {'stage': 'QF2', 'p1': 'Sameer_66', 's1': 200, 'p2': 'Dev_VIP', 's2': 140, 'winner': 'Sameer_66'},
+                    {'stage': 'QF3', 'p1': 'Tara_Blitz', 's1': 195, 'p2': 'Karan_X', 's2': 190, 'winner': 'Tara_Blitz'},
+                    {'stage': 'QF4', 'p1': 'Ananya_Pro', 's1': 175, 'p2': 'Open Seed #8', 's2': 0, 'winner': 'TBD'},
+                ],
+            },
+            {
+                'slug': 'carrom-weekend-masters',
+                'title': 'Weekend Carrom Birch Masters',
+                'game_slug': 'carrom',
+                'schedule_type': 'WEEKEND',
+                'prize_pool': Decimal('50000.0000'),
+                'entry_fee': Decimal('200.0000'),
+                'max_players': 128,
+                'base_joined_count': 96,
+                'status': 'LIVE',
+                'ends_at': now + datetime.timedelta(hours=38),
+                'bracket_json': [
+                    {'stage': 'QF1', 'p1': 'vip_king', 's1': 245, 'p2': 'birch_master', 's2': 210, 'winner': 'vip_king'},
+                    {'stage': 'QF2', 'p1': 'pro_kavya', 's1': 230, 'p2': 'queen_cover', 's2': 190, 'winner': 'pro_kavya'},
+                ],
+            },
+            {
+                'slug': 'ludo-weekend-royale',
+                'title': 'Weekend Ludo Grand Royale',
+                'game_slug': 'ludo',
+                'schedule_type': 'WEEKEND',
+                'prize_pool': Decimal('35000.0000'),
+                'entry_fee': Decimal('150.0000'),
+                'max_players': 128,
+                'base_joined_count': 84,
+                'status': 'LIVE',
+                'ends_at': now + datetime.timedelta(hours=41),
+                'bracket_json': [
+                    {'stage': 'QF1', 'p1': 'RollSixPro', 's1': 280, 'p2': 'FastTrack9', 's2': 225, 'winner': 'RollSixPro'},
+                    {'stage': 'QF2', 'p1': 'DiceMonarch', 's1': 260, 'p2': 'Open Seed #4', 's2': 0, 'winner': 'TBD'},
+                ],
+            },
+        ]
+        for t in tournament_seeds:
+            Tournament.objects.update_or_create(slug=t['slug'], defaults=t)
+
+        # 7c. Seed Initial Live Lounge Messages & 1 Active Rain Drop
+        if not LoungeMessage.objects.exists():
+            seed_rain = RainDrop.objects.create(
+                creator=vip_player,
+                creator_name='vip_king',
+                total_amount=Decimal('500.0000'),
+                per_claim_amount=Decimal('50.0000'),
+                max_claims=10,
+            )
+            LoungeMessage.objects.create(
+                sender=vip_player, sender_name='vip_king', vip_tier='ELITE',
+                message='Cashed 18.4x on AeroCrash! Catch this ₹500 Bonus Rain fam 🚀',
+                msg_type='RAIN', rain_amount=Decimal('500.0000'), rain_drop=seed_rain
+            )
+            LoungeMessage.objects.create(
+                sender=player1, sender_name='player1', vip_tier='SILVER',
+                message='Just used promo VELTRIX500 + joined the ₹10k Carrom Blitz!',
+                msg_type='CHAT'
+            )
+            LoungeMessage.objects.create(
+                sender=admin_user, sender_name='Captain_Aria', vip_tier='DIAMOND',
+                message='Hourly Carrom & Ludo brackets closing soon — good luck at the tables! 💎',
+                msg_type='WIN_ALERT'
+            )
 
         # 8. Support Tickets
         SupportTicket.objects.get_or_create(

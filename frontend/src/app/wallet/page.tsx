@@ -10,6 +10,7 @@ import {
 import { useStore } from '@/store/useStore';
 import { api } from '@/lib/api';
 import { GoldRupeeCoin } from '@/components/GameArtwork';
+import { PromoRedeemCard } from '@/components/PromoRedeemCard';
 
 function WalletCashierContent() {
   const searchParams = useSearchParams();
@@ -248,6 +249,9 @@ function WalletCashierContent() {
           </div>
         </div>
       </div>
+
+      {/* Promo Code Quick Redeem */}
+      <PromoRedeemCard compact />
 
       {/* 3. High-Roller Unified Cashier Station */}
       <div className="rounded-3xl lux-card overflow-hidden">

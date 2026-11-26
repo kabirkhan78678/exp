@@ -26,7 +26,22 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: 'VELTRIX ARENA — Flagship Provably Fair Gaming Ecosystem',
   description:
-    'Elite real-time multiplayer gaming platform featuring AeroCrash, Tournament Carrom 2D, Dragon Tiger, Teen Patti, and instant QR fintech vault.',
+    'Elite real-time multiplayer gaming platform featuring AeroCrash, Tournament Carrom 2D, Dragon Tiger, Teen Patti, Mines, Fair Dice, Wingo Parity & Ludo Arena.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'VELTRIX',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 };
 
 export const viewport: Viewport = {

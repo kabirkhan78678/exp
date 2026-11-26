@@ -140,3 +140,41 @@ class CoreSystemsTestCase(TestCase):
         self.assertFalse(was_credited_2) # Did not credit a second time
         main_acc.refresh_from_db()
         self.assertEqual(main_acc.balance, Decimal('750.0000')) # Balance strictly preserved
+
+    def test_promo_code_and_rain_drop_idempotency(self):
+        """Verify promo codes credit BONUS once and Rain Drops obey claim caps."""
+        from rest_framework.test import APIClient
+        from apps.cms.models import PromotionCampaign, RainDrop
+        PromotionCampaign.objects.create(
+            code='VELTRIX500',
+            title='VIP ₹500 Drop',
+            bonus_fixed_amount=Decimal('500.0000'),
+        )
+        drop = RainDrop.objects.create(
+            creator=self.admin,
+            creator_name='admin',
+            total_amount=Decimal('100.0000'),
+            per_claim_amount=Decimal('50.0000'),
+            max_claims=2,
+        )
+
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+
+        res1 = client.post('/api/cms/promo/redeem/', {'code': 'veltrix500'}, format='json')
+        self.assertEqual(res1.status_code, 201)
+        bonus_acc = WalletAccount.objects.get(user=self.user, account_type=AccountType.BONUS)
+        self.assertEqual(bonus_acc.balance, Decimal('500.0000'))
+
+        # Duplicate redemption rejected
+        res2 = client.post('/api/cms/promo/redeem/', {'code': 'VELTRIX500'}, format='json')
+        self.assertEqual(res2.status_code, 400)
+
+        # Rain Drop claim credits BONUS and blocks second claim by same user
+        rain1 = client.post('/api/cms/lounge/rain/', {'action': 'claim', 'rain_drop_id': str(drop.id)}, format='json')
+        self.assertEqual(rain1.status_code, 200)
+        bonus_acc.refresh_from_db()
+        self.assertEqual(bonus_acc.balance, Decimal('550.0000'))
+
+        rain2 = client.post('/api/cms/lounge/rain/', {'action': 'claim', 'rain_drop_id': str(drop.id)}, format='json')
+        self.assertEqual(rain2.status_code, 400)

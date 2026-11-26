@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -104,3 +105,94 @@ class PromotionCampaign(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.code})"
+
+
+class PromoRedemption(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='promo_redemptions')
+    campaign = models.ForeignKey(PromotionCampaign, on_delete=models.CASCADE, related_name='redemptions')
+    code = models.CharField(max_length=32)
+    reward_amount = models.DecimalField(max_digits=18, decimal_places=4)
+    account_type = models.CharField(max_length=20, default='BONUS')
+    redeemed_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'campaign')
+
+    def __str__(self):
+        return f"{self.user.username} redeemed {self.code} (+{self.reward_amount})"
+
+
+class Tournament(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    slug = models.CharField(max_length=64, unique=True)
+    title = models.CharField(max_length=160)
+    game_slug = models.CharField(max_length=32, default='carrom')
+    schedule_type = models.CharField(max_length=20, default='HOURLY')
+    prize_pool = models.DecimalField(max_digits=18, decimal_places=4)
+    entry_fee = models.DecimalField(max_digits=18, decimal_places=4, default=Decimal('0.0000'))
+    max_players = models.PositiveIntegerField(default=64)
+    base_joined_count = models.PositiveIntegerField(default=24)
+    status = models.CharField(max_length=20, default='LIVE')
+    ends_at = models.DateTimeField()
+    bracket_json = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['ends_at', '-prize_pool']
+
+    def __str__(self):
+        return f"{self.title} (₹{self.prize_pool})"
+
+
+class TournamentEntry(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='entries')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tournament_entries')
+    score = models.IntegerField(default=0)
+    account_type = models.CharField(max_length=20, default='DEMO')
+    joined_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('tournament', 'user')
+
+    def __str__(self):
+        return f"{self.user.username} @ {self.tournament.slug} ({self.score} pts)"
+
+
+class RainDrop(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    creator_name = models.CharField(max_length=64, default='VELTRIX_VAULT')
+    total_amount = models.DecimalField(max_digits=18, decimal_places=4)
+    per_claim_amount = models.DecimalField(max_digits=18, decimal_places=4)
+    max_claims = models.PositiveIntegerField(default=10)
+    claimed_count = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+
+class RainClaim(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    rain_drop = models.ForeignKey(RainDrop, on_delete=models.CASCADE, related_name='claims')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='rain_claims')
+    amount = models.DecimalField(max_digits=18, decimal_places=4)
+    claimed_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('rain_drop', 'user')
+
+
+class LoungeMessage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    sender_name = models.CharField(max_length=64)
+    vip_tier = models.CharField(max_length=24, default='BRONZE')
+    message = models.CharField(max_length=280)
+    msg_type = models.CharField(max_length=20, default='CHAT')
+    rain_amount = models.DecimalField(max_digits=18, decimal_places=4, default=Decimal('0.0000'))
+    rain_drop = models.ForeignKey(RainDrop, null=True, blank=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(default=timezone.now, db_index=True)
+
+    class Meta:
+        ordering = ['created_at']

@@ -1,0 +1,51 @@
+{
+  "name": "VELTRIX ARENA — Flagship Gaming Ecosystem",
+  "short_name": "VELTRIX",
+  "description": "Provably Fair Crash, Mines, Wingo Parity, Fair Dice, Dragon Tiger, Teen Patti, Carrom 2D & Ludo Arena with instant QR cashier.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07090A",
+  "theme_color": "#07090A",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "AeroCrash Aviator",
+      "short_name": "Aviator",
+      "url": "/games/aerocrash",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Tournaments",
+      "short_name": "Compete",
+      "url": "/tournaments",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Vault Cashier",
+      "short_name": "Wallet",
+      "url": "/wallet",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -248,6 +248,24 @@ export default function PlayerProfilePage() {
               <div className={`w-4 h-4 rounded-full bg-slate-950 transition-transform ${hapticsEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
             </button>
           </div>
+
+          {/* Install PWA on iPhone / Mobile Home Screen */}
+          <div className="py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <Download className="w-5 h-5 text-[#47EC84]" />
+              <div>
+                <div className="font-bold text-white text-sm">Install iPhone / Android App (PWA)</div>
+                <div className="text-[11px] text-slate-400">Launch fullscreen from Home Screen without browser bar</div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event('veltrix:open-pwa-install'))}
+              className="px-3.5 py-1.5 rounded-xl btn-emerald-3d text-xs font-black shrink-0"
+            >
+              Setup
+            </button>
+          </div>
         </div>
       </div>
 

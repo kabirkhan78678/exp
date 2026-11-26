@@ -155,10 +155,11 @@ export default function DashboardHomePage() {
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </Link>
             <Link
-              href="/games"
-              className="px-4 sm:px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.12] text-white font-bold text-xs sm:text-sm transition active:scale-95"
+              href="/tournaments"
+              className="px-4 sm:px-5 py-2.5 rounded-full btn-gold-3d font-black text-xs sm:text-sm transition active:scale-95 flex items-center gap-1.5"
             >
-              Browse Arenas
+              <Trophy className="w-3.5 h-3.5" />
+              <span>₹50K Tournaments</span>
             </Link>
           </div>
         </div>
