@@ -17,9 +17,9 @@ class ApiClient {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE}${endpoint}`;
     
-    // 8-second timeout controller so requests never hang infinitely
+    // 35-second timeout controller (allows cloud server cold-starts to respond gracefully)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 35000);
 
     try {
       const res = await fetch(url, {
