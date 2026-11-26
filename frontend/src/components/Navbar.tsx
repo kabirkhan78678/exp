@@ -65,7 +65,7 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full h-14 xs:h-15 sm:h-16 bg-[#0B0E10]/90 backdrop-blur-2xl border-b border-white/[0.08] px-2.5 xs:px-3.5 sm:px-6 lg:px-8 flex items-center justify-between shadow-[0_8px_32px_rgba(0,0,0,0.65)] select-none max-w-full">
+    <header className="sticky top-0 z-40 w-full h-14 xs:h-[60px] sm:h-16 bg-[#0B0E10]/90 backdrop-blur-2xl border-b border-white/[0.08] px-2.5 xs:px-3.5 sm:px-6 lg:px-8 flex items-center justify-between shadow-[0_8px_32px_rgba(0,0,0,0.65)] select-none max-w-full">
       {/* 1. Left: Hexagonal Crest & Wordmark */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
@@ -185,7 +185,7 @@ export const Navbar: React.FC = () => {
 
                 <button
                   onClick={() => openModal('deposit')}
-                  className="relative overflow-hidden h-7 xs:h-7.5 sm:h-8 px-2.5 xs:px-3 sm:px-3.5 rounded-full btn-emerald-3d flex items-center gap-1 font-black text-xs active:scale-95 transition shrink-0"
+                  className="relative overflow-hidden h-7 xs:h-[30px] sm:h-8 px-2.5 xs:px-3 sm:px-3.5 rounded-full btn-emerald-3d flex items-center gap-1 font-black text-xs active:scale-95 transition shrink-0"
                   title="Instant QR Deposit"
                 >
                   <Plus className="w-3.5 h-3.5 stroke-[3]" />

@@ -214,21 +214,21 @@ export const TeenPattiArt: React.FC = () => (
 
     <div className="relative z-10 flex items-center -space-x-4 group-hover:scale-105 transition-transform duration-300">
       {/* Left Card: Queen Hearts */}
-      <div className="w-11 h-16 sm:w-12 sm:h-18 rounded-xl bg-gradient-to-b from-[#1A2024] to-[#0D1113] border border-white/25 shadow-xl -rotate-12 flex flex-col justify-between p-1.5">
+      <div className="w-11 h-16 sm:w-12 sm:h-[72px] rounded-xl bg-gradient-to-b from-[#1A2024] to-[#0D1113] border border-white/25 shadow-xl -rotate-12 flex flex-col justify-between p-1.5">
         <span className="text-[9px] font-black text-[#FF2E54] leading-none">Q♥</span>
         <span className="self-center text-base text-[#FF2E54] leading-none">♥</span>
         <span className="self-end text-[8px] font-black text-[#FF2E54] leading-none rotate-180">Q</span>
       </div>
 
       {/* Center Card: Ace Spades Emerald Foil */}
-      <div className="w-12 h-17 sm:w-14 sm:h-20 rounded-xl bg-gradient-to-b from-[#FFFFFF] to-[#E2E8F0] border-2 border-[#47EC84] shadow-[0_10px_24px_rgba(71,236,132,0.35)] z-20 -translate-y-1 flex flex-col justify-between p-1.5">
+      <div className="w-12 h-[68px] sm:w-14 sm:h-20 rounded-xl bg-gradient-to-b from-[#FFFFFF] to-[#E2E8F0] border-2 border-[#47EC84] shadow-[0_10px_24px_rgba(71,236,132,0.35)] z-20 -translate-y-1 flex flex-col justify-between p-1.5">
         <span className="text-[10px] font-black text-slate-950 leading-none">A♠</span>
         <span className="self-center text-xl text-slate-950 leading-none">♠</span>
         <span className="self-end text-[9px] font-black text-slate-950 leading-none rotate-180">A</span>
       </div>
 
       {/* Right Card: King Diamonds */}
-      <div className="w-11 h-16 sm:w-12 sm:h-18 rounded-xl bg-gradient-to-b from-[#1A2024] to-[#0D1113] border border-[#F5B041]/50 shadow-xl rotate-12 flex flex-col justify-between p-1.5">
+      <div className="w-11 h-16 sm:w-12 sm:h-[72px] rounded-xl bg-gradient-to-b from-[#1A2024] to-[#0D1113] border border-[#F5B041]/50 shadow-xl rotate-12 flex flex-col justify-between p-1.5">
         <span className="text-[9px] font-black text-[#F5B041] leading-none">K♦</span>
         <span className="self-center text-base text-[#F5B041] leading-none">♦</span>
         <span className="self-end text-[8px] font-black text-[#F5B041] leading-none rotate-180">K</span>

@@ -37,7 +37,7 @@ export const MobileBottomNav: React.FC = () => {
               }`}
               title={item.label}
             >
-              <Icon className={`w-4 h-4 xs:w-4.5 xs:h-4.5 shrink-0 ${isActive ? 'stroke-[2.5]' : 'stroke-[2]'}`} />
+              <Icon className={`w-[18px] h-[18px] shrink-0 ${isActive ? 'stroke-[2.5]' : 'stroke-[2]'}`} />
               {isActive && (
                 <span className="text-[11px] font-black tracking-tight whitespace-nowrap">
                   {item.label}

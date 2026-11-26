@@ -135,3 +135,33 @@ html, body {
 ::-webkit-scrollbar-thumb:hover {
   background: #47EC84;
 }
+
+/* 3D Card Flip Primitives */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Authentic Casino Table Felts */
+.casino-velvet-green {
+  background-color: #0b3b24;
+  background-image:
+    radial-gradient(ellipse 80% 65% at 50% 45%, rgba(28, 125, 76, 0.72) 0%, rgba(11, 59, 36, 0.92) 60%, rgba(5, 28, 17, 1) 100%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px);
+}
+
+.casino-imperial-felt {
+  background-color: #14080b;
+  background-image:
+    radial-gradient(ellipse 75% 65% at 50% 40%, rgba(115, 19, 34, 0.45) 0%, rgba(28, 10, 14, 0.95) 65%, rgba(12, 6, 8, 1) 100%),
+    repeating-linear-gradient(45deg, rgba(245, 176, 65, 0.02) 0px, rgba(245, 176, 65, 0.02) 1px, transparent 1px, transparent 4px);
+}
