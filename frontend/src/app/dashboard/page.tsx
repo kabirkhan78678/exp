@@ -5,11 +5,13 @@ import Link from 'next/link';
 import {
   Wallet, Trophy, Plane, Swords, Layers, Disc,
   Gift, RefreshCw, ArrowRight, Play, BarChart3,
-  Zap, ChevronRight, Sparkles, Crown
+  Zap, ChevronRight, Sparkles, Crown, Bomb, Dices
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { api } from '@/lib/api';
 import { HeroVaultIllustration, GoldRupeeCoin } from '@/components/GameArtwork';
+import { GAME_CATALOG } from '@/lib/gamesCatalog';
+import { GamePosterCard } from '@/components/GamePosterCard';
 
 export default function DashboardHomePage() {
   const {
@@ -70,9 +72,13 @@ export default function DashboardHomePage() {
   const gameStats = useMemo(() => {
     const stats: Record<string, { name: string; icon: any; played: number; won: number; wagered: number; accent: string; bgAccent: string; slug: string }> = {
       aerocrash: { name: 'AeroCrash Aviator', icon: Plane, played: 0, won: 0, wagered: 0, accent: 'text-[#FF2E54]', bgAccent: 'bg-[#FF2E54]/15 border-[#FF2E54]/30', slug: 'aerocrash' },
+      mines: { name: 'Mines Diamond', icon: Bomb, played: 0, won: 0, wagered: 0, accent: 'text-[#47EC84]', bgAccent: 'bg-[#47EC84]/15 border-[#47EC84]/30', slug: 'mines' },
+      wingo: { name: 'Wingo Color Parity', icon: Zap, played: 0, won: 0, wagered: 0, accent: 'text-violet-400', bgAccent: 'bg-violet-500/15 border-violet-400/30', slug: 'wingo' },
+      dice: { name: 'Fair Dice Slider', icon: Dices, played: 0, won: 0, wagered: 0, accent: 'text-sky-400', bgAccent: 'bg-sky-400/15 border-sky-400/30', slug: 'dice' },
       carrom: { name: 'Carrom 2D Arena', icon: Disc, played: 0, won: 0, wagered: 0, accent: 'text-[#F5B041]', bgAccent: 'bg-[#F5B041]/15 border-[#F5B041]/30', slug: 'carrom' },
-      dragontiger: { name: 'Dragon Tiger Live', icon: Swords, played: 0, won: 0, wagered: 0, accent: 'text-sky-400', bgAccent: 'bg-sky-400/15 border-sky-400/30', slug: 'dragontiger' },
-      teenpatti: { name: 'Teen Patti 3-Card', icon: Layers, played: 0, won: 0, wagered: 0, accent: 'text-[#47EC84]', bgAccent: 'bg-[#47EC84]/15 border-[#47EC84]/30', slug: 'teenpatti' },
+      ludo: { name: 'Ludo Arena Quick', icon: Crown, played: 0, won: 0, wagered: 0, accent: 'text-sky-300', bgAccent: 'bg-sky-500/15 border-sky-400/30', slug: 'ludo' },
+      dragontiger: { name: 'Dragon Tiger Live', icon: Swords, played: 0, won: 0, wagered: 0, accent: 'text-rose-400', bgAccent: 'bg-rose-500/15 border-rose-400/30', slug: 'dragontiger' },
+      teenpatti: { name: 'Teen Patti Royal', icon: Layers, played: 0, won: 0, wagered: 0, accent: 'text-[#47EC84]', bgAccent: 'bg-[#47EC84]/15 border-[#47EC84]/30', slug: 'teenpatti' },
     };
 
     transactions.forEach((tx) => {
@@ -80,7 +86,11 @@ export default function DashboardHomePage() {
       const amount = parseFloat(tx.total_amount || '0');
       let targetKey: string | null = null;
       if (desc.includes('aerocrash') || desc.includes('aviator') || desc.includes('crash')) targetKey = 'aerocrash';
+      else if (desc.includes('mines')) targetKey = 'mines';
+      else if (desc.includes('wingo') || desc.includes('parity')) targetKey = 'wingo';
+      else if (desc.includes('dice')) targetKey = 'dice';
       else if (desc.includes('carrom')) targetKey = 'carrom';
+      else if (desc.includes('ludo')) targetKey = 'ludo';
       else if (desc.includes('dragon') || desc.includes('tiger')) targetKey = 'dragontiger';
       else if (desc.includes('teen patti') || desc.includes('chaal') || desc.includes('patti')) targetKey = 'teenpatti';
 
@@ -95,26 +105,23 @@ export default function DashboardHomePage() {
       }
     });
 
-    if (stats.aerocrash.wagered === 0 && stats.aerocrash.won === 0) {
-      stats.aerocrash.wagered = Math.round(totalWagered * 0.45);
-      stats.aerocrash.won = Math.round(totalWon * 0.50);
-      stats.aerocrash.played = Math.max(4, Math.round(stats.aerocrash.wagered / 50));
-    }
-    if (stats.carrom.wagered === 0 && stats.carrom.won === 0) {
-      stats.carrom.wagered = Math.round(totalWagered * 0.25);
-      stats.carrom.won = Math.round(totalWon * 0.22);
-      stats.carrom.played = Math.max(3, Math.round(stats.carrom.wagered / 40));
-    }
-    if (stats.dragontiger.wagered === 0 && stats.dragontiger.won === 0) {
-      stats.dragontiger.wagered = Math.round(totalWagered * 0.18);
-      stats.dragontiger.won = Math.round(totalWon * 0.16);
-      stats.dragontiger.played = Math.max(2, Math.round(stats.dragontiger.wagered / 100));
-    }
-    if (stats.teenpatti.wagered === 0 && stats.teenpatti.won === 0) {
-      stats.teenpatti.wagered = Math.round(totalWagered * 0.12);
-      stats.teenpatti.won = Math.round(totalWon * 0.12);
-      stats.teenpatti.played = Math.max(2, Math.round(stats.teenpatti.wagered / 50));
-    }
+    const defaults: Record<string, [number, number, number]> = {
+      aerocrash: [0.30, 0.35, 8],
+      mines: [0.16, 0.20, 6],
+      wingo: [0.14, 0.16, 5],
+      dice: [0.10, 0.12, 4],
+      carrom: [0.10, 0.08, 3],
+      ludo: [0.08, 0.05, 2],
+      dragontiger: [0.07, 0.02, 2],
+      teenpatti: [0.05, 0.02, 2],
+    };
+    Object.entries(defaults).forEach(([k, [wShare, pShare, rounds]]) => {
+      if (stats[k].wagered === 0 && stats[k].won === 0) {
+        stats[k].wagered = Math.round(totalWagered * wShare);
+        stats[k].won = Math.round(totalWon * pShare);
+        stats[k].played = Math.max(rounds, Math.round(stats[k].wagered / 60));
+      }
+    });
 
     return stats;
   }, [transactions, totalWagered, totalWon]);
@@ -418,7 +425,26 @@ export default function DashboardHomePage() {
         </div>
       </section>
 
-      {/* 5. LIVE HIGH-ROLLER PAYOUT FEED */}
+      {/* 5. ALL 8 LIVE SALON ARENAS WITH VIP HOSTS */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-sm sm:text-base font-black text-white flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#47EC84]" />
+            <span>Certified Live Arenas (8)</span>
+          </h2>
+          <Link href="/games" className="text-xs font-bold text-[#47EC84] hover:underline flex items-center gap-0.5">
+            Filter Lobby <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 xs:gap-3.5 sm:gap-4">
+          {GAME_CATALOG.map((game) => (
+            <GamePosterCard key={game.slug} game={game} />
+          ))}
+        </div>
+      </section>
+
+      {/* 6. LIVE HIGH-ROLLER PAYOUT FEED */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-sm sm:text-base font-black text-white flex items-center gap-2">

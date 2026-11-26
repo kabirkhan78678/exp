@@ -1,0 +1,138 @@
+export interface GameCatalogMeta {
+  slug: string;
+  name: string;
+  category: 'CRASH' | 'SKILL' | 'TABLE' | 'CARDS';
+  tag: string;
+  badge: string;
+  badgeClass: string;
+  borderHover: string;
+  ctaStyle: string;
+  players: string;
+  minStake: string;
+  rtp: string;
+  hostImage: string;
+  hostRole: string;
+}
+
+export const GAME_CATALOG: GameCatalogMeta[] = [
+  {
+    slug: 'aerocrash',
+    name: 'AeroCrash Aviator',
+    category: 'CRASH',
+    tag: 'CRASH',
+    badge: 'HOT 100x',
+    badgeClass: 'bg-[#FF2E54] text-white',
+    borderHover: 'hover:border-[#FF2E54]/60 hover:shadow-[0_14px_34px_-10px_rgba(255,46,84,0.45)]',
+    ctaStyle: 'text-[#FF5C7A] bg-[#FF2E54]/15 border-[#FF2E54]/30',
+    players: '1,420 live',
+    minStake: '₹10',
+    rtp: '97.0%',
+    hostImage: '/images/hosts/aerocrash.jpg',
+    hostRole: 'Captain Aria',
+  },
+  {
+    slug: 'mines',
+    name: 'Mines Diamond',
+    category: 'CRASH',
+    tag: 'GRID 5×5',
+    badge: 'DIAMOND',
+    badgeClass: 'bg-[#47EC84] text-slate-950',
+    borderHover: 'hover:border-[#47EC84]/60 hover:shadow-[0_14px_34px_-10px_rgba(71,236,132,0.45)]',
+    ctaStyle: 'text-[#47EC84] bg-[#47EC84]/15 border-[#47EC84]/30',
+    players: '1,680 live',
+    minStake: '₹10',
+    rtp: '97.0%',
+    hostImage: '/images/hosts/mines.jpg',
+    hostRole: 'Vault Nova',
+  },
+  {
+    slug: 'wingo',
+    name: 'Wingo Color Parity',
+    category: 'TABLE',
+    tag: '30s / 60s',
+    badge: '9x PARITY',
+    badgeClass: 'bg-violet-500 text-white',
+    borderHover: 'hover:border-violet-400/60 hover:shadow-[0_14px_34px_-10px_rgba(139,92,246,0.4)]',
+    ctaStyle: 'text-violet-300 bg-violet-500/15 border-violet-400/30',
+    players: '2,310 live',
+    minStake: '₹10',
+    rtp: '98.0%',
+    hostImage: '/images/hosts/wingo.jpg',
+    hostRole: 'Host Zara',
+  },
+  {
+    slug: 'dice',
+    name: 'Fair Dice Slider',
+    category: 'CRASH',
+    tag: '0–100',
+    badge: '99% RTP',
+    badgeClass: 'bg-sky-400 text-slate-950',
+    borderHover: 'hover:border-sky-400/60 hover:shadow-[0_14px_34px_-10px_rgba(56,189,248,0.4)]',
+    ctaStyle: 'text-sky-400 bg-sky-400/15 border-sky-400/30',
+    players: '940 live',
+    minStake: '₹10',
+    rtp: '99.0%',
+    hostImage: '/images/hosts/dice.jpg',
+    hostRole: 'Dealer Elena',
+  },
+  {
+    slug: 'dragontiger',
+    name: 'Dragon Tiger Live',
+    category: 'TABLE',
+    tag: 'TABLE',
+    badge: 'SPEED 8:1',
+    badgeClass: 'bg-[#F5B041] text-slate-950',
+    borderHover: 'hover:border-[#F5B041]/60 hover:shadow-[0_14px_34px_-10px_rgba(245,176,65,0.4)]',
+    ctaStyle: 'text-[#F5B041] bg-[#F5B041]/15 border-[#F5B041]/30',
+    players: '640 live',
+    minStake: '₹10',
+    rtp: '96.3%',
+    hostImage: '/images/hosts/dragontiger.jpg',
+    hostRole: 'Dealer Mei',
+  },
+  {
+    slug: 'teenpatti',
+    name: 'Teen Patti Royal',
+    category: 'CARDS',
+    tag: 'CARDS',
+    badge: '5-SEAT VIP',
+    badgeClass: 'bg-[#47EC84] text-slate-950',
+    borderHover: 'hover:border-[#47EC84]/60 hover:shadow-[0_14px_34px_-10px_rgba(71,236,132,0.45)]',
+    ctaStyle: 'text-[#47EC84] bg-[#47EC84]/15 border-[#47EC84]/30',
+    players: '1,120 live',
+    minStake: '₹10',
+    rtp: '95.5%',
+    hostImage: '/images/hosts/teenpatti.jpg',
+    hostRole: 'Dealer Ananya',
+  },
+  {
+    slug: 'carrom',
+    name: 'Carrom 2D Arena',
+    category: 'SKILL',
+    tag: 'SKILL',
+    badge: 'PHYSICS 2D',
+    badgeClass: 'bg-[#F5B041] text-slate-950',
+    borderHover: 'hover:border-[#F5B041]/60 hover:shadow-[0_14px_34px_-10px_rgba(245,176,65,0.4)]',
+    ctaStyle: 'text-[#F5B041] bg-[#F5B041]/15 border-[#F5B041]/30',
+    players: '890 live',
+    minStake: '₹20',
+    rtp: '96.5%',
+    hostImage: '/images/hosts/carrom.jpg',
+    hostRole: 'Pro Kavya',
+  },
+  {
+    slug: 'ludo',
+    name: 'Ludo Arena Quick',
+    category: 'SKILL',
+    tag: '2P / 4P',
+    badge: 'QUICK 5M',
+    badgeClass: 'bg-sky-400 text-slate-950',
+    borderHover: 'hover:border-sky-400/60 hover:shadow-[0_14px_34px_-10px_rgba(56,189,248,0.4)]',
+    ctaStyle: 'text-sky-400 bg-sky-400/15 border-sky-400/30',
+    players: '1,540 live',
+    minStake: '₹25',
+    rtp: '96.0%',
+    hostImage: '/images/hosts/ludo.jpg',
+    hostRole: 'Host Riya',
+  },
+];

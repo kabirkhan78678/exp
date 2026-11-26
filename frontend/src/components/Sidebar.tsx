@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Gamepad2, Plane, Swords, Layers,
   Disc, Wallet, Gift, Trophy, HelpCircle, ShieldAlert,
-  Sparkles, ExternalLink, User, ShieldCheck
+  Sparkles, ExternalLink, User, ShieldCheck, Bomb, Dices, Zap, Crown
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 
@@ -18,7 +18,11 @@ export const Sidebar: React.FC = () => {
     { name: 'Home Command', href: '/dashboard', icon: LayoutDashboard },
     { name: 'All Game Arenas', href: '/games', icon: Gamepad2 },
     { name: 'AeroCrash', href: '/games/aerocrash', icon: Plane, badge: '100x', badgeStyle: 'bg-[#FF2E54]/20 text-[#FF2E54] border-[#FF2E54]/40' },
+    { name: 'Mines Grid', href: '/games/mines', icon: Bomb, badge: 'NEW', badgeStyle: 'bg-[#47EC84]/20 text-[#47EC84] border-[#47EC84]/40' },
+    { name: 'Fair Dice', href: '/games/dice', icon: Dices, badge: '99%', badgeStyle: 'bg-sky-500/20 text-sky-400 border-sky-400/40' },
+    { name: 'Wingo Parity', href: '/games/wingo', icon: Zap, badge: '30s', badgeStyle: 'bg-violet-500/20 text-violet-300 border-violet-400/40' },
     { name: 'Carrom 2D', href: '/games/carrom', icon: Disc, badge: 'PRO', badgeStyle: 'bg-[#F5B041]/20 text-[#F5B041] border-[#F5B041]/40' },
+    { name: 'Ludo Arena', href: '/games/ludo', icon: Crown, badge: '2P/4P', badgeStyle: 'bg-sky-500/20 text-sky-300 border-sky-400/40' },
     { name: 'Dragon Tiger', href: '/games/dragontiger', icon: Swords },
     { name: 'Teen Patti', href: '/games/teenpatti', icon: Layers },
   ];

@@ -129,3 +129,37 @@ class ProvablyFairRNG:
 
         # High Card
         return (1, tuple(ranks), f"High Card {ranks[0]}")
+
+    @classmethod
+    def generate_mines_board(cls, server_seed, client_seed, mines_count=3, nonce=1):
+        """Deterministically places mines_count bombs onto a 25-tile 5x5 grid using HMAC-SHA256."""
+        indices = list(range(25))
+        for i in range(24, 0, -1):
+            h = cls.get_hmac_hex(server_seed, f"mines:{client_seed}:{nonce}:{i}")
+            j = int(h[:8], 16) % (i + 1)
+            indices[i], indices[j] = indices[j], indices[i]
+        return sorted(indices[:mines_count])
+
+    @classmethod
+    def roll_fair_dice(cls, server_seed, client_seed, nonce=1):
+        """Rolls a cryptographically uniform number in [0.00, 99.99]."""
+        h = cls.get_hmac_hex(server_seed, f"dice:{client_seed}:{nonce}")
+        val = int(h[:8], 16) % 10000
+        return round(val / 100.0, 2)
+
+    @classmethod
+    def draw_wingo_parity(cls, server_seed, client_seed, nonce=1):
+        """Draws a deterministic Wingo digit 0-9 along with official Green/Red/Violet parity & Big/Small."""
+        h = cls.get_hmac_hex(server_seed, f"wingo:{client_seed}:{nonce}")
+        digit = int(h[:6], 16) % 10
+        colors = []
+        if digit in (1, 3, 7, 9):
+            colors = ['GREEN']
+        elif digit in (2, 4, 6, 8):
+            colors = ['RED']
+        elif digit == 5:
+            colors = ['GREEN', 'VIOLET']
+        else:  # 0
+            colors = ['RED', 'VIOLET']
+        size = 'BIG' if digit >= 5 else 'SMALL'
+        return {'digit': digit, 'colors': colors, 'size': size}

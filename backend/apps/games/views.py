@@ -414,3 +414,257 @@ class CarromMatchView(APIView):
             'is_victory': is_victory,
             'payout': str(payout)
         })
+
+
+class MinesPlayView(APIView):
+    """Settles a Mines Diamond Grid round with HMAC-SHA256 verifiable mine layout."""
+    def post(self, request):
+        stake_val = request.data.get('stake', 100)
+        mines_count = int(request.data.get('mines_count', 3))
+        won = bool(request.data.get('won', False))
+        multiplier = Decimal(str(request.data.get('multiplier', '1.00')))
+        account_type = request.data.get('account_type', AccountType.DEMO)
+
+        try:
+            stake = Decimal(str(stake_val))
+            game = Game.objects.filter(slug='mines').first()
+            server_seed = ProvablyFairRNG.generate_server_seed()
+            server_hash = ProvablyFairRNG.hash_seed(server_seed)
+            mine_positions = ProvablyFairRNG.generate_mines_board(server_seed, f"mn-{uuid.uuid4().hex[:6]}", mines_count)
+            round_no = f"MN-{uuid.uuid4().hex[:8].upper()}"
+
+            if game:
+                GameRound.objects.create(
+                    game=game,
+                    round_number=round_no,
+                    server_seed=server_seed,
+                    server_seed_hash=server_hash,
+                    final_outcome=multiplier if won else Decimal('0'),
+                    outcome_payload={'mines': mine_positions},
+                    status=RoundStatus.SETTLED,
+                    ended_at=timezone.now(),
+                )
+
+            LedgerService.ensure_wallet_accounts(request.user)
+            LedgerService.process_debit(
+                user=request.user,
+                account_type=account_type,
+                amount=stake,
+                tx_type=TransactionType.GAME_BET,
+                idempotency_key=f"BET_MN_{round_no}_{request.user.id}",
+                description=f"Mines ({mines_count} bombs) on {round_no}",
+                metadata={'game': 'mines', 'mines_count': mines_count},
+            )
+
+            payout = Decimal('0.0000')
+            if won:
+                payout = (stake * multiplier).quantize(Decimal('0.0001'))
+                LedgerService.settle_game_bet(
+                    user=request.user,
+                    account_type=account_type,
+                    stake_amount=stake,
+                    payout_amount=payout,
+                    game_slug='mines',
+                    round_number=round_no,
+                    idempotency_key=f"WIN_MN_{round_no}_{request.user.id}",
+                )
+
+            return Response({
+                'message': 'Mines round settled.',
+                'payout': str(payout),
+                'mine_positions': mine_positions,
+                'server_seed_hash': server_hash,
+            })
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class FairDicePlayView(APIView):
+    """Plays an HMAC-SHA256 Fair Dice roll in [0.00, 99.99]."""
+    def post(self, request):
+        stake_val = request.data.get('stake', 100)
+        target = float(request.data.get('target', 50.5))
+        condition = str(request.data.get('condition', 'OVER')).upper()
+        account_type = request.data.get('account_type', AccountType.DEMO)
+
+        try:
+            stake = Decimal(str(stake_val))
+            win_chance = (99.99 - target) if condition == 'OVER' else target
+            win_chance = max(1.0, min(98.0, win_chance))
+            multiplier = Decimal(str(round(99.0 / win_chance, 4)))
+
+            server_seed = ProvablyFairRNG.generate_server_seed()
+            server_hash = ProvablyFairRNG.hash_seed(server_seed)
+            roll = ProvablyFairRNG.roll_fair_dice(server_seed, f"dc-{uuid.uuid4().hex[:6]}")
+            won = (roll > target) if condition == 'OVER' else (roll < target)
+            round_no = f"DC-{uuid.uuid4().hex[:8].upper()}"
+
+            game = Game.objects.filter(slug='dice').first()
+            if game:
+                GameRound.objects.create(
+                    game=game,
+                    round_number=round_no,
+                    server_seed=server_seed,
+                    server_seed_hash=server_hash,
+                    final_outcome=Decimal(str(roll)),
+                    outcome_payload={'roll': roll, 'target': target, 'condition': condition},
+                    status=RoundStatus.SETTLED,
+                    ended_at=timezone.now(),
+                )
+
+            LedgerService.ensure_wallet_accounts(request.user)
+            LedgerService.process_debit(
+                user=request.user,
+                account_type=account_type,
+                amount=stake,
+                tx_type=TransactionType.GAME_BET,
+                idempotency_key=f"BET_DC_{round_no}_{request.user.id}",
+                description=f"Fair Dice ({condition} {target}) on {round_no}",
+                metadata={'game': 'dice', 'roll': roll},
+            )
+
+            payout = Decimal('0.0000')
+            if won:
+                payout = (stake * multiplier).quantize(Decimal('0.0001'))
+                LedgerService.settle_game_bet(
+                    user=request.user,
+                    account_type=account_type,
+                    stake_amount=stake,
+                    payout_amount=payout,
+                    game_slug='dice',
+                    round_number=round_no,
+                    idempotency_key=f"WIN_DC_{round_no}_{request.user.id}",
+                )
+
+            return Response({
+                'roll': roll,
+                'won': won,
+                'multiplier': float(multiplier),
+                'payout': str(payout),
+                'server_seed': server_seed,
+                'server_seed_hash': server_hash,
+            })
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class WingoPlayView(APIView):
+    """Settles a Wingo Color Parity round (GREEN/RED/VIOLET/BIG/SMALL/0-9)."""
+    def post(self, request):
+        stake_val = request.data.get('stake', 100)
+        bet_choice = str(request.data.get('bet_choice', 'GREEN')).upper()
+        period_id = str(request.data.get('period_id', f"WG-{uuid.uuid4().hex[:6].upper()}"))
+        account_type = request.data.get('account_type', AccountType.DEMO)
+
+        try:
+            stake = Decimal(str(stake_val))
+            server_seed = ProvablyFairRNG.generate_server_seed()
+            server_hash = ProvablyFairRNG.hash_seed(server_seed)
+            outcome = ProvablyFairRNG.draw_wingo_parity(server_seed, period_id)
+
+            digit = outcome['digit']
+            colors = outcome['colors']
+            size = outcome['size']
+
+            mult = Decimal('0')
+            if bet_choice in ('GREEN', 'RED') and bet_choice in colors:
+                mult = Decimal('1.5') if 'VIOLET' in colors else Decimal('2.0')
+            elif bet_choice == 'VIOLET' and 'VIOLET' in colors:
+                mult = Decimal('4.5')
+            elif bet_choice in ('BIG', 'SMALL') and bet_choice == size:
+                mult = Decimal('2.0')
+            elif bet_choice.isdigit() and int(bet_choice) == digit:
+                mult = Decimal('9.0')
+
+            won = mult > 0
+            round_no = f"WG-{uuid.uuid4().hex[:8].upper()}"
+
+            LedgerService.ensure_wallet_accounts(request.user)
+            LedgerService.process_debit(
+                user=request.user,
+                account_type=account_type,
+                amount=stake,
+                tx_type=TransactionType.GAME_BET,
+                idempotency_key=f"BET_WG_{round_no}_{request.user.id}",
+                description=f"Wingo Parity ({bet_choice}) Period {period_id}",
+                metadata={'game': 'wingo', 'choice': bet_choice},
+            )
+
+            payout = Decimal('0.0000')
+            if won:
+                payout = (stake * mult).quantize(Decimal('0.0001'))
+                LedgerService.settle_game_bet(
+                    user=request.user,
+                    account_type=account_type,
+                    stake_amount=stake,
+                    payout_amount=payout,
+                    game_slug='wingo',
+                    round_number=round_no,
+                    idempotency_key=f"WIN_WG_{round_no}_{request.user.id}",
+                )
+
+            return Response({
+                'digit': digit,
+                'colors': colors,
+                'size': size,
+                'won': won,
+                'payout': str(payout),
+                'server_seed_hash': server_hash,
+            })
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class LudoMatchView(APIView):
+    """Settles a Ludo Arena 2P / 4P quick tournament match."""
+    def post(self, request):
+        stake_val = request.data.get('stake', 50)
+        score = int(request.data.get('score', 0))
+        is_victory = bool(request.data.get('is_victory', False))
+        mode = str(request.data.get('mode', '2P')).upper()
+        account_type = request.data.get('account_type', AccountType.DEMO)
+
+        try:
+            stake = Decimal(str(stake_val))
+            round_no = f"LD-{uuid.uuid4().hex[:8].upper()}"
+
+            LedgerService.ensure_wallet_accounts(request.user)
+            LedgerService.process_debit(
+                user=request.user,
+                account_type=account_type,
+                amount=stake,
+                tx_type=TransactionType.GAME_BET,
+                idempotency_key=f"BET_LD_{round_no}_{request.user.id}",
+                description=f"Ludo Arena {mode} Match Entry",
+                metadata={'game': 'ludo', 'score': score, 'mode': mode},
+            )
+
+            payout = Decimal('0.0000')
+            if is_victory:
+                mult = Decimal('3.4') if mode == '4P' else Decimal('1.85')
+                payout = (stake * mult).quantize(Decimal('0.0001'))
+                LedgerService.settle_game_bet(
+                    user=request.user,
+                    account_type=account_type,
+                    stake_amount=stake,
+                    payout_amount=payout,
+                    game_slug='ludo',
+                    round_number=round_no,
+                    idempotency_key=f"WIN_LD_{round_no}_{request.user.id}",
+                )
+
+            return Response({
+                'message': 'Ludo match settled.',
+                'is_victory': is_victory,
+                'payout': str(payout),
+            })
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

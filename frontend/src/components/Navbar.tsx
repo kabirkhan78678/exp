@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import {
   Wallet, Bell, User as UserIcon, LogOut,
   ChevronDown, Flame, Gift, Sparkles, ArrowRight,
-  Plus, Search, Crown, Trophy, Check, ArrowUpRight, Plane, Disc, Swords, Layers
+  Plus, Search, Crown, Trophy, Check, ArrowUpRight, Plane, Disc, Swords, Layers,
+  Bomb, Dices, Zap
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { VeltrixLogoMark, GoldRupeeCoin } from '@/components/GameArtwork';
@@ -32,9 +33,13 @@ export const Navbar: React.FC = () => {
 
   const quickGames = [
     { name: 'AeroCrash Aviator', tag: 'CRASH • 100x', href: '/games/aerocrash', icon: Plane, color: 'text-[#FF2E54]' },
+    { name: 'Mines Diamond Grid', tag: '5x5 VAULT', href: '/games/mines', icon: Bomb, color: 'text-[#47EC84]' },
+    { name: 'Fair Dice Slider', tag: '0–100 • 99% RTP', href: '/games/dice', icon: Dices, color: 'text-sky-400' },
+    { name: 'Wingo Color Parity', tag: '30s/60s • 9x', href: '/games/wingo', icon: Zap, color: 'text-violet-400' },
+    { name: 'Dragon Tiger Live', tag: 'TABLE • 8:1', href: '/games/dragontiger', icon: Swords, color: 'text-rose-400' },
+    { name: 'Teen Patti 3-Card', tag: 'CARDS • 5-SEAT', href: '/games/teenpatti', icon: Layers, color: 'text-[#47EC84]' },
     { name: 'Carrom 2D Arena', tag: 'SKILL • PHYSICS', href: '/games/carrom', icon: Disc, color: 'text-[#F5B041]' },
-    { name: 'Dragon Tiger Live', tag: 'TABLE • 8:1', href: '/games/dragontiger', icon: Swords, color: 'text-sky-400' },
-    { name: 'Teen Patti 3-Card', tag: 'CARDS • PVP', href: '/games/teenpatti', icon: Layers, color: 'text-[#47EC84]' },
+    { name: 'Ludo Arena Quick', tag: '2P / 4P • 5M', href: '/games/ludo', icon: Crown, color: 'text-sky-400' },
   ];
 
   const matchingGames = quickGames.filter((g) =>

@@ -209,6 +209,46 @@ class ApiClient {
             max_stake: '10000.00',
             rtp_percentage: '95.50',
             player_count: 1120
+          },
+          {
+            slug: 'mines',
+            name: 'Mines',
+            category: 'CRASH',
+            description: '5x5 diamond & bomb grid. Reveal gems & cash out anytime.',
+            min_stake: '10.00',
+            max_stake: '20000.00',
+            rtp_percentage: '97.00',
+            player_count: 1680
+          },
+          {
+            slug: 'dice',
+            name: 'Fair Dice',
+            category: 'CRASH',
+            description: 'Over/Under 0.00-100.00 slider with 99% provably fair RTP.',
+            min_stake: '10.00',
+            max_stake: '50000.00',
+            rtp_percentage: '99.00',
+            player_count: 940
+          },
+          {
+            slug: 'wingo',
+            name: 'Wingo Parity',
+            category: 'TABLE',
+            description: '30s/60s Green, Violet, Red, Big/Small & 0-9 color parity.',
+            min_stake: '10.00',
+            max_stake: '25000.00',
+            rtp_percentage: '98.00',
+            player_count: 2310
+          },
+          {
+            slug: 'ludo',
+            name: 'Ludo Arena',
+            category: 'SKILL',
+            description: '2P & 4P 5-min quick skill tournament board & room codes.',
+            min_stake: '25.00',
+            max_stake: '10000.00',
+            rtp_percentage: '96.00',
+            player_count: 1540
           }
         ]
       };
@@ -309,6 +349,45 @@ class ApiClient {
     return this.request<{ message: string; is_victory: boolean; payout: string }>('/games/carrom/match/', {
       method: 'POST',
       body: JSON.stringify({ score, is_victory: isVictory, account_type: accountType }),
+    });
+  }
+
+  // Mines Diamond Grid
+  async playMines(stake: number, minesCount: number, revealedCount: number, won: boolean, multiplier: number, accountType: string) {
+    return this.request<{ message: string; payout: string; mine_positions: number[]; server_seed_hash: string }>('/games/mines/play/', {
+      method: 'POST',
+      body: JSON.stringify({
+        stake,
+        mines_count: minesCount,
+        revealed_count: revealedCount,
+        won,
+        multiplier,
+        account_type: accountType,
+      }),
+    });
+  }
+
+  // Fair Dice
+  async playFairDice(stake: number, target: number, condition: 'OVER' | 'UNDER', accountType: string) {
+    return this.request<{ roll: number; won: boolean; multiplier: number; payout: string; server_seed: string; server_seed_hash: string }>('/games/dice/play/', {
+      method: 'POST',
+      body: JSON.stringify({ stake, target, condition, account_type: accountType }),
+    });
+  }
+
+  // Wingo Parity
+  async playWingo(stake: number, betChoice: string, periodId: string, accountType: string) {
+    return this.request<{ digit: number; colors: string[]; size: string; won: boolean; payout: string; server_seed_hash: string }>('/games/wingo/play/', {
+      method: 'POST',
+      body: JSON.stringify({ stake, bet_choice: betChoice, period_id: periodId, account_type: accountType }),
+    });
+  }
+
+  // Ludo Arena
+  async submitLudoMatch(stake: number, score: number, isVictory: boolean, mode: '2P' | '4P', accountType: string) {
+    return this.request<{ message: string; is_victory: boolean; payout: string }>('/games/ludo/match/', {
+      method: 'POST',
+      body: JSON.stringify({ stake, score, is_victory: isVictory, mode, account_type: accountType }),
     });
   }
 
