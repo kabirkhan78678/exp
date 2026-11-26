@@ -27,7 +27,4 @@ services:
       - key: NODE_VERSION
         value: 20.0.0
       - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: veltrix-backend
-          property: url
+        value: https://veltrix-backend.onrender.com/api
