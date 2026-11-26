@@ -270,3 +270,177 @@ export const HeroVaultIllustration: React.FC = () => (
     </svg>
   </div>
 );
+
+/** Crisp Unmistakable Foreground Mini-Game Vector Badge for Each of the 8 Game Posters */
+export const GamePosterMiniScene: React.FC<{ slug: string }> = ({ slug }) => {
+  switch (slug) {
+    case 'aerocrash':
+      return (
+        <svg className="w-20 h-16 xs:w-24 xs:h-20 drop-shadow-[0_6px_14px_rgba(255,46,84,0.65)]" viewBox="0 0 110 80" fill="none">
+          <path d="M8 68 Q 48 64 84 18 L 84 68 Z" fill="#FF2E54" fillOpacity="0.28" />
+          <path d="M8 68 Q 48 64 84 18" stroke="#FF2E54" strokeWidth="3.5" strokeLinecap="round" />
+          <g transform="translate(64, 4) rotate(-25)">
+            <path d="M-8 14 L3 11 L3 17 Z" fill="#F5B041" />
+            <path d="M3 10 L20 12 L34 14 L20 16 L3 18 L7 14 Z" fill="#FF2E54" stroke="#FFF" strokeWidth="1" />
+            <path d="M12 12 L7 2 L20 12 Z" fill="#FB7185" />
+            <path d="M12 16 L7 26 L20 16 Z" fill="#E11D48" />
+          </g>
+          <rect x="10" y="14" width="44" height="18" rx="9" fill="#0B0E10" stroke="#FF2E54" strokeWidth="1.2" />
+          <text x="32" y="26" textAnchor="middle" fill="#FFF" fontSize="9.5" fontWeight="900" fontFamily="monospace">24.8x</text>
+        </svg>
+      );
+
+    case 'mines':
+      return (
+        <div className="p-1.5 rounded-xl bg-[#0A1014]/90 border border-[#47EC84]/50 shadow-[0_6px_18px_rgba(71,236,132,0.4)] grid grid-cols-3 gap-1 w-20 h-20 xs:w-[88px] xs:h-[88px]">
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => {
+            const isGem = [0, 2, 4, 7].includes(i);
+            const isBomb = i === 5;
+            return (
+              <div
+                key={i}
+                className={`rounded-md flex items-center justify-center border ${
+                  isGem
+                    ? 'bg-[#0C3320] border-[#47EC84]/70'
+                    : isBomb
+                    ? 'bg-[#360B15] border-[#FF2E54]/80'
+                    : 'bg-[#172026] border-white/10'
+                }`}
+              >
+                {isGem && (
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                    <polygon points="6,4 18,4 22,10 12,21 2,10" fill="#47EC84" stroke="#A7F3D0" strokeWidth="1.4" />
+                  </svg>
+                )}
+                {isBomb && (
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                    <circle cx="11" cy="14" r="6" fill="#FF2E54" />
+                    <path d="M15 9L19 5" stroke="#F5B041" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      );
+
+    case 'wingo':
+      return (
+        <div className="p-1.5 rounded-xl bg-black/75 border border-violet-400/45 shadow-[0_6px_18px_rgba(139,92,246,0.45)] flex flex-col gap-1.5">
+          <div className="flex items-center gap-1.5">
+            <span className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-700 border border-white/60 flex items-center justify-center font-mono font-black text-xs text-white shadow">3</span>
+            <span className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-gradient-to-br from-emerald-400 via-violet-500 to-purple-800 border border-white/80 flex items-center justify-center font-mono font-black text-xs text-white shadow scale-110">5</span>
+            <span className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-gradient-to-b from-rose-400 to-red-700 border border-white/60 flex items-center justify-center font-mono font-black text-xs text-white shadow">8</span>
+          </div>
+          <div className="flex items-center gap-1 justify-center text-[8px] font-black">
+            <span className="px-1.5 py-0.5 rounded bg-emerald-600 text-white">G</span>
+            <span className="px-1.5 py-0.5 rounded bg-violet-600 text-white">V</span>
+            <span className="px-1.5 py-0.5 rounded bg-rose-600 text-white">R</span>
+          </div>
+        </div>
+      );
+
+    case 'dice':
+      return (
+        <div className="p-2 rounded-xl bg-[#090D10]/90 border border-sky-400/45 shadow-[0_6px_18px_rgba(56,189,248,0.4)] space-y-1.5 w-24">
+          <div className="flex items-center justify-center gap-1.5">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-white to-slate-200 border border-[#F5B041] flex items-center justify-center font-mono font-black text-xs text-slate-950 -rotate-6 shadow">
+              6
+            </div>
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#47EC84] to-emerald-600 border border-white flex items-center justify-center font-mono font-black text-xs text-slate-950 rotate-6 shadow">
+              4
+            </div>
+          </div>
+          <div className="h-2 w-full rounded-full overflow-hidden flex border border-white/20">
+            <div className="w-1/2 bg-[#FF2E54]" />
+            <div className="w-1/2 bg-[#47EC84]" />
+          </div>
+        </div>
+      );
+
+    case 'dragontiger':
+      return (
+        <div className="flex items-center relative">
+          <div className="w-9 h-12 xs:w-10 xs:h-14 rounded-lg bg-gradient-to-b from-[#B91C1C] to-[#450A0A] border border-[#F5B041] -rotate-6 flex flex-col items-center justify-between p-1 shadow-lg">
+            <span className="self-start text-[8px] font-black text-rose-200 leading-none">K</span>
+            <span className="text-[7px] font-black text-[#F5B041] tracking-wider">DRAGON</span>
+          </div>
+          <div className="w-5 h-5 rounded-full bg-black border border-[#F5B041] flex items-center justify-center text-[7px] font-black text-[#F5B041] z-20 -mx-2 shadow">
+            VS
+          </div>
+          <div className="w-9 h-12 xs:w-10 xs:h-14 rounded-lg bg-gradient-to-b from-[#1D4ED8] to-[#0F172A] border border-sky-300 rotate-6 flex flex-col items-center justify-between p-1 shadow-lg">
+            <span className="self-start text-[8px] font-black text-sky-200 leading-none">Q</span>
+            <span className="text-[7px] font-black text-sky-200 tracking-wider">TIGER</span>
+          </div>
+        </div>
+      );
+
+    case 'teenpatti':
+      return (
+        <div className="flex items-center -space-x-3 pt-1">
+          <div className="w-8 h-11 xs:w-9 xs:h-12 rounded-lg bg-white border border-slate-300 -rotate-12 flex flex-col justify-between p-1 text-[#D91636] font-mono font-black text-[9px] shadow-md">
+            <span>Q</span>
+            <span className="self-center text-xs leading-none">♥</span>
+          </div>
+          <div className="w-9 h-12 xs:w-10 xs:h-14 rounded-lg bg-white border-2 border-[#47EC84] z-20 -translate-y-1 flex flex-col justify-between p-1 text-slate-950 font-mono font-black text-[9px] shadow-xl">
+            <span>A</span>
+            <span className="self-center text-sm leading-none">♠</span>
+          </div>
+          <div className="w-8 h-11 xs:w-9 xs:h-12 rounded-lg bg-white border border-[#F5B041] rotate-12 flex flex-col justify-between p-1 text-[#D91636] font-mono font-black text-[9px] shadow-md">
+            <span>K</span>
+            <span className="self-center text-xs leading-none">♦</span>
+          </div>
+        </div>
+      );
+
+    case 'carrom':
+      return (
+        <svg className="w-16 h-16 xs:w-[72px] xs:h-[72px] drop-shadow-[0_6px_14px_rgba(0,0,0,0.85)]" viewBox="0 0 80 80" fill="none">
+          <rect x="4" y="4" width="72" height="72" rx="10" fill="#4A2511" stroke="#F5B041" strokeWidth="1.8" />
+          <rect x="11" y="11" width="58" height="58" rx="5" fill="#DFC39D" />
+          <circle cx="16" cy="16" r="4" fill="#111" />
+          <circle cx="64" cy="16" r="4" fill="#111" />
+          <circle cx="16" cy="64" r="4" fill="#111" />
+          <circle cx="64" cy="64" r="4" fill="#111" />
+          <circle cx="40" cy="40" r="11" stroke="#9A3412" strokeWidth="1" />
+          <circle cx="40" cy="40" r="3.5" fill="#DC2626" />
+          <circle cx="34" cy="37" r="2.8" fill="#FFF" />
+          <circle cx="46" cy="43" r="2.8" fill="#18181B" />
+          <circle cx="40" cy="60" r="4.2" fill="#F5B041" stroke="#FFF" strokeWidth="1" />
+        </svg>
+      );
+
+    case 'ludo':
+    default:
+      return (
+        <div className="relative flex items-end gap-1">
+          <svg className="w-16 h-16 xs:w-[70px] xs:h-[70px] rounded-lg border-2 border-white/80 shadow-xl" viewBox="0 0 60 60" fill="none">
+            <rect width="60" height="60" fill="#FFFDF7" />
+            <rect x="0" y="0" width="24" height="24" fill="#EF4444" />
+            <rect x="4" y="4" width="16" height="16" rx="2" fill="#FFF" />
+            <circle cx="9" cy="9" r="2.4" fill="#EF4444" />
+            <circle cx="15" cy="15" r="2.4" fill="#EF4444" />
+            <rect x="36" y="0" width="24" height="24" fill="#22C55E" />
+            <rect x="40" y="4" width="16" height="16" rx="2" fill="#FFF" />
+            <circle cx="45" cy="9" r="2.4" fill="#22C55E" />
+            <circle cx="51" cy="15" r="2.4" fill="#22C55E" />
+            <rect x="36" y="36" width="24" height="24" fill="#F59E0B" />
+            <rect x="40" y="40" width="16" height="16" rx="2" fill="#FFF" />
+            <circle cx="45" cy="45" r="2.4" fill="#F59E0B" />
+            <circle cx="51" cy="51" r="2.4" fill="#F59E0B" />
+            <rect x="0" y="36" width="24" height="24" fill="#3B82F6" />
+            <rect x="4" y="40" width="16" height="16" rx="2" fill="#FFF" />
+            <circle cx="9" cy="45" r="2.4" fill="#3B82F6" />
+            <circle cx="15" cy="51" r="2.4" fill="#3B82F6" />
+            <polygon points="24,24 36,24 30,30" fill="#22C55E" />
+            <polygon points="36,24 36,36 30,30" fill="#F59E0B" />
+            <polygon points="24,36 36,36 30,30" fill="#3B82F6" />
+            <polygon points="24,24 24,36 30,30" fill="#EF4444" />
+          </svg>
+          <div className="w-6 h-6 rounded-md bg-white border border-[#F5B041] shadow-lg flex items-center justify-center font-mono font-black text-xs text-slate-950 -ml-3 mb-0.5 rotate-12">
+            6
+          </div>
+        </div>
+      );
+  }
+};
