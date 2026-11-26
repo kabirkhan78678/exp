@@ -16,22 +16,37 @@ class ApiClient {
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE}${endpoint}`;
-    const res = await fetch(url, {
-      ...options,
-      headers: {
-        ...this.getHeaders(),
-        ...(options.headers || {}),
-      },
-    });
+    
+    // 8-second timeout controller so requests never hang infinitely
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    const data = await res.json().catch(() => ({}));
+    try {
+      const res = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          ...this.getHeaders(),
+          ...(options.headers || {}),
+        },
+      });
 
-    if (!res.ok) {
-      const errorMsg = data?.error || (data?.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}: ${res.statusText}`);
-      throw new Error(errorMsg);
+      clearTimeout(timeoutId);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const errorMsg = data?.error || (data?.errors ? JSON.stringify(data.errors) : `HTTP ${res.status}: ${res.statusText}`);
+        throw new Error(errorMsg);
+      }
+
+      return data as T;
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        throw new Error('Connection timeout: Server is waking up from sleep mode.');
+      }
+      throw err;
     }
-
-    return data as T;
   }
 
   // Auth
